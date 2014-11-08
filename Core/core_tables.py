@@ -8,8 +8,8 @@ def build():
     #build core table with indicators and countries
 
     #save sources into json files
-    #urllib.urlretrieve(glob.start_url+glob.countries+glob.end_url, "./DB/Countries.json")
-    #urllib.urlretrieve(glob.start_url+glob.topics+glob.end_url, "./DB/Topics.json")
+    urllib.urlretrieve(glob.start_url+glob.countries+glob.end_url, "./DB/Countries.json")
+    urllib.urlretrieve(glob.start_url+glob.topics+glob.end_url, "./DB/Topics.json")
     #urllib.urlretrieve(glob.start_url+glob.indicators+glob.end_url, "./DB/Indicators.json")
 
     #open json files
@@ -31,10 +31,10 @@ def build():
 
     #zip python structures into lists
     #get countries names
-    countries_zip = []
-    topics_zip = []
-    indicators_zip = []
-    cfg = [None, None, None]
+    countries_zip = [[]]
+    topics_zip = [[]]
+    free_indicators_zip = [[]]
+    cfg = [None, None, None, None]
 
     for country in range(countries_py[0]["total"]):
         countries_zip.append([
@@ -47,21 +47,30 @@ def build():
 
     for topic in range(topics_py[0]["total"]):
         topics_zip.append([
-            (topics_py[1][topic]["id"]),
             (topics_py[1][topic]["value"])])
 
     for indicator in range(indicators_py[0]["total"]):
-        indicators_zip.append([
-            (indicators_py[1][0]["id"])
-            (indicators_py[1][0]["name"])
-            (indicators_py[1][0]["sourceNote"])
-            (indicators_py[1][0]["topics"][0]["id"])
-        ])
+        try:
+            topics_zip[int(indicators_py[1][indicator]["topics"][0]["id"])].append([
+                (indicators_py[1][indicator]["id"]),
+                (indicators_py[1][indicator]["name"]),
+                (indicators_py[1][indicator]["sourceNote"])])
+        except:
+            free_indicators_zip.append([
+                (indicators_py[1][indicator]["id"]),
+                (indicators_py[1][indicator]["name"]),
+                (indicators_py[1][indicator]["sourceNote"])])
+        #print indicator
 
     #cfg update
-    cfg[0] = {"table_date": str(datetime.today()), "countries_num": countries_py[0]["total"], "topics_num": topics_py[0]["total"]}
+    cfg[0] = {"table_date": str(datetime.today())}
+    countries_zip[0] = {"countries_num": countries_py[0]["total"]}
+    topics_zip[0] = {"topics_num": topics_py[0]["total"]}
+    free_indicators_zip[0] = {"free_indicators_num": (len(free_indicators_zip)-1)}
+
     cfg[1] = countries_zip
     cfg[2] = topics_zip
+    cfg[3] = free_indicators_zip
 
     #store the new cfg file
     file_config = open("./DB/config.ini", "w")
@@ -72,11 +81,9 @@ def build():
     countries_py = None
     topics_py = None
     indicators_py = None
-
     countries_zip = None
     topics_zip = None
-    indicators_zip = None
-
+    free_indicators_zip = None
     cfg = None
 
 #def check():
