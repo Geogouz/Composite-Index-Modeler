@@ -2,6 +2,7 @@ import urllib
 import json
 from datetime import datetime
 import glob
+import os
 
 
 def build():
@@ -10,7 +11,7 @@ def build():
     #save sources into json files
     urllib.urlretrieve(glob.start_url+glob.countries+glob.end_url, "./DB/Countries.json")
     urllib.urlretrieve(glob.start_url+glob.topics+glob.end_url, "./DB/Topics.json")
-    #urllib.urlretrieve(glob.start_url+glob.indicators+glob.end_url, "./DB/Indicators.json")
+    urllib.urlretrieve(glob.start_url+glob.indicators+glob.end_url, "./DB/Indicators.json")
 
     #open json files
     file_countries = open("./DB/Countries.json", "r")
@@ -29,8 +30,7 @@ def build():
     file_indicators.close()
     file_config.close()
 
-    #zip python structures into lists
-    #get countries names
+    #zip python structures into a single DB list
     countries_zip = [[]]
     topics_zip = [[]]
     free_indicators_zip = [[]]
@@ -87,6 +87,11 @@ def build():
     topics_zip = None
     free_indicators_zip = None
     cfg = None
+
+    #delete temp downloaded json files
+    os.remove("./DB/Countries.json")
+    os.remove("./DB/Indicators.json")
+    os.remove("./DB/Topics.json")
 
 #def check():
     #check for last core_table update
