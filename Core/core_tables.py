@@ -47,7 +47,7 @@ def build():
 
     for topic in range(topics_py[0]["total"]):
         topics_zip.append([
-            (topics_py[1][topic]["value"])])
+            {"name": (topics_py[1][topic]["value"])}])
 
     for indicator in range(indicators_py[0]["total"]):
         try:
@@ -60,7 +60,9 @@ def build():
                 (indicators_py[1][indicator]["id"]),
                 (indicators_py[1][indicator]["name"]),
                 (indicators_py[1][indicator]["sourceNote"])])
-        #print indicator
+
+    for topic in range(len(topics_zip)-1):
+        topics_zip[topic+1][0]["indicators_num"] = len(topics_zip[topic+1])-1
 
     #cfg update
     cfg[0] = {"table_date": str(datetime.today())}
