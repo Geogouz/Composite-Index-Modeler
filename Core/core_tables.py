@@ -4,20 +4,18 @@ from datetime import datetime
 import glob
 import os
 
-
-def build():
-    #build core table with indicators and countries
-
+#build coredb with indicators and countries
+def core_build():
     #save sources into json files
-    urllib.urlretrieve(glob.start_url+glob.countries+glob.end_url, "./DB/Countries.json")
-    urllib.urlretrieve(glob.start_url+glob.topics+glob.end_url, "./DB/Topics.json")
-    urllib.urlretrieve(glob.start_url+glob.indicators+glob.end_url, "./DB/Indicators.json")
+    urllib.urlretrieve(glob.start_url + glob.countries + glob.end_url, "./DB/Countries.json")
+    urllib.urlretrieve(glob.start_url + glob.topics + glob.end_url, "./DB/Topics.json")
+    urllib.urlretrieve(glob.start_url + glob.indicators + glob.end_url, "./DB/Indicators.json")
 
     #open json files
     file_countries = open("./DB/Countries.json", "r")
     file_topics = open("./DB/Topics.json", "r")
     file_indicators = open("./DB/indicators.json", "r")
-    file_config = open("./DB/config.ini", "w")
+    file_coredb = open("./DB/core.db", "w")
 
     #convert json files into temp python structures
     countries_py = json.load(file_countries)
@@ -28,13 +26,13 @@ def build():
     file_countries.close()
     file_topics.close()
     file_indicators.close()
-    file_config.close()
+    file_coredb.close()
 
     #zip python structures into a single DB list
     countries_zip = [[]]
     topics_zip = [[]]
     free_indicators_zip = [[]]
-    cfg = [None, None, None, None]
+    coredb = [None, None, None, None]
 
     for country in range(countries_py[0]["total"]):
         countries_zip.append([
@@ -64,20 +62,20 @@ def build():
     for topic in range(len(topics_zip)-1):
         topics_zip[topic+1][0]["indicators_num"] = len(topics_zip[topic+1])-1
 
-    #cfg update
-    cfg[0] = {"table_date": str(datetime.today())}
+    #coredb update
+    coredb[0] = {"table_date": str(datetime.today())}
     countries_zip[0] = {"countries_num": countries_py[0]["total"]}
     topics_zip[0] = {"topics_num": topics_py[0]["total"]}
     free_indicators_zip[0] = {"free_indicators_num": (len(free_indicators_zip)-1)}
 
-    cfg[1] = countries_zip
-    cfg[2] = topics_zip
-    cfg[3] = free_indicators_zip
+    coredb[1] = countries_zip
+    coredb[2] = topics_zip
+    coredb[3] = free_indicators_zip
 
-    #store the new cfg file
-    file_config = open("./DB/config.ini", "w")
-    json.dump(cfg, file_config)
-    file_config.close()
+    #store the new coredb file
+    file_coredb = open("./DB/core.db", "w")
+    json.dump(coredb, file_coredb)
+    file_coredb.close()
 
     #flush temp  python structures
     countries_py = None
@@ -86,12 +84,16 @@ def build():
     countries_zip = None
     topics_zip = None
     free_indicators_zip = None
-    cfg = None
+    coredb = None
 
     #delete temp downloaded json files
     os.remove("./DB/Countries.json")
     os.remove("./DB/Indicators.json")
     os.remove("./DB/Topics.json")
 
-#def check():
-    #check for last core_table update
+#check for last coredb update
+def check():
+    pass
+
+def values_build():
+    pass
