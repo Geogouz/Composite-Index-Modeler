@@ -1,4 +1,5 @@
 #:import core_tables Core.core_tables
+
 <MainWindow>:
     orientation: "horizontal"
     BoxLayout:
@@ -9,30 +10,47 @@
         Popup:
             id: coredb_update_popup
             size_hint: None, None
-            height: 200
+            height: 300
             width: 400
-            title: "Indices Database Update"
+            title: "Update Indices Database"
             on_parent:
                 if self.parent == main_boxlayout: self.parent.remove_widget(self)
             BoxLayout:
-                Button:
-                    text: "Update"
-                    on_release: core_tables.values_build()
-                Button:
-                    text: "Return"
-                    on_release: coredb_update_popup.dismiss()
+                orientation: "vertical"
+                Label:
+                    size_hint_y: None
+                    height: 80
+                    text: core_tables.threadonator("values_build")
+                    halign: 'center'
+
+                Label:
+                    size_hint_y: None
+                    height: 20
+                    text: str(core_tables.checkpoint)
+                    halign: 'center'
+
+                ProgressBar:
+                    size_hint_y: None
+                    height: 50
+                    value: 100
+                    max: 200
+                BoxLayout:
+                    orientation: "horizontal"
+                    Button:
+                        text: "Update"
+                        on_release: core_tables.threadonator("core_build")
+                    Button:
+                        text: "Return"
+                        on_release: coredb_update_popup.dismiss()
         Button:
-            id: check_coredb
             size_hint_y: None
             height: 60
             bold: True
             font_size: 15
             text: "Update\nIndex DB"
             halign: 'center'
-            on_press: core_tables.check()
             on_release: coredb_update_popup.__self__.open()
         Label:
-            id: check_cim_version
             size_hint_y: None
             height: 60
             italic: True

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Dimitris Xenakis'
+print "adding", __name__
 
 from Core import core_tables
 
@@ -15,8 +16,6 @@ class CIMgui(App):
     def build(self):
         return MainWindow()
 
-#must be called from main
+# must be called from main
 if __name__ == "__main__":
     CIMgui().run()
-
-#core_tables.core_build()
