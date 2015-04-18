@@ -1,0 +1,48 @@
+#:import core_tables Core.core_tables
+<MainWindow>:
+    orientation: "horizontal"
+    BoxLayout:
+        id: main_boxlayout
+        size_hint_x: None
+        width: 100
+        orientation: "vertical"
+        Popup:
+            id: coredb_update_popup
+            size_hint: None, None
+            height: 200
+            width: 400
+            title: "Indices Database Update"
+            on_parent:
+                if self.parent == main_boxlayout: self.parent.remove_widget(self)
+            BoxLayout:
+                Button:
+                    text: "Update"
+                    on_release: core_tables.values_build()
+                Button:
+                    text: "Return"
+                    on_release: coredb_update_popup.dismiss()
+        Button:
+            id: check_coredb
+            size_hint_y: None
+            height: 60
+            bold: True
+            font_size: 15
+            text: "Update\nIndex DB"
+            halign: 'center'
+            on_press: core_tables.check()
+            on_release: coredb_update_popup.__self__.open()
+        Label:
+            id: check_cim_version
+            size_hint_y: None
+            height: 60
+            italic: True
+            text: "CIM Version\n1.0.0"
+            halign: 'center'
+    RelativeLayout:
+        id: main_frame
+        Splitter:
+            sizable_from: "right"
+            min_size: 10
+            max_size: main_frame.width
+            Button:
+                text: "Panel"

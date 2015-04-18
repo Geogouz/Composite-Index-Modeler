@@ -15,7 +15,6 @@ def core_build():
     file_countries = open("./DB/Countries.json", "r")
     file_topics = open("./DB/Topics.json", "r")
     file_indicators = open("./DB/indicators.json", "r")
-    file_coredb = open("./DB/core.db", "w")
 
     #convert json files into temp python structures
     countries_py = json.load(file_countries)
@@ -26,7 +25,6 @@ def core_build():
     file_countries.close()
     file_topics.close()
     file_indicators.close()
-    file_coredb.close()
 
     #zip python structures into a single DB list
     countries_zip = [[]]
@@ -93,7 +91,18 @@ def core_build():
 
 #check for last coredb update
 def check():
-    pass
+    #try to open the json DB file
+    try:
+        stored_coredb = open("./DB/core.db", "r")
+        print stored_coredb
 
+        #convert json file into temp python structure
+        coredb_py = json.load(stored_coredb)
+        print coredb_py
+
+    except:
+        print "No valid Indices DB found!\nPlease update it."
+
+#build valuesdb with indicators and countries
 def values_build():
-    pass
+    print "valuesdb build"
