@@ -1,6 +1,5 @@
-#:import core_tables Core.core_tables
-
 <MainWindow>:
+    core_build_progress_bar: core_build_progress_bar
     orientation: "horizontal"
     BoxLayout:
         id: main_boxlayout
@@ -10,7 +9,7 @@
         Popup:
             id: coredb_update_popup
             size_hint: None, None
-            height: 300
+            height: 250
             width: 400
             title: "Update Indices Database"
             on_parent:
@@ -20,25 +19,19 @@
                 Label:
                     size_hint_y: None
                     height: 80
-                    text: core_tables.threadonator("values_build")
+                    text: root.check()
                     halign: 'center'
-
-                Label:
-                    size_hint_y: None
-                    height: 20
-                    text: str(core_tables.checkpoint)
-                    halign: 'center'
-
                 ProgressBar:
+                    id: core_build_progress_bar
                     size_hint_y: None
                     height: 50
-                    value: 100
-                    max: 200
+                    value: 0
+                    max: 100
                 BoxLayout:
                     orientation: "horizontal"
                     Button:
                         text: "Update"
-                        on_release: core_tables.threadonator("core_build")
+                        on_release: root.threadonator(root.core_build)
                     Button:
                         text: "Return"
                         on_release: coredb_update_popup.dismiss()
