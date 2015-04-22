@@ -2,15 +2,17 @@
 __author__ = 'Dimitris Xenakis'
 print "adding", __name__
 
-import os  # check if really needed
+import os
 import threading
 import time
 from datetime import datetime
 import urllib
 import json
 
+from kivy.core.window import Window
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.properties import BooleanProperty
 
 # set WorldBank API static parameters
 start_url = "http://api.worldbank.org/"
@@ -28,24 +30,22 @@ coredb_py = None
 userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
           ["SP.DYN.LE00.IN", "MYS.MEA.YSCH.25UP.MF", "SE.SCH.LIFE", "NY.GNP.PCAP.PP.CD", "UNDP.HDI.XD"]]
 
-# set checkpoint
-checkpoint = 100
-
 # print start_url + countries + "GRC" + "/" + indicators + "AG.LND.FRST.K2" + "/" + end_url
 
 
 class MainWindow(BoxLayout):
 
-    stop = threading.Event()
+    # set kivy properties. no process or popup is running on app init
+    processing = BooleanProperty(False)
+    popup_active = BooleanProperty(False)
 
     def threadonator(self, *arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
         return 1
 
     def update_progressbar(self, *arg):
-        global process_ended
-
-        while (not self.stop.is_set()) and (not process_ended): # an apagorefsw to kleisimo oso process na to allaksw
+        while self.processing:
+            self.coredb_state.text = "A process is running..\nPlease wait."
             print "loading..."
             self.core_build_progress_bar.value = 50
             time.sleep(1)
@@ -54,10 +54,8 @@ class MainWindow(BoxLayout):
 
     # build coredb with indicators and countries
     def core_build(self, *arg):
-        global process_ended
-        process_ended = False
-
-        # init progressbar
+        # init process
+        self.processing = True
         self.threadonator(self.update_progressbar)
         time.sleep(10)
 
@@ -151,25 +149,35 @@ class MainWindow(BoxLayout):
         os.remove("./DB/Topics.json")
         """
 
-        print "now I must end update_progressbar process"
-        process_ended = True
+        self.processing = False
         return 1
 
     # check for last coredb update
-    def check(self):
+    def check(self, *arg):
         global coredb_py
-        # try to open the json DB file
-        try:
-            stored_coredb = open("./DB/core.db", "r")
+        while True:# na to kaluterepsw me loop
+            # if there is any process running, wait until finish
+            while self.processing:
+                if not self.popup_active:
+                    return
+                else:
+                    time.sleep(1)
 
-            # convert json file into temp python structure
-            coredb_py = json.load(stored_coredb)
+            self.processing = True
+            # try to open the json DB file
+            try:
+                stored_coredb = open("./DB/core.db", "r")
 
-            # close json file
-            stored_coredb.close()
-            return "Latest DB Update:\n" + coredb_py[0]['table_date']
-        except:
-            return "No valid Indices Database found!\nPlease update it."
+                # convert json file into temp python structure
+                coredb_py = json.load(stored_coredb)
+
+                # close json file
+                stored_coredb.close()
+                self.coredb_state.text = ("Latest DB Update:\n" + coredb_py[0]['table_date'])
+            except:
+                self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
+
+            self.processing = False
 
     # build valuesdb with indicators and countries
     def values_build(self):
@@ -178,12 +186,14 @@ class MainWindow(BoxLayout):
 
 class CIMgui(App):
 
-    def on_stop(self):
-        self.root.stop.set()
+    def stop_warning(self, *args, **kwargs):
+        print "Are you sure?.."
+        return True
 
     def build(self):
+        #Window.borderless = True # halted until bug fixed
+        Window.bind(on_request_close=self.stop_warning)
         return MainWindow()
-
 
 # must be called from main
 if __name__ == "__main__":

@@ -1,11 +1,32 @@
 <MainWindow>:
     core_build_progress_bar: core_build_progress_bar
+    coredb_state: coredb_state
     orientation: "horizontal"
+    RelativeLayout:
+        id: main_frame
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Splitter:
+            sizable_from: "right"
+            min_size: 10
+            max_size: main_frame.width
+            Button:
+                text: "Panel"
     BoxLayout:
         id: main_boxlayout
+        orientation: "vertical"
         size_hint_x: None
         width: 100
-        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: 0.15, 0.15, 0.15, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Popup:
             id: coredb_update_popup
             size_hint: None, None
@@ -17,9 +38,9 @@
             BoxLayout:
                 orientation: "vertical"
                 Label:
+                    id: coredb_state
                     size_hint_y: None
                     height: 80
-                    text: root.check()
                     halign: 'center'
                 ProgressBar:
                     id: core_build_progress_bar
@@ -30,30 +51,30 @@
                 BoxLayout:
                     orientation: "horizontal"
                     Button:
+                        disabled: root.processing
                         text: "Update"
                         on_release: root.threadonator(root.core_build)
                     Button:
                         text: "Return"
-                        on_release: coredb_update_popup.dismiss()
+                        on_release:
+                            coredb_update_popup.dismiss() #otan to pataw na stamata tin proigoumeni check an trexei
+                            root.popup_active = False
         Button:
-            size_hint_y: None
-            height: 60
+            size_hint: None, None
+            height: 50
+            width: 90
+            pos_hint: {'center_x': 0.5}
             bold: True
             font_size: 15
             text: "Update\nIndex DB"
             halign: 'center'
-            on_release: coredb_update_popup.__self__.open()
+            on_release:
+                root.popup_active = True
+                root.threadonator(root.check)
+                coredb_update_popup.__self__.open()
         Label:
             size_hint_y: None
-            height: 60
+            height: 70
             italic: True
             text: "CIM Version\n1.0.0"
             halign: 'center'
-    RelativeLayout:
-        id: main_frame
-        Splitter:
-            sizable_from: "right"
-            min_size: 10
-            max_size: main_frame.width
-            Button:
-                text: "Panel"
