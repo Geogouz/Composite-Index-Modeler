@@ -1,3 +1,13 @@
+<AnimWidget@Widget>:
+    canvas:
+        Color:
+            rgba: 0.34, 0.76, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    size_hint: None, None
+    size: 100, 2
+
 <MainWindow>:
     core_build_progress_bar: core_build_progress_bar
     coredb_state: coredb_state
@@ -6,7 +16,7 @@
         id: main_frame
         canvas.before:
             Color:
-                rgba: 1, 1, 1, 1
+                rgba: 0.60, 0.72, 0.80, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -14,8 +24,15 @@
             sizable_from: "right"
             min_size: 10
             max_size: main_frame.width
-            Button:
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: 0.92, 0.93, 0.95, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
                 text: "Panel"
+                color: 0, 0, 0, 1
     BoxLayout:
         id: main_boxlayout
         orientation: "vertical"
@@ -23,7 +40,7 @@
         width: 100
         canvas.before:
             Color:
-                rgba: 0.15, 0.15, 0.15, 1
+                rgba: 0.16, 0.18, 0.19, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -41,13 +58,11 @@
                     id: coredb_state
                     size_hint_y: None
                     height: 80
+                    text_size: self.width, self.height
                     halign: 'center'
-                ProgressBar:
+                    valign: 'bottom'
+                AnchorLayout:
                     id: core_build_progress_bar
-                    size_hint_y: None
-                    height: 50
-                    value: 0
-                    max: 100
                 BoxLayout:
                     orientation: "horizontal"
                     Button:
@@ -57,7 +72,7 @@
                     Button:
                         text: "Return"
                         on_release:
-                            coredb_update_popup.dismiss() #otan to pataw na stamata tin proigoumeni check an trexei
+                            coredb_update_popup.dismiss()
                             root.popup_active = False
         Button:
             size_hint: None, None

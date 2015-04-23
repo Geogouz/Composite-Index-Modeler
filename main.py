@@ -12,6 +12,8 @@ import json
 from kivy.core.window import Window
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.animation import Animation
+from kivy.factory import Factory
 from kivy.properties import BooleanProperty
 
 # set WorldBank API static parameters
@@ -43,127 +45,130 @@ class MainWindow(BoxLayout):
         threading.Thread(target=arg[0], args=(arg,)).start()
         return 1
 
-    def update_progressbar(self, *arg):
+    def update_progress(self, *arg):
+        anim_bar = Factory.AnimWidget()
+        self.core_build_progress_bar.add_widget(anim_bar)
+        anim = Animation(opacity=0.3, width=300, duration=0.6)
+        anim += Animation(opacity=1, width=100, duration=0.6)
+        anim.repeat = True
+        anim.start(anim_bar)
         while self.processing:
-            self.coredb_state.text = "A process is running..\nPlease wait."
-            print "loading..."
-            self.core_build_progress_bar.value = 50
-            time.sleep(1)
-        self.core_build_progress_bar.value = 100
+            pass
+        self.core_build_progress_bar.remove_widget(anim_bar)
         return 1
 
     # build coredb with indicators and countries
     def core_build(self, *arg):
         # init process
         self.processing = True
-        self.threadonator(self.update_progressbar)
-        time.sleep(10)
+        self.threadonator(self.update_progress)
 
-        """
-        # set target web links
-        c_link = start_url + countries + end_url
-        t_link = start_url + topics + end_url
-        i_link = start_url + indicators + end_url
+        # Try, in case there is a problem with the update process
+        try:
+            time.sleep(4)
+            """
+            # set target web links
+            c_link = start_url + countries + end_url
+            t_link = start_url + topics + end_url
+            i_link = start_url + indicators + end_url
 
-        # save sources into json files
-        urllib.urlretrieve(c_link, "./DB/Countries.json")
-        urllib.urlretrieve(t_link, "./DB/Topics.json")
-        urllib.urlretrieve(i_link, "./DB/Indicators.json")
+            # save sources into json files
+            urllib.urlretrieve(c_link, "./DB/Countries.json")
+            urllib.urlretrieve(t_link, "./DB/Topics.json")
+            urllib.urlretrieve(i_link, "./DB/Indicators.json")
 
-        # open json files
-        file_countries = open("./DB/Countries.json", "r")
-        file_topics = open("./DB/Topics.json", "r")
-        file_indicators = open("./DB/indicators.json", "r")
+            # open json files
+            file_countries = open("./DB/Countries.json", "r")
+            file_topics = open("./DB/Topics.json", "r")
+            file_indicators = open("./DB/indicators.json", "r")
 
-        # convert json files into temp python structures
-        countries_py = json.load(file_countries)
-        topics_py = json.load(file_topics)
-        indicators_py = json.load(file_indicators)
+            # convert json files into temp python structures
+            countries_py = json.load(file_countries)
+            topics_py = json.load(file_topics)
+            indicators_py = json.load(file_indicators)
 
-        # close json files
-        file_countries.close()
-        file_topics.close()
-        file_indicators.close()
+            # close json files
+            file_countries.close()
+            file_topics.close()
+            file_indicators.close()
 
-        # zip python structures into a single DB list
-        countries_zip = [[]]
-        topics_zip = [[]]
-        free_indicators_zip = [[]]
-        coredb = [None, None, None, None]
+            # zip python structures into a single DB list
+            countries_zip = [[]]
+            topics_zip = [[]]
+            free_indicators_zip = [[]]
+            coredb = [None, None, None, None]
 
-        for country in range(countries_py[0]["total"]):
-            countries_zip.append([
-                (countries_py[1][country]["id"]),
-                (countries_py[1][country]["name"]),
-                (countries_py[1][country]["region"]["id"]),
-                (countries_py[1][country]["region"]["value"]),
-                (countries_py[1][country]["longitude"]),
-                (countries_py[1][country]["latitude"])])
+            for country in range(countries_py[0]["total"]):
+                countries_zip.append([
+                    (countries_py[1][country]["id"]),
+                    (countries_py[1][country]["name"]),
+                    (countries_py[1][country]["region"]["id"]),
+                    (countries_py[1][country]["region"]["value"]),
+                    (countries_py[1][country]["longitude"]),
+                    (countries_py[1][country]["latitude"])])
 
-        for topic in range(topics_py[0]["total"]):
-            topics_zip.append([
-                {"name": (topics_py[1][topic]["value"])}])
+            for topic in range(topics_py[0]["total"]):
+                topics_zip.append([
+                    {"name": (topics_py[1][topic]["value"])}])
 
-        for indicator in range(indicators_py[0]["total"]):
-            try:
-                topics_zip[int(indicators_py[1][indicator]["topics"][0]["id"])].append([
-                    (indicators_py[1][indicator]["id"]),
-                    (indicators_py[1][indicator]["name"]),
-                    (indicators_py[1][indicator]["sourceNote"])])
-            except:
-                free_indicators_zip.append([
-                    (indicators_py[1][indicator]["id"]),
-                    (indicators_py[1][indicator]["name"]),
-                    (indicators_py[1][indicator]["sourceNote"])])
+            for indicator in range(indicators_py[0]["total"]):
+                try:
+                    topics_zip[int(indicators_py[1][indicator]["topics"][0]["id"])].append([
+                        (indicators_py[1][indicator]["id"]),
+                        (indicators_py[1][indicator]["name"]),
+                        (indicators_py[1][indicator]["sourceNote"])])
+                except:
+                    free_indicators_zip.append([
+                        (indicators_py[1][indicator]["id"]),
+                        (indicators_py[1][indicator]["name"]),
+                        (indicators_py[1][indicator]["sourceNote"])])
 
-        for topic in range(len(topics_zip)-1):
-            topics_zip[topic+1][0]["indicators_num"] = len(topics_zip[topic+1])-1
+            for topic in range(len(topics_zip)-1):
+                topics_zip[topic+1][0]["indicators_num"] = len(topics_zip[topic+1])-1
 
-        # coredb update
-        coredb[0] = {"table_date": str(datetime.today())}
-        countries_zip[0] = {"countries_num": countries_py[0]["total"]}
-        topics_zip[0] = {"topics_num": topics_py[0]["total"]}
-        free_indicators_zip[0] = {"free_indicators_num": (len(free_indicators_zip)-1)}
+            # coredb update
+            coredb[0] = {"table_date": str(datetime.today())}
+            countries_zip[0] = {"countries_num": countries_py[0]["total"]}
+            topics_zip[0] = {"topics_num": topics_py[0]["total"]}
+            free_indicators_zip[0] = {"free_indicators_num": (len(free_indicators_zip)-1)}
 
-        coredb[1] = countries_zip
-        coredb[2] = topics_zip
-        coredb[3] = free_indicators_zip
+            coredb[1] = countries_zip
+            coredb[2] = topics_zip
+            coredb[3] = free_indicators_zip
 
-        # store the new coredb file
-        file_coredb = open("./DB/core.db", "w")
-        json.dump(coredb, file_coredb)
-        file_coredb.close()
+            # store the new coredb file
+            file_coredb = open("./DB/core.db", "w")
+            json.dump(coredb, file_coredb)
+            file_coredb.close()
 
-        # flush temp  python structures
-        countries_py = None
-        topics_py = None
-        indicators_py = None
-        countries_zip = None
-        topics_zip = None
-        free_indicators_zip = None
-        coredb = None
+            # flush temp  python structures
+            countries_py = None
+            topics_py = None
+            indicators_py = None
+            countries_zip = None
+            topics_zip = None
+            free_indicators_zip = None
+            coredb = None
 
-        # delete temp downloaded json files
-        os.remove("./DB/Countries.json")
-        os.remove("./DB/Indicators.json")
-        os.remove("./DB/Topics.json")
-        """
-
+            # delete temp downloaded json files
+            os.remove("./DB/Countries.json")
+            os.remove("./DB/Indicators.json")
+            os.remove("./DB/Topics.json")
+            """
+        except:
+            print "Could not update Coredb. Please try again."
         self.processing = False
         return 1
 
     # check for last coredb update
     def check(self, *arg):
         global coredb_py
-        while True:# na to kaluterepsw me loop
+
+        while self.popup_active:
             # if there is any process running, wait until finish
             while self.processing:
-                if not self.popup_active:
-                    return
-                else:
-                    time.sleep(1)
+                time.sleep(1)
 
-            self.processing = True
             # try to open the json DB file
             try:
                 stored_coredb = open("./DB/core.db", "r")
@@ -173,11 +178,13 @@ class MainWindow(BoxLayout):
 
                 # close json file
                 stored_coredb.close()
+
                 self.coredb_state.text = ("Latest DB Update:\n" + coredb_py[0]['table_date'])
             except:
                 self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
 
-            self.processing = False
+            time.sleep(5)
+        return
 
     # build valuesdb with indicators and countries
     def values_build(self):
