@@ -44,6 +44,23 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
+        BoxLayout:
+            orientation: "horizontal"
+            Button:
+                text: "-"
+                size_hint_y: None
+                height: 20
+                on_release: root.windows_state("minimize")
+            Button:
+                text: "o"
+                size_hint_y: None
+                height: 20
+                on_release: root.windows_state("toggle_fullscreen")
+            Button:
+                text: "x"
+                size_hint_y: None
+                height: 20
+                on_release: root.windows_state("close")
         Popup:
             id: coredb_update_popup
             size_hint: None, None
@@ -93,3 +110,15 @@
             italic: True
             text: "CIM Version\n1.0.0"
             halign: 'center'
+        Button:
+            text: "test2"
+            size_hint_y: None
+            height: 50
+            on_release:
+                root.config_state("state")
+        Button:
+            text: "test2"
+            size_hint_y: None
+            height: 50
+            on_release:
+                root.config_state_delete("state")
