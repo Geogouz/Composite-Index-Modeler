@@ -3,7 +3,6 @@ __author__ = 'Dimitris Xenakis'
 print "adding", __name__
 
 import os
-import platform
 import threading
 import time
 from datetime import datetime
@@ -11,11 +10,8 @@ import urllib
 import json
 
 from kivy.config import Config
+Config.set("kivy", "exit_on_escape", False)
 
-# Reads the app's config. If not, defaults are loaded.
-Config.read('cimgui.ini')
-
-from kivy.core.window import Window
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.animation import Animation
@@ -52,31 +48,10 @@ class MainWindow(BoxLayout):
         threading.Thread(target=arg[0], args=(arg,)).start()
         return 1
 
-    # This method addresses our window's state changes, to their specific handling actions.
-    def windows_state(self, state):
-        if state == "minimize":
-            Window.minimize()
-        elif state == "toggle_fullscreen":
-            Window.toggle_fullscreen()
-        elif state == "close":
-            App.get_running_app().stop_warning()
-        else:
-            print "Unknown Windows State"
-        return 1
-
-
-    def config_state(self, state):
-        config = App.get_running_app().read_config()
-        config.set('graphics', 'fullscreen', 1)
-        config.write()
-
-    def config_state_delete(self, state):
-        config = App.get_running_app().read_config()
-        config.set('graphics', 'fullscreen', 0)
-        config.write()
-
     def update_progress(self, *arg):
         anim_bar = Factory.AnimWidget()
+        # Some time to render
+        time.sleep(1)
         self.core_build_progress_bar.add_widget(anim_bar)
         anim = Animation(opacity=0.3, width=300, duration=0.6)
         anim += Animation(opacity=1, width=100, duration=0.6)
@@ -96,7 +71,7 @@ class MainWindow(BoxLayout):
 
         # Try, in case there is a problem with the online updating process.
         try:
-            time.sleep(4)
+            time.sleep(5)
             """
             # set target web links
             c_link = start_url + countries + end_url
@@ -186,7 +161,9 @@ class MainWindow(BoxLayout):
             os.remove("./DB/Indicators.json")
             os.remove("./DB/Topics.json")
             """
-        except:
+        except Exception as e:
+            print e.__doc__
+            print e.message
             print "Could not update Coredb. Please try again."
         self.processing = False
         return 1
@@ -195,83 +172,44 @@ class MainWindow(BoxLayout):
     def check(self, *arg):
         global coredb_py
 
-        while self.popup_active:
+        # For as long as the popup window is shown.
+        while self.popup_active and (not CIMgui.app_closed):
+
             # If there is any process running, wait until finish.
             while self.processing:
+                self.coredb_state.text = ("Updating Indices!\nDuration depends on your Internet speed..")
                 time.sleep(1)
 
             # Try to open the json DB file.
             try:
                 stored_coredb = open("./DB/core.db", "r")
-
-                # Convert json file into temp python structure.
                 coredb_py = json.load(stored_coredb)
-
-                # Close json file.
                 stored_coredb.close()
 
                 self.coredb_state.text = ("Latest DB Update:\n" + coredb_py[0]['table_date'])
-            except:
-                self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
 
-            time.sleep(5)
+            except Exception as e:
+                print e.__doc__
+                print e.message
+                self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
+            time.sleep(2)
         return 1
+
+    def tester(self):
+        pass
 
 
 class CIMgui(App):
+    # app_closed will get triggered when App stops.
+    app_closed = False
 
-    def build_config(self, cim_config):
-        cim_config.setdefaults('System Info',
-                               {'usr_os': platform.system(),
-                                'arch': platform.machine(), 'py': platform.python_version()})
-
-        cim_config.setdefaults('graphics',
-                               {'fullscreen': 0,
-                                'height': 768,
-                                'width': 1280,
-                                'position': 'custom',
-                                'top': 100, 'left': 100})
-
-#    def build_settings(self, settings):
-#        settings.add_json_panel("CIM Settings", self.config, data="""
-#        [{"type": "options",
-#        "title": "System Info",
-#        "section": "System Info",
-#        "key": "usr_os",
-#        "options": ["1", "2"]}]""")
-
-    def read_config(self):
-        return self.config
-
-    def stop_warning(self, *args, **kwargs):
-        print "Are you sure?.."
-        Window.close()
-
-    def just_clicked_here(self, *args):
-        print "just clicked here", args
-        #print self.position
-
-    def moving_cursor(self, *args):
-        print "moving", args
-
-    def mouse_position(self, *args):
-        self.position = args[1]
-        #print self.position
-        #print self.collide_point(*args[1])
-        """
-        if self.hovered == inside:
-            return
-        self.hovered = inside
-        """
+    def on_stop(self):
+        CIMgui.app_closed = True
+        return 1
 
     # This function prepares the window.
     def build(self):
         self.use_kivy_settings = False
-        Window.borderless = True
-        Window.bind(on_request_close=self.stop_warning)
-        Window.bind(mouse_pos=self.mouse_position)
-        Window.bind(on_touch_down=self.just_clicked_here)
-        Window.bind(on_touch_move=self.moving_cursor)
         return MainWindow()
 
 # Must be called from main.
