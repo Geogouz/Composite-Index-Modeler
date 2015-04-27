@@ -11,28 +11,34 @@
 <MainWindow>:
     core_build_progress_bar: core_build_progress_bar.__self__
     coredb_state: coredb_state.__self__
+    manager: manager.__self__
     orientation: "horizontal"
-    RelativeLayout:
-        id: main_frame
-        canvas.before:
-            Color:
-                rgba: 0.60, 0.72, 0.80, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        Splitter:
-            sizable_from: "right"
-            min_size: 10
-            max_size: main_frame.width
+    ScreenManager:
+        id: manager
+        Screen:
+            name: 'index_selection'
+            canvas:
+                Color:
+                    rgba: 0.60, 0.72, 0.80, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             Label:
-                canvas.before:
-                    Color:
-                        rgba: 0.92, 0.93, 0.95, 1
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-                text: "Panel"
-                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: 70
+                text: "NO"
+        Screen:
+            name: 'mapper'
+            canvas:
+                Color:
+                    rgba: 0.92, 0.93, 0.95, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                size_hint_y: None
+                height: 70
+                text: "YES"
     BoxLayout:
         id: main_boxlayout
         orientation: "vertical"
@@ -95,8 +101,12 @@
             text: "CIM Version\n1.0.0"
             halign: 'center'
         Button:
-            text: "test2"
+            text: "1"
             size_hint_y: None
             height: 50
-            on_release:
-                root.tester()
+            on_release: app.root.current = "index_selection"
+        Button:
+            text: "2"
+            size_hint_y: None
+            height: 50
+            on_release: app.root.current = "mapper"

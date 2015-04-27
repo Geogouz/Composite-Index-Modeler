@@ -16,7 +16,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.animation import Animation
 from kivy.factory import Factory
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, ObjectProperty
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -42,11 +42,21 @@ class MainWindow(BoxLayout):
     # Prepare kivy properties that show if a process or a popup are currently running. Set to False on app's init.
     processing = BooleanProperty(False)
     popup_active = BooleanProperty(False)
+    current_screen = ObjectProperty(None) # really needed?
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     def threadonator(self, *arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
         return 1
+
+    def switch_to(self, header):
+        # Set the Screen manager to load  the appropriate screen.
+        # Linked to the tab head instead of loading content
+        self.manager.current = header.screen
+        # We have to replace the functionality of the original switch_to.
+        self.current_tab.state = "normal"
+        header.state = 'down'
+        self._current_tab = header
 
     def update_progress(self, *arg):
         anim_bar = Factory.AnimWidget()
@@ -71,8 +81,8 @@ class MainWindow(BoxLayout):
 
         # Try, in case there is a problem with the online updating process.
         try:
-            time.sleep(5)
-            """
+            # time.sleep(5)
+
             # set target web links
             c_link = start_url + countries + end_url
             t_link = start_url + topics + end_url
@@ -147,20 +157,11 @@ class MainWindow(BoxLayout):
             json.dump(coredb, file_coredb)
             file_coredb.close()
 
-            # flush temp  python structures
-            countries_py = None
-            topics_py = None
-            indicators_py = None
-            countries_zip = None
-            topics_zip = None
-            free_indicators_zip = None
-            coredb = None
-
             # delete temp downloaded json files
             os.remove("./DB/Countries.json")
             os.remove("./DB/Indicators.json")
             os.remove("./DB/Topics.json")
-            """
+
         except Exception as e:
             print e.__doc__
             print e.message
