@@ -16,7 +16,8 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.animation import Animation
 from kivy.factory import Factory
-from kivy.properties import BooleanProperty, ObjectProperty
+from kivy.properties import BooleanProperty
+from kivy.uix.screenmanager import Screen, ScreenManager
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -37,26 +38,32 @@ userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
 # print start_url + countries + "GRC" + "/" + indicators + "AG.LND.FRST.K2" + "/" + end_url
 
 
+class IndexSelection(Screen):
+    pass
+
+
+class MapDesigner(Screen):
+    pass
+
+
+class CIMScreenManager(ScreenManager):
+    pass
+
+
+class CIMMenu(BoxLayout):
+    pass
+
+
 class MainWindow(BoxLayout):
 
     # Prepare kivy properties that show if a process or a popup are currently running. Set to False on app's init.
     processing = BooleanProperty(False)
     popup_active = BooleanProperty(False)
-    current_screen = ObjectProperty(None) # really needed?
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     def threadonator(self, *arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
         return 1
-
-    def switch_to(self, header):
-        # Set the Screen manager to load  the appropriate screen.
-        # Linked to the tab head instead of loading content
-        self.manager.current = header.screen
-        # We have to replace the functionality of the original switch_to.
-        self.current_tab.state = "normal"
-        header.state = 'down'
-        self._current_tab = header
 
     def update_progress(self, *arg):
         anim_bar = Factory.AnimWidget()
@@ -82,7 +89,7 @@ class MainWindow(BoxLayout):
         # Try, in case there is a problem with the online updating process.
         try:
             # time.sleep(5)
-
+            """
             # set target web links
             c_link = start_url + countries + end_url
             t_link = start_url + topics + end_url
@@ -161,7 +168,7 @@ class MainWindow(BoxLayout):
             os.remove("./DB/Countries.json")
             os.remove("./DB/Indicators.json")
             os.remove("./DB/Topics.json")
-
+            """
         except Exception as e:
             print e.__doc__
             print e.message
@@ -201,6 +208,7 @@ class MainWindow(BoxLayout):
 
 
 class CIMgui(App):
+
     # app_closed will get triggered when App stops.
     app_closed = False
 
