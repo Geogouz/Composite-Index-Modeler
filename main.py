@@ -11,13 +11,17 @@ import json
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
+Config.set("graphics", "height", 768)
+Config.set("graphics", "width", 1024)
 
 from kivy.app import App
+from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.animation import Animation
 from kivy.factory import Factory
-from kivy.properties import BooleanProperty
+from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.properties import BooleanProperty
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -39,7 +43,18 @@ userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
 
 
 class IndexSelection(Screen):
-    pass
+
+    def __init__(self, **kwargs):
+        Window.bind(mouse_pos=self.on_mouse_hover)
+        super(IndexSelection, self).__init__(**kwargs)
+        self.index_button_3 = Button(text='Hello world 1')
+        #self.index_topics_list.add_widget(self.index_button_3)
+
+    def on_mouse_hover(self, *args):
+        if self.index_button_2.collide_point(*args[1]):
+            self.index_button_2.background_normal = './Sources/button_hovered.png'
+        else:
+            self.index_button_2.background_normal = './Sources/button_normal.png'
 
 
 class MapDesigner(Screen):
@@ -88,7 +103,7 @@ class MainWindow(BoxLayout):
 
         # Try, in case there is a problem with the online updating process.
         try:
-            # time.sleep(5)
+            time.sleep(5)
             """
             # set target web links
             c_link = start_url + countries + end_url
@@ -202,9 +217,6 @@ class MainWindow(BoxLayout):
                 self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
             time.sleep(2)
         return 1
-
-    def tester(self):
-        pass
 
 
 class CIMgui(App):

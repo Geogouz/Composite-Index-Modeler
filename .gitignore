@@ -1,2 +1,10 @@
+*.pyc
+*.pyo
+.*.swp
+.*.swo
+.psd
+.buildozer
 .idea
 debug
+Libs
+contactlist.py

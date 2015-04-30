@@ -30,7 +30,7 @@
         width: 100
         canvas.before:
             Color:
-                rgba: 0.16, 0.18, 0.19, 1
+                rgba: 0.18, 0.18, 0.18, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -101,27 +101,60 @@
             on_release: manager.current = manager.next()
 
 <IndexSelection>:  # Screen
+    index_button_2: index_button_2.__self__ # remove after
+    index_topics_list: index_topics_list.__self__
+
     name: 'IndexSelectionScreen'
-    canvas.before:
-        Color:
-            rgba: 0.60, 0.72, 0.80, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    Label:
-        italic: True
-        text: "IndexSelectionScreen"
-        halign: 'center'
+    BoxLayout:
+        size_hint: None, None
+        size: root.size
+        canvas.before:
+            Color:
+                rgba: 0.92, 0.93, 0.95, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            id: index_topics_list
+            orientation: "vertical"
+            size_hint_x: None
+            width: 300
+            padding: 1, 1, 1, 1
+            spacing: 1
+            canvas:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                id: index_button_2
+                text: "Agriculture & Rural Development"
+                size_hint_y: None
+                height: 50
+                background_normal: './Sources/button_normal.png'
+                background_down: './Sources/button_down.png'
+                bold: True
+                font_size: 14
+        Label:
+            italic: True
+            text: "IndexSelectionScreen"
+            color: 0, 0, 0, 1
+            halign: 'center'
 
 <MapDesigner>:  # Screen
     name: 'MapDesignerScreen'
-    canvas.before:
-        Color:
-            rgba: 0.92, 0.93, 0.95, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    Label:
-        italic: True
-        text: "MapDesignerScreen"
-        halign: 'center'
+    BoxLayout:
+        size_hint: None, None
+        size: root.size
+        canvas.before:
+            Color:
+                rgba: 0.60, 0.72, 0.80, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            italic: True
+            text: "MapDesignerScreen"
+            color: 0, 0, 0, 1
+            halign: 'center'
