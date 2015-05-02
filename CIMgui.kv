@@ -20,6 +20,7 @@
     CIMScreenManager:
         transition: sm.SwapTransition()
         id: manager
+        Home:
         IndexSelection:
         MapDesigner:
 
@@ -95,14 +96,44 @@
             halign: 'center'
 
         Button:
-            text: "1"
+            text: "Home"
             size_hint_y: None
             height: 50
-            on_release: manager.current = manager.next()
+            on_release: manager.current = 'Home'
+        Button:
+            text: "Index\nSelection"
+            halign: 'center'
+            size_hint_y: None
+            height: 50
+            on_release:
+                manager.current = 'IndexSelectionScreen'
+                root.build_topics_dic()
+        Button:
+            text: "Mapper"
+            size_hint_y: None
+            height: 50
+            on_release: manager.current = 'MapDesignerScreen'
+
+<Home>:  # Screen
+    name: 'Home'
+    BoxLayout:
+        size_hint: None, None
+        size: root.size
+        canvas.before:
+            Color:
+                rgba: 0.92, 0.93, 0.95, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            italic: True
+            text: "Help - How To - Tips"
+            color: 0, 0, 0, 1
+            halign: 'center'
 
 <IndexSelection>:  # Screen
-    index_button_2: index_button_2.__self__ # remove after
-    index_topics_list: index_topics_list.__self__
+    topics_but_1: topics_but_1.__self__ # remove after
+    topics_list: topics_list.__self__
 
     name: 'IndexSelectionScreen'
     BoxLayout:
@@ -115,7 +146,7 @@
                 pos: self.pos
                 size: self.size
         BoxLayout:
-            id: index_topics_list
+            id: topics_list
             orientation: "vertical"
             size_hint_x: None
             width: 300
@@ -128,7 +159,7 @@
                     pos: self.pos
                     size: self.size
             Button:
-                id: index_button_2
+                id: topics_but_1
                 text: "Agriculture & Rural Development"
                 size_hint_y: None
                 height: 50

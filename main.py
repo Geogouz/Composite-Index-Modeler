@@ -1,3 +1,6 @@
+import kivy
+kivy.require('1.9.0')
+
 # -*- coding: utf-8 -*-
 __author__ = 'Dimitris Xenakis'
 print "adding", __name__
@@ -12,7 +15,7 @@ import json
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
 Config.set("graphics", "height", 768)
-Config.set("graphics", "width", 1024)
+Config.set("graphics", "width", 1300)
 
 from kivy.app import App
 from kivy.uix.button import Button
@@ -21,7 +24,7 @@ from kivy.animation import Animation
 from kivy.factory import Factory
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, ObjectProperty, DictProperty
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -42,19 +45,45 @@ userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
 # print start_url + countries + "GRC" + "/" + indicators + "AG.LND.FRST.K2" + "/" + end_url
 
 
+class Home(Screen):
+    pass
+
+
 class IndexSelection(Screen):
 
+    topics_dic = {}
+    topics_box = ObjectProperty()
+
     def __init__(self, **kwargs):
+        # Preparing the IndexSelection.topics_dic on loading
+        try:
+            is_stored_coredb = open("./DB/core.db", "r")
+            is_coredb_py = json.load(is_stored_coredb)
+            is_stored_coredb.close()
+
+            IndexSelection.topics_dic = is_coredb_py
+            print IndexSelection.topics_dic
+
+        except Exception as e:
+            print e.__doc__
+            print e.message
+            print "No index DB available found. Must update indices."
+
         Window.bind(mouse_pos=self.on_mouse_hover)
         super(IndexSelection, self).__init__(**kwargs)
-        self.index_button_3 = Button(text='Hello world 1')
-        #self.index_topics_list.add_widget(self.index_button_3)
+
+    def build_topics_box(self, **kwargs):
+        if False:
+            self.topics_but_2 = Button(text='Hello world 1')
+            self.topics_box.add_widget(self.topics_but_2)
+        else:
+            print "Please update your Indices"
 
     def on_mouse_hover(self, *args):
-        if self.index_button_2.collide_point(*args[1]):
-            self.index_button_2.background_normal = './Sources/button_hovered.png'
+        if self.topics_but_1.collide_point(*args[1]):
+            self.topics_but_1.background_normal = './Sources/button_hovered.png'
         else:
-            self.index_button_2.background_normal = './Sources/button_normal.png'
+            self.topics_but_1.background_normal = './Sources/button_normal.png'
 
 
 class MapDesigner(Screen):
@@ -93,6 +122,15 @@ class MainWindow(BoxLayout):
             pass
         self.core_build_progress_bar.remove_widget(anim_bar)
         return 1
+
+    # This method checks if there is any core DB available and calls index selection screen
+    def build_topics_dic(self):
+        # If there is no index DB available, then popup the update notice
+        if IndexSelection.topics_dic == {}:
+            print "pure new"
+        # If there is a DB continue to index selection screen
+        else:
+            print "continue"
 
     # This method builds core's index database with indicators and countries.
     def core_build(self, *arg):
