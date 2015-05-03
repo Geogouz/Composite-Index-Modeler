@@ -108,7 +108,7 @@
             size_hint_y: None
             height: 50
             on_release:
-                index_selection.build_topics_slider()
+                index_selection.build_indices()
                 manager.current = 'IndexSelectionScreen'
         Button:
             text: "Mapper"
@@ -150,7 +150,7 @@
         BoxLayout:
             orientation: "vertical"
             size_hint_x: None
-            width: 308
+            width: 305
             ScrollView:
                 id: t_slide
                 do_scroll_x: False
@@ -176,6 +176,15 @@
             text: "IndexSelectionScreen"
             color: 0, 0, 0, 1
             halign: 'center'
+        BoxLayout:
+            size_hint_x: None
+            width: 185
+            canvas:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
 <MapDesigner>:  # Screen
     name: 'MapDesignerScreen'

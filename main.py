@@ -13,8 +13,8 @@ import json
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
-Config.set("graphics", "height", 768)
-Config.set("graphics", "width", 1300)
+Config.set("graphics", "height", 650)
+Config.set("graphics", "width", 1200)
 
 from kivy.app import App
 from kivy.uix.button import Button
@@ -54,7 +54,7 @@ class IndexSelection(Screen):
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
-    def build_topics_slider(self):
+    def build_indices(self):
 
         # If topics dictionary shouldn't be loaded, do nothing.
         if not self.must_build_topics:
@@ -69,13 +69,14 @@ class IndexSelection(Screen):
                 set_coredb_py = json.load(set_stored_coredb)
                 set_stored_coredb.close()
 
-                # Built the keys of the dictionary
-                for i in range(1, (set_coredb_py[2][0]['topics_num'])+1):
-                    self.topics_dic[set_coredb_py[2][i][0]['name']] = None
+                # For each topic in core DB..
+                for topic_numbers in range(1, (set_coredb_py[2][0]['topics_num'])+1):
 
-                # Built the values of the dictionary
-                for topic in self.topics_dic:
-                    new_topics_button = Button(id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
+                    # Grab the topic name.
+                    topic = set_coredb_py[2][topic_numbers][0]['name']
+
+                    # Create a new topic button object.
+                    new_button_object = Button(id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
                                                text=str(topic),
                                                size_hint_y=None,
                                                height=50,
@@ -84,9 +85,11 @@ class IndexSelection(Screen):
                                                bold=True,
                                                font_size=14)
 
-                    # Add a widget button on the slider for each topic.
-                    self.topics_dic[topic] = new_topics_button
-                    self.topics_slider.add_widget(new_topics_button)
+                    # Built the keys and values of the dictionary
+                    self.topics_dic[new_button_object] = {topic: "Dictionary with Indices "}
+
+                    # Place the button inside the slider
+                    self.topics_slider.add_widget(new_button_object)
 
                 # Every time mouse moves on Index Selection screen, on_mouse_hover method will be called.
                 Window.bind(mouse_pos=self.on_mouse_hover)
@@ -103,14 +106,13 @@ class IndexSelection(Screen):
                 print e.__doc__, "That which means no index DB has been found. Must update indices first."
                 #TODO UPDATE MESSAGE
 
-
     def on_mouse_hover(self, *args):
-        for topic in self.topics_dic:
-            if self.topics_dic[topic].collide_point(
+        for button in self.topics_dic.keys():
+            if button.collide_point(
                     args[1][0], args[1][1]+(self.t_slide.viewport_size[1]-Window.size[1])*self.t_slide.scroll_y):
-                self.topics_dic[topic].background_normal = './Sources/button_hovered.png'
+                button.background_normal = './Sources/button_hovered.png'
             else:
-                self.topics_dic[topic].background_normal = './Sources/button_normal.png'
+                button.background_normal = './Sources/button_normal.png'
 
 
 class MapDesigner(Screen):
