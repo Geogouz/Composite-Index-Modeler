@@ -3,7 +3,6 @@ kivy.require('1.9.0')
 
 # -*- coding: utf-8 -*-
 __author__ = 'Dimitris Xenakis'
-print "adding", __name__
 
 import os
 import threading
@@ -51,39 +50,67 @@ class Home(Screen):
 
 class IndexSelection(Screen):
 
-    topics_dic = {}
-    topics_box = ObjectProperty()
+    must_build_topics = True
 
-    def __init__(self, **kwargs):
-        # Preparing the IndexSelection.topics_dic on loading
-        try:
-            is_stored_coredb = open("./DB/core.db", "r")
-            is_coredb_py = json.load(is_stored_coredb)
-            is_stored_coredb.close()
+    # This method checks if there is any core DB available.
+    # If there is, it creates the topics dictionary (topics - button objects).
+    def build_topics_slider(self):
 
-            IndexSelection.topics_dic = is_coredb_py
-            print IndexSelection.topics_dic
+        # If topics dictionary shouldn't be loaded, do nothing.
+        if not self.must_build_topics:
+            pass
 
-        except Exception as e:
-            print e.__doc__
-            print e.message
-            print "No index DB available found. Must update indices."
-
-        Window.bind(mouse_pos=self.on_mouse_hover)
-        super(IndexSelection, self).__init__(**kwargs)
-
-    def build_topics_box(self, **kwargs):
-        if False:
-            self.topics_but_2 = Button(text='Hello world 1')
-            self.topics_box.add_widget(self.topics_but_2)
         else:
-            print "Please update your Indices"
+            self.topics_dic = {}
+
+            # Checks if there is a coreDB available.
+            try:
+                set_stored_coredb = open("./DB/core.db", "r")
+                set_coredb_py = json.load(set_stored_coredb)
+                set_stored_coredb.close()
+
+                # Built the keys of the dictionary
+                for i in range(1, (set_coredb_py[2][0]['topics_num'])+1):
+                    self.topics_dic[set_coredb_py[2][i][0]['name']] = None
+
+                # Built the values of the dictionary
+                for topic in self.topics_dic:
+                    new_topics_button = Button(id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
+                                               text=str(topic),
+                                               size_hint_y=None,
+                                               height=50,
+                                               background_normal='./Sources/button_normal.png',
+                                               background_down='./Sources/button_down.png',
+                                               bold=True,
+                                               font_size=14)
+
+                    # Add a widget button on the slider for each topic.
+                    self.topics_dic[topic] = new_topics_button
+                    self.topics_slider.add_widget(new_topics_button)
+
+                # Every time mouse moves on Index Selection screen, on_mouse_hover method will be called.
+                Window.bind(mouse_pos=self.on_mouse_hover)
+
+                # Set the height of the Topics menu.
+                self.topics_slider.height = len(self.topics_dic)*50+len(self.topics_dic)+1
+
+                # Topics dictionary should not be loaded again.
+                self.must_build_topics = False
+
+            # If there is no core DB available it prompts for indices update.
+            except Exception as e:
+                self.topics_dic = {}
+                print e.__doc__, "That which means no index DB has been found. Must update indices first."
+                #TODO UPDATE MESSAGE
+
 
     def on_mouse_hover(self, *args):
-        if self.topics_but_1.collide_point(*args[1]):
-            self.topics_but_1.background_normal = './Sources/button_hovered.png'
-        else:
-            self.topics_but_1.background_normal = './Sources/button_normal.png'
+        for topic in self.topics_dic:
+            if self.topics_dic[topic].collide_point(
+                    args[1][0], args[1][1]+(self.t_slide.viewport_size[1]-Window.size[1])*self.t_slide.scroll_y):
+                self.topics_dic[topic].background_normal = './Sources/button_hovered.png'
+            else:
+                self.topics_dic[topic].background_normal = './Sources/button_normal.png'
 
 
 class MapDesigner(Screen):
@@ -123,18 +150,10 @@ class MainWindow(BoxLayout):
         self.core_build_progress_bar.remove_widget(anim_bar)
         return 1
 
-    # This method checks if there is any core DB available and calls index selection screen
-    def build_topics_dic(self):
-        # If there is no index DB available, then popup the update notice
-        if IndexSelection.topics_dic == {}:
-            print "pure new"
-        # If there is a DB continue to index selection screen
-        else:
-            print "continue"
-
     # This method builds core's index database with indicators and countries.
     def core_build(self, *arg):
-
+        # TODO Must tell the user to save his preferred indices because they will be lost
+        # TODO re-commend
         # A process just started running (in a new thread).
         self.processing = True
         self.threadonator(self.update_progress)
