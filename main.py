@@ -18,6 +18,7 @@ Config.set("graphics", "width", 1200)
 
 from kivy.app import App
 from kivy.uix.button import Button
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.boxlayout import BoxLayout
 from kivy.animation import Animation
 from kivy.factory import Factory
@@ -56,6 +57,8 @@ class IndexSelection(Screen):
     # If there is, it creates the topics dictionary (topics - button objects).
     def build_indices(self):
 
+        #TODO must first unbind other window and other kind of binds from other screens
+
         # If topics dictionary shouldn't be loaded, do nothing.
         if not self.must_build_topics:
             pass
@@ -76,16 +79,20 @@ class IndexSelection(Screen):
                     topic = set_coredb_py[2][topic_numbers][0]['name']
 
                     # Create a new topic button object.
-                    new_button_object = Button(id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
+                    new_button_object = ToggleButton(id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
                                                text=str(topic),
                                                size_hint_y=None,
                                                height=50,
                                                background_normal='./Sources/button_normal.png',
                                                background_down='./Sources/button_down.png',
                                                bold=True,
-                                               font_size=14)
+                                               font_size=14,
+                                               )
 
-                    # Built the keys and values of the dictionary
+                    # Bind on_release action.
+                    new_button_object.bind(on_release=self.add_topic)
+
+                    # Build the keys and values of the dictionary
                     self.topics_dic[new_button_object] = {topic: "Dictionary with Indices "}
 
                     # Place the button inside the slider
@@ -104,7 +111,8 @@ class IndexSelection(Screen):
             except Exception as e:
                 self.topics_dic = {}
                 print e.__doc__, "That which means no index DB has been found. Must update indices first."
-                #TODO UPDATE MESSAGE
+                # TODO UPDATE MESSAGE
+            return 1
 
     def on_mouse_hover(self, *args):
         for button in self.topics_dic.keys():
@@ -113,7 +121,19 @@ class IndexSelection(Screen):
                 button.background_normal = './Sources/button_hovered.png'
             else:
                 button.background_normal = './Sources/button_normal.png'
+        return 1
 
+    def add_topic(self, *args):
+        for i in range(1, 201):
+            btn = ToggleButton(text="Left "+str(i),
+                               font_size=12,
+                               size_hint_y=None,
+                               size_hint_x=None,
+                               height=30,
+                               width=380
+                               )
+            self.indices_slider.add_widget(btn)
+        return 1
 
 class MapDesigner(Screen):
     pass

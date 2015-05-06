@@ -102,6 +102,7 @@
             size_hint_y: None
             height: 50
             on_release: manager.current = 'Home'
+
         Button:
             text: "Index\nSelection"
             halign: 'center'
@@ -110,6 +111,7 @@
             on_release:
                 index_selection.build_indices()
                 manager.current = 'IndexSelectionScreen'
+
         Button:
             text: "Mapper"
             size_hint_y: None
@@ -117,16 +119,18 @@
             on_release: manager.current = 'MapDesignerScreen'
 
 <Home>:  # Screen
+
     name: 'Home'
     BoxLayout:
         size_hint: None, None
         size: root.size
         canvas.before:
             Color:
-                rgba: 0.92, 0.93, 0.95, 1
+                rgba: 0.90, 0.90, 0.90, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
+
         Label:
             italic: True
             text: "Help - How To - Tips"
@@ -136,6 +140,7 @@
 <IndexSelection>:  # Screen
     topics_slider: topics_slider.__self__
     t_slide: t_slide.__self__
+    indices_slider: indices_slider.__self__
 
     name: 'IndexSelectionScreen'
     BoxLayout:
@@ -143,20 +148,23 @@
         size: root.size
         canvas.before:
             Color:
-                rgba: 0.92, 0.93, 0.95, 1
+                rgba: 1, 1, 1, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
+
         BoxLayout:
             orientation: "vertical"
             size_hint_x: None
             width: 305
+
             ScrollView:
                 id: t_slide
                 do_scroll_x: False
                 bar_width: 2
                 bar_inactive_color: 0, 0, 0, 1
                 bar_color: 0.34, 0.76, 1, 1
+
                 BoxLayout:
                     id: topics_slider
                     size_hint_y: None
@@ -171,22 +179,30 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
-        Label:
-            italic: True
-            text: "IndexSelectionScreen"
-            color: 0, 0, 0, 1
-            halign: 'center'
+
         BoxLayout:
-            size_hint_x: None
-            width: 185
-            canvas:
-                Color:
-                    rgba: 1, 1, 1, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+
+            BoxLayout:
+
+                ScrollView:
+
+                    StackLayout:
+                        id: indices_slider
+                        size_hint: (1, None)
+                        height: indices_slider.minimum_height
+
+            BoxLayout:
+                size_hint_x: None
+                width: 185
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
 
 <MapDesigner>:  # Screen
+
     name: 'MapDesignerScreen'
     BoxLayout:
         size_hint: None, None
@@ -197,6 +213,7 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
+
         Label:
             italic: True
             text: "MapDesignerScreen"
