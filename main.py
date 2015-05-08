@@ -13,8 +13,8 @@ import json
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
-Config.set("graphics", "height", 650)
-Config.set("graphics", "width", 1200)
+Config.set("graphics", "height", 560)
+Config.set("graphics", "width", 1000)  # TODO REPLACE WITH 1400
 
 from kivy.app import App
 from kivy.uix.button import Button
@@ -56,8 +56,8 @@ class IndexSelection(Screen):
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
     def build_indices(self):
-
         #TODO must first unbind other window and other kind of binds from other screens
+        #TODO do same oon other screens Classes
 
         # If topics dictionary shouldn't be loaded, do nothing.
         if not self.must_build_topics:
@@ -79,15 +79,9 @@ class IndexSelection(Screen):
                     topic = set_coredb_py[2][topic_numbers][0]['name']
 
                     # Create a new topic button object.
-                    new_button_object = ToggleButton(id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
-                                               text=str(topic),
-                                               size_hint_y=None,
-                                               height=50,
-                                               background_normal='./Sources/button_normal.png',
-                                               background_down='./Sources/button_down.png',
-                                               bold=True,
-                                               font_size=14,
-                                               )
+                    new_button_object = Factory.TopicToggleButton(
+                        id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
+                        text=str(topic))
 
                     # Bind on_release action.
                     new_button_object.bind(on_release=self.add_topic)
@@ -101,8 +95,8 @@ class IndexSelection(Screen):
                 # Every time mouse moves on Index Selection screen, on_mouse_hover method will be called.
                 Window.bind(mouse_pos=self.on_mouse_hover)
 
-                # Set the height of the Topics menu.
-                self.topics_slider.height = len(self.topics_dic)*50+len(self.topics_dic)+1
+                # Set the height of the Topics menu based on heights and box padding.
+                self.topics_slider.height = len(self.topics_dic)*48+len(self.topics_dic)+1
 
                 # Topics dictionary should not be loaded again.
                 self.must_build_topics = False
@@ -112,28 +106,21 @@ class IndexSelection(Screen):
                 self.topics_dic = {}
                 print e.__doc__, "That which means no index DB has been found. Must update indices first."
                 # TODO UPDATE MESSAGE
-            return 1
 
     def on_mouse_hover(self, *args):
         for button in self.topics_dic.keys():
             if button.collide_point(
-                    args[1][0], args[1][1]+(self.t_slide.viewport_size[1]-Window.size[1])*self.t_slide.scroll_y):
+                    args[1][0], args[1][1]+(self.t_slide.viewport_size[1]-Window.height)*self.t_slide.scroll_y):
                 button.background_normal = './Sources/button_hovered.png'
             else:
                 button.background_normal = './Sources/button_normal.png'
-        return 1
 
     def add_topic(self, *args):
-        for i in range(1, 201):
-            btn = ToggleButton(text="Left "+str(i),
-                               font_size=12,
-                               size_hint_y=None,
-                               size_hint_x=None,
-                               height=30,
-                               width=380
-                               )
-            self.indices_slider.add_widget(btn)
-        return 1
+        #TODO self.indices_stack.add_widget(label)
+        for i in range(1, 401):
+            btn = Factory.IndexToggleButton(text="btn_asdasd asdsdfsdfsdf sdf  dsfsdfsdfasdasds jiosa dsadas")
+            self.indices_stack.add_widget(btn)
+
 
 class MapDesigner(Screen):
     pass
@@ -156,8 +143,8 @@ class MainWindow(BoxLayout):
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     def threadonator(self, *arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
-        return 1
 
+    # Loading bar
     def update_progress(self, *arg):
         anim_bar = Factory.AnimWidget()
         # Some time to render
@@ -170,7 +157,6 @@ class MainWindow(BoxLayout):
         while self.processing:
             pass
         self.core_build_progress_bar.remove_widget(anim_bar)
-        return 1
 
     # This method builds core's index database with indicators and countries.
     def core_build(self, *arg):
@@ -268,7 +254,6 @@ class MainWindow(BoxLayout):
             print e.message
             print "Could not update Coredb. Please try again."
         self.processing = False
-        return 1
 
     # This method checks for last core's index database update.
     def check(self, *arg):
@@ -295,7 +280,6 @@ class MainWindow(BoxLayout):
                 print e.message
                 self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
             time.sleep(2)
-        return 1
 
 
 class CIMgui(App):
@@ -305,9 +289,8 @@ class CIMgui(App):
 
     def on_stop(self):
         CIMgui.app_closed = True
-        return 1
 
-    # This function prepares the window.
+    # This function returns the window.
     def build(self):
         self.use_kivy_settings = False
         return MainWindow()

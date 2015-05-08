@@ -1,5 +1,22 @@
 #: import sm kivy.uix.screenmanager
 
+<TopicToggleButton@ToggleButton>: # Topics Buttons
+    size_hint: (1, None)
+    height: 48
+    background_normal: './Sources/button_normal.png'
+    background_down: './Sources/button_down.png'
+    bold: True
+    font_size: 14
+
+<IndexToggleButton@ToggleButton>: # Index Buttons
+    color: (0, 0, 0, 1)
+    font_size: 15
+    size_hint: None, None
+    text_size: self.width-40, None
+    height: 20+self.texture_size[1]
+    width: 380
+    background_normal: './Sources/wht_btn_normal.png'
+
 <AnimWidget@Widget>:  # Animation
     canvas:
         Color:
@@ -140,7 +157,7 @@
 <IndexSelection>:  # Screen
     topics_slider: topics_slider.__self__
     t_slide: t_slide.__self__
-    indices_slider: indices_slider.__self__
+    indices_stack: indices_stack.__self__
 
     name: 'IndexSelectionScreen'
     BoxLayout:
@@ -161,7 +178,7 @@
             ScrollView:
                 id: t_slide
                 do_scroll_x: False
-                bar_width: 2
+                bar_width: 5
                 bar_inactive_color: 0, 0, 0, 1
                 bar_color: 0.34, 0.76, 1, 1
 
@@ -183,20 +200,28 @@
         BoxLayout:
 
             BoxLayout:
+                id: indices_slider
+                size_hint_x: None
+                # 900 = 8(paddings) + 305(topics_slider) + 207(min width of my_indices) + 380(min index slide)
+                width: 388 + (abs(((root.width-900)//380) * 380) + (((root.width - 900)//380) * 380))/2
 
                 ScrollView:
-
+                    do_scroll_x: False
+                    bar_width: 5
+                    bar_inactive_color: 0, 0, 0, 1
+                    bar_color: 0.34, 0.76, 1, 1
+                    bar_margin: 1
+                    bar_pos_y: "left"
                     StackLayout:
-                        id: indices_slider
+                        id: indices_stack
                         size_hint: (1, None)
-                        height: indices_slider.minimum_height
+                        padding: 7, 1, 1, 1
+                        height: indices_stack.minimum_height
 
             BoxLayout:
-                size_hint_x: None
-                width: 185
                 canvas:
                     Color:
-                        rgba: 0, 0, 0, 1
+                        rgba: 0, 0, 0, 0.1
                     Rectangle:
                         pos: self.pos
                         size: self.size
