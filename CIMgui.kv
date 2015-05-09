@@ -1,5 +1,18 @@
 #: import sm kivy.uix.screenmanager
 
+<TopicTitle@Label>: # Topics Buttons
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    size_hint: (1, None)
+    height: 50
+    color: (1, 1, 1, 1)
+    bold: True
+    font_size: 20
+
 <TopicToggleButton@ToggleButton>: # Topics Buttons
     size_hint: (1, None)
     height: 48
@@ -9,13 +22,14 @@
     font_size: 14
 
 <IndexToggleButton@ToggleButton>: # Index Buttons
-    color: (0, 0, 0, 1)
+    color: (1, 1, 1, 1) if self.state == "down" else (0, 0, 0, 1)
     font_size: 15
     size_hint: None, None
     text_size: self.width-40, None
     height: 20+self.texture_size[1]
     width: 380
     background_normal: './Sources/wht_btn_normal.png'
+    background_down: './Sources/wht_btn_down.png'
 
 <AnimWidget@Widget>:  # Animation
     canvas:
@@ -202,8 +216,8 @@
             BoxLayout:
                 id: indices_slider
                 size_hint_x: None
-                # 900 = 8(paddings) + 305(topics_slider) + 207(min width of my_indices) + 380(min index slide)
-                width: 388 + (abs(((root.width-900)//380) * 380) + (((root.width - 900)//380) * 380))/2
+                # 900 = 8(paddings) + 305(topics_slider) + 157(min width of my_indices) + 380(min index slide)
+                width: 388 + (abs(((root.width - 850)//380) * 380) + (((root.width - 850)//380) * 380))/2
 
                 ScrollView:
                     do_scroll_x: False
@@ -221,7 +235,7 @@
             BoxLayout:
                 canvas:
                     Color:
-                        rgba: 0, 0, 0, 0.1
+                        rgba: 0.9, 0.9, 0.9, 1
                     Rectangle:
                         pos: self.pos
                         size: self.size

@@ -13,18 +13,16 @@ import json
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
-Config.set("graphics", "height", 560)
-Config.set("graphics", "width", 1000)  # TODO REPLACE WITH 1400
+Config.set("graphics", "height", 650)
+Config.set("graphics", "width", 1340)
 
 from kivy.app import App
-from kivy.uix.button import Button
-from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.boxlayout import BoxLayout
 from kivy.animation import Animation
 from kivy.factory import Factory
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, ObjectProperty, DictProperty
+from kivy.properties import BooleanProperty
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -76,18 +74,19 @@ class IndexSelection(Screen):
                 for topic_numbers in range(1, (set_coredb_py[2][0]['topics_num'])+1):
 
                     # Grab the topic name.
-                    topic = set_coredb_py[2][topic_numbers][0]['name']
+                    topic_name = str(set_coredb_py[2][topic_numbers][0]['name'])
+                    topic_id = "topic_btn_"+topic_name.lower().replace(" ", "_")
 
                     # Create a new topic button object.
                     new_button_object = Factory.TopicToggleButton(
-                        id="topic_button_"+((str(topic)).lower()).replace(" ", "_"),
-                        text=str(topic))
+                        id=topic_id,
+                        text=topic_name)
 
                     # Bind on_release action.
                     new_button_object.bind(on_release=self.add_topic)
 
                     # Build the keys and values of the dictionary
-                    self.topics_dic[new_button_object] = {topic: "Dictionary with Indices "}
+                    self.topics_dic[new_button_object] = {topic_id: "Dictionary with Indices"}
 
                     # Place the button inside the slider
                     self.topics_slider.add_widget(new_button_object)
@@ -116,9 +115,13 @@ class IndexSelection(Screen):
                 button.background_normal = './Sources/button_normal.png'
 
     def add_topic(self, *args):
-        #TODO self.indices_stack.add_widget(label)
+
+        print self.topics_dic[args[0]]
+        topic = Factory.TopicTitle(text="Topic Title")
+        self.indices_stack.add_widget(topic)
+
         for i in range(1, 401):
-            btn = Factory.IndexToggleButton(text="btn_asdasd asdsdfsdfsdf sdf  dsfsdfsdfasdasds jiosa dsadas")
+            btn = Factory.IndexToggleButton(text="index")
             self.indices_stack.add_widget(btn)
 
 
