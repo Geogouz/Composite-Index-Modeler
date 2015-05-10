@@ -24,14 +24,17 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import BooleanProperty
 
-# Set WorldBank API static parameters.
+# Set WorldBank API static parameters. # TODO are those needed?
 start_url = "http://api.worldbank.org/"
 end_url = "?per_page=30000&format=json"
 
-# Set url catalogs.
+# Set url catalogs. # TODO which of those needed?
 countries = "countries/"
 topics = "topics/"
 indicators = "indicators/"
+
+# Set url for World Development Indicators (WDI)
+wdi_url = "http://api.worldbank.org/source/2/indicators/?per_page=30000&format=json"
 
 # Prepare the file to store core's index database.
 coredb_py = None
@@ -44,18 +47,19 @@ userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
 
 
 class Home(Screen):
+    # TODO SAY INTRO ABOUT WDI
     pass
 
 
 class IndexSelection(Screen):
-
+    # TODO must set to True after update
     must_build_topics = True
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
     def build_indices(self):
-        #TODO must first unbind other window and other kind of binds from other screens
-        #TODO do same oon other screens Classes
+        # TODO must first unbind other window and other kind of binds from other screens
+        # TODO do same oon other screens Classes
 
         # If topics dictionary shouldn't be loaded, do nothing.
         if not self.must_build_topics:
@@ -85,17 +89,21 @@ class IndexSelection(Screen):
                     # Bind on_release action.
                     new_button_object.bind(on_release=self.add_topic)
 
-                    # Build the keys and values of the dictionary
-                    self.topics_dic[new_button_object] = {topic_id: "Dictionary with Indices"}
+                    # Build the dictionary with topic's indices
+                    indices_dic = {}
+                    # for indices_dic[i]
+
+                    # Store the keys and values of the dictionary
+                    self.topics_dic[new_button_object] = "Dictionary with Indices"
 
                     # Place the button inside the slider
-                    self.topics_slider.add_widget(new_button_object)
+                    self.topics_slider_box.add_widget(new_button_object)
 
                 # Every time mouse moves on Index Selection screen, on_mouse_hover method will be called.
                 Window.bind(mouse_pos=self.on_mouse_hover)
 
                 # Set the height of the Topics menu based on heights and box padding.
-                self.topics_slider.height = len(self.topics_dic)*48+len(self.topics_dic)+1
+                self.topics_slider_box.height = len(self.topics_dic)*48+len(self.topics_dic)+1
 
                 # Topics dictionary should not be loaded again.
                 self.must_build_topics = False
@@ -109,21 +117,52 @@ class IndexSelection(Screen):
     def on_mouse_hover(self, *args):
         for button in self.topics_dic.keys():
             if button.collide_point(
-                    args[1][0], args[1][1]+(self.t_slide.viewport_size[1]-Window.height)*self.t_slide.scroll_y):
+                    args[1][0],
+                    args[1][1]+(self.topics_slider.viewport_size[1]-Window.height)*self.topics_slider.scroll_y):
                 button.background_normal = './Sources/button_hovered.png'
             else:
                 button.background_normal = './Sources/button_normal.png'
 
     def add_topic(self, *args):
 
-        print self.topics_dic[args[0]]
-        topic = Factory.TopicTitle(text="Topic Title")
-        self.indices_stack.add_widget(topic)
+        # If topic button is pressed, create index buttons.
+        if args[0].state == "down":
 
-        for i in range(1, 401):
-            btn = Factory.IndexToggleButton(text="index")
-            self.indices_stack.add_widget(btn)
+            # Clear all widgets from stack layout.
+            self.indices_slider_stack.clear_widgets()
 
+            # Clear minimum_height (needed cause of kivy version bug).
+            self.indices_slider_stack.minimum_height = 0
+
+            # Reset slider position back to top.
+            self.indices_slider.scroll_y = 1
+
+            # Switch topic buttons states.
+            for button in self.topics_dic.keys():
+                if button.state == "down" and (button != args[0]):
+                    button.state = "normal"
+
+            #print self.topics_dic[args[0]]  # TODO delete
+
+            # Create and add the topic title.
+            topic = Factory.TopicTitle(text=args[0].text)
+            self.indices_slider_stack.add_widget(topic)
+
+            # Create and add the topic index buttons.
+            for i in range(1, 279):
+                btn = Factory.IndexToggleButton(text="index")
+                self.indices_slider_stack.add_widget(btn)
+
+        # Button is not pressed, which means it self toggled.
+        else:
+            # Clear all widgets from stack layout.
+            self.indices_slider_stack.clear_widgets()
+
+            # Clear minimum_height of layout (needed cause of kivy version bug).
+            self.indices_slider_stack.minimum_height = 0
+
+            # Reset slider position back to top.
+            self.indices_slider.scroll_y = 1
 
 class MapDesigner(Screen):
     pass
@@ -150,7 +189,7 @@ class MainWindow(BoxLayout):
     # Loading bar
     def update_progress(self, *arg):
         anim_bar = Factory.AnimWidget()
-        # Some time to render
+        # Some time to render.
         time.sleep(1)
         self.core_build_progress_bar.add_widget(anim_bar)
         anim = Animation(opacity=0.3, width=300, duration=0.6)
@@ -171,38 +210,35 @@ class MainWindow(BoxLayout):
 
         # Try, in case there is a problem with the online updating process.
         try:
-            time.sleep(5)
-            """
-            # set target web links
+            # Set target web links.
             c_link = start_url + countries + end_url
             t_link = start_url + topics + end_url
-            i_link = start_url + indicators + end_url
 
-            # save sources into json files
+            # Save sources into json files.
             urllib.urlretrieve(c_link, "./DB/Countries.json")
             urllib.urlretrieve(t_link, "./DB/Topics.json")
-            urllib.urlretrieve(i_link, "./DB/Indicators.json")
+            urllib.urlretrieve(wdi_url, "./DB/WDI.json")
 
-            # open json files
+            # Open json files.
             file_countries = open("./DB/Countries.json", "r")
             file_topics = open("./DB/Topics.json", "r")
-            file_indicators = open("./DB/indicators.json", "r")
+            file_wdi = open("./DB/WDI.json", "r")
 
-            # convert json files into temp python structures
+            # Convert json files into temp python structures.
             countries_py = json.load(file_countries)
             topics_py = json.load(file_topics)
-            indicators_py = json.load(file_indicators)
+            wdi_py = json.load(file_wdi)
 
-            # close json files
+            # Close json files.
             file_countries.close()
             file_topics.close()
-            file_indicators.close()
+            file_wdi.close()
 
-            # zip python structures into a single DB list
+            # Zip python structures into a single DB list.
             countries_zip = [[]]
             topics_zip = [[]]
-            free_indicators_zip = [[]]
-            coredb = [None, None, None, None]
+
+            coredb = [None, None, None]
 
             for country in range(countries_py[0]["total"]):
                 countries_zip.append([
@@ -214,44 +250,58 @@ class MainWindow(BoxLayout):
                     (countries_py[1][country]["latitude"])])
 
             for topic in range(topics_py[0]["total"]):
-                topics_zip.append([
-                    {"name": (topics_py[1][topic]["value"])}])
+                topics_zip.append([{"name": (topics_py[1][topic]["value"])}])
 
-            for indicator in range(indicators_py[0]["total"]):
-                try:
-                    topics_zip[int(indicators_py[1][indicator]["topics"][0]["id"])].append([
-                        (indicators_py[1][indicator]["id"]),
-                        (indicators_py[1][indicator]["name"]),
-                        (indicators_py[1][indicator]["sourceNote"])])
-                except:
-                    free_indicators_zip.append([
-                        (indicators_py[1][indicator]["id"]),
-                        (indicators_py[1][indicator]["name"]),
-                        (indicators_py[1][indicator]["sourceNote"])])
+            # Add one last "Various" topic for all indicators without one.
+            topics_zip.append([{"name": "Various"}])
+
+            # Append all indicators to their parent topic/topics.
+            for indicator in range(wdi_py[0]["total"]):
+
+                # Check if an indicator has no parents.
+                if len(wdi_py[1][indicator]["topics"]) == 0:
+
+                    # We will append it to "Various" topics (last item in the list).
+                    topics_zip[-1].append([
+                        (wdi_py[1][indicator]["id"]),
+                        (wdi_py[1][indicator]["name"]),
+                        (wdi_py[1][indicator]["sourceNote"])])
+
+                used_topics = []
+
+                # If an indicator has multiple parents, we want to append it to all of them.
+                # Max parent_topic from a single indicator is 5 (with id's: 3,20,7,19,7)
+                for parent_topic in range(len(wdi_py[1][indicator]["topics"])):
+                    # Check if indicator has been added to same parent topic again before.
+                    if int(wdi_py[1][indicator]["topics"][parent_topic]["id"]) not in used_topics:
+                        used_topics.append(int(wdi_py[1][indicator]["topics"][parent_topic]["id"]))
+                        topics_zip[int(wdi_py[1][indicator]["topics"][parent_topic]["id"])].append([
+                            (wdi_py[1][indicator]["id"]),
+                            (wdi_py[1][indicator]["name"]),
+                            (wdi_py[1][indicator]["sourceNote"])])
 
             for topic in range(len(topics_zip)-1):
                 topics_zip[topic+1][0]["indicators_num"] = len(topics_zip[topic+1])-1
 
-            # coredb update
+            # Core DB update.
             coredb[0] = {"table_date": str(datetime.today())}
             countries_zip[0] = {"countries_num": countries_py[0]["total"]}
-            topics_zip[0] = {"topics_num": topics_py[0]["total"]}
-            free_indicators_zip[0] = {"free_indicators_num": (len(free_indicators_zip)-1)}
+            # Use -1 to exclude first empty [] from the list
+            topics_zip[0] = {"topics_num": len(topics_zip)-1}
 
             coredb[1] = countries_zip
             coredb[2] = topics_zip
-            coredb[3] = free_indicators_zip
 
-            # store the new coredb file
+            # Store the new coredb file.
             file_coredb = open("./DB/core.db", "w")
             json.dump(coredb, file_coredb)
             file_coredb.close()
 
-            # delete temp downloaded json files
+            # Delete temp downloaded json files.
             os.remove("./DB/Countries.json")
-            os.remove("./DB/Indicators.json")
             os.remove("./DB/Topics.json")
-            """
+            os.remove("./DB/WDI.json")
+
         except Exception as e:
             print e.__doc__
             print e.message

@@ -8,10 +8,10 @@
             pos: self.pos
             size: self.size
     size_hint: (1, None)
-    height: 50
+    height: 80
     color: (1, 1, 1, 1)
     bold: True
-    font_size: 20
+    font_size: 22
 
 <TopicToggleButton@ToggleButton>: # Topics Buttons
     size_hint: (1, None)
@@ -170,8 +170,9 @@
 
 <IndexSelection>:  # Screen
     topics_slider: topics_slider.__self__
-    t_slide: t_slide.__self__
-    indices_stack: indices_stack.__self__
+    indices_slider: indices_slider.__self__
+    topics_slider_box: topics_slider_box.__self__
+    indices_slider_stack: indices_slider_stack.__self__
 
     name: 'IndexSelectionScreen'
     BoxLayout:
@@ -190,14 +191,14 @@
             width: 305
 
             ScrollView:
-                id: t_slide
+                id: topics_slider
                 do_scroll_x: False
                 bar_width: 5
                 bar_inactive_color: 0, 0, 0, 1
                 bar_color: 0.34, 0.76, 1, 1
 
                 BoxLayout:
-                    id: topics_slider
+                    id: topics_slider_box
                     size_hint_y: None
                     orientation: "vertical"
                     size_hint_x: None
@@ -214,12 +215,12 @@
         BoxLayout:
 
             BoxLayout:
-                id: indices_slider
                 size_hint_x: None
                 # 900 = 8(paddings) + 305(topics_slider) + 157(min width of my_indices) + 380(min index slide)
-                width: 388 + (abs(((root.width - 850)//380) * 380) + (((root.width - 850)//380) * 380))/2
+                width: 0 if len(indices_slider_stack.children)==0 else 388+(abs(((root.width-850)//380)*380)+(((root.width-850)//380)*380))/2
 
                 ScrollView:
+                    id: indices_slider
                     do_scroll_x: False
                     bar_width: 5
                     bar_inactive_color: 0, 0, 0, 1
@@ -227,10 +228,10 @@
                     bar_margin: 1
                     bar_pos_y: "left"
                     StackLayout:
-                        id: indices_stack
+                        id: indices_slider_stack
                         size_hint: (1, None)
                         padding: 7, 1, 1, 1
-                        height: indices_stack.minimum_height
+                        height: indices_slider_stack.minimum_height
 
             BoxLayout:
                 canvas:
