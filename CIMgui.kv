@@ -1,40 +1,51 @@
 #: import sm kivy.uix.screenmanager
 
-<TopicTitle@Label>: # Topics Buttons
+<TopicTitle@Label>: # Topics Title
     canvas.before:
         Color:
-            rgba: 0, 0, 0, 1
+            rgba: (0.16, 0.2, 0.24, 1)
         Rectangle:
             pos: self.pos
             size: self.size
-    size_hint: (1, None)
-    height: 80
+    size_hint: 1, None
+    text_size: self.width-40, None
+    height: 50+self.texture_size[1]
     color: (1, 1, 1, 1)
     bold: True
-    font_size: 22
+    font_size: 38
+    halign: 'center'
 
-<TopicToggleButton@ToggleButton>: # Topics Buttons
-    size_hint: (1, None)
+<TopicDescription@Label>: # Topics Description
+    size_hint: 1, None
+    text_size: self.width-40, None
+    height: 60+self.texture_size[1]
+    color: (0, 0, 0, 1)
+    italic: True
+    font_size: 14
+
+<TopicToggleButton>: # Topics Buttons
+    size_hint: 1, None
     height: 48
     background_normal: './Sources/button_normal.png'
     background_down: './Sources/button_down.png'
     bold: True
     font_size: 14
 
-<IndexToggleButton@ToggleButton>: # Index Buttons
+<IndexToggleButton>: # Index Buttons
     color: (1, 1, 1, 1) if self.state == "down" else (0, 0, 0, 1)
     font_size: 15
     size_hint: None, None
     text_size: self.width-40, None
     height: 20+self.texture_size[1]
     width: 380
+    bold: True
     background_normal: './Sources/wht_btn_normal.png'
     background_down: './Sources/wht_btn_down.png'
 
 <AnimWidget@Widget>:  # Animation
     canvas:
         Color:
-            rgba: 0.34, 0.76, 1, 1
+            rgba: (0.34, 0.76, 1, 1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -64,7 +75,7 @@
         width: 100
         canvas.before:
             Color:
-                rgba: 0.18, 0.18, 0.18, 1
+                rgba: (0.18, 0.18, 0.18, 1)
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -157,7 +168,7 @@
         size: root.size
         canvas.before:
             Color:
-                rgba: 0.90, 0.90, 0.90, 1
+                rgba: (0.90, 0.90, 0.90, 1)
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -165,7 +176,7 @@
         Label:
             italic: True
             text: "Help - How To - Tips"
-            color: 0, 0, 0, 1
+            color: (0, 0, 0, 1)
             halign: 'center'
 
 <IndexSelection>:  # Screen
@@ -180,7 +191,7 @@
         size: root.size
         canvas.before:
             Color:
-                rgba: 1, 1, 1, 1
+                rgba: (1, 1, 1, 1)
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -194,8 +205,8 @@
                 id: topics_slider
                 do_scroll_x: False
                 bar_width: 5
-                bar_inactive_color: 0, 0, 0, 1
-                bar_color: 0.34, 0.76, 1, 1
+                bar_inactive_color: (0, 0, 0, 1)
+                bar_color: (0.34, 0.76, 1, 1)
 
                 BoxLayout:
                     id: topics_slider_box
@@ -203,11 +214,11 @@
                     orientation: "vertical"
                     size_hint_x: None
                     width: 300
-                    padding: 1, 1, 1, 1
+                    padding: (1, 1, 1, 1)
                     spacing: 1
                     canvas:
                         Color:
-                            rgba: 1, 1, 1, 1
+                            rgba: (1, 1, 1, 1)
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -223,20 +234,20 @@
                     id: indices_slider
                     do_scroll_x: False
                     bar_width: 5
-                    bar_inactive_color: 0, 0, 0, 1
-                    bar_color: 0.34, 0.76, 1, 1
+                    bar_inactive_color: (0, 0, 0, 1)
+                    bar_color: (0.34, 0.76, 1, 1)
                     bar_margin: 1
                     bar_pos_y: "left"
                     StackLayout:
                         id: indices_slider_stack
-                        size_hint: (1, None)
+                        size_hint: 1, None
                         padding: 7, 1, 1, 1
                         height: indices_slider_stack.minimum_height
 
             BoxLayout:
                 canvas:
                     Color:
-                        rgba: 0.9, 0.9, 0.9, 1
+                        rgba: (0.9, 0.9, 0.9, 1)
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -249,7 +260,7 @@
         size: root.size
         canvas.before:
             Color:
-                rgba: 0.60, 0.72, 0.80, 1
+                rgba: (0.60, 0.72, 0.80, 1)
             Rectangle:
                 pos: self.pos
                 size: self.size

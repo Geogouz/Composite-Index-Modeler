@@ -13,7 +13,7 @@ import json
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
-Config.set("graphics", "height", 650)
+Config.set("graphics", "height", 750)
 Config.set("graphics", "width", 1340)
 
 from kivy.app import App
@@ -22,7 +22,8 @@ from kivy.animation import Animation
 from kivy.factory import Factory
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, StringProperty
+from kivy.uix.togglebutton import ToggleButton
 
 # Set WorldBank API static parameters. # TODO are those needed?
 start_url = "http://api.worldbank.org/"
@@ -45,6 +46,14 @@ userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
 
 # print start_url + countries + "GRC" + "/" + indicators + "AG.LND.FRST.K2" + "/" + end_url
 
+
+class TopicToggleButton(ToggleButton):
+    note = StringProperty("")
+
+
+class IndexToggleButton(ToggleButton):
+    selected = BooleanProperty(False)
+    note = StringProperty("")
 
 class Home(Screen):
     # TODO SAY INTRO ABOUT WDI
@@ -86,38 +95,49 @@ class IndexSelection(Screen):
                 set_coredb_py = self.string_it(json.load(set_stored_coredb))
                 set_stored_coredb.close()
 
+                # There is no topic at the beginning.
+                topics_count = 0
+
                 # For each topic in core DB..
                 for topic_numbers in range(1, (set_coredb_py[2][0]['topics_num'])+1):
 
-                    # Grab the topic Info.
-                    topic_name = str(set_coredb_py[2][topic_numbers][0]['note']) # TODO fix
+                    # Except topics without Topic note.
+                    if set_coredb_py[2][topic_numbers][0]['note'] != "":
 
-                    #topic_name = str(set_coredb_py[2][topic_numbers][0]['name'])
-                    topic_id = "topic_btn_"+topic_name.lower().replace(" ", "_")  # TODO Check if ID will be used
+                        # Count topics.
+                        topics_count += 1
 
-                    # Create a new topic button object.
-                    new_button_object = Factory.TopicToggleButton(
-                        id=topic_id,
-                        text=topic_name)
+                        # Grab the topic Info.
+                        topic_note = str(set_coredb_py[2][topic_numbers][0]["note"])
+                        topic_name = str(set_coredb_py[2][topic_numbers][0]["name"])
+                        topic_id = "topic_btn_"+topic_name.lower().replace(" ", "_")  # TODO Check if ID will be used
 
-                    # Bind on_release action.
-                    new_button_object.bind(on_release=self.add_topic)
+                        # Create a new topic button object.
+                        new_button_object = TopicToggleButton(
+                            id=topic_id,
+                            text=topic_name,
+                            note=topic_note)
 
-                    # Build the dictionary with topic's indices
-                    indices_dic = {}
-                    # for indices_dic[i]
+                        # Bind on_release action.
+                        new_button_object.bind(on_release=self.add_topic)
 
-                    # Store the keys and values of the dictionary
-                    self.topics_dic[new_button_object] = "Dictionary with Indices"
+                        # Build each separate dictionary with topic's indices.
+                        indices_dic = {}
+                        for index in range(1, set_coredb_py[2][topic_numbers][0]["indicators_num"]+1):
+                            indices_dic[set_coredb_py[2][topic_numbers][index][1]] = \
+                                set_coredb_py[2][topic_numbers][index][2]
 
-                    # Place the button inside the slider
-                    self.topics_slider_box.add_widget(new_button_object)
+                        # Store the keys and values from the DB to the cache dictionary.
+                        self.topics_dic[new_button_object] = indices_dic
+
+                        # Place the button inside the slider.
+                        self.topics_slider_box.add_widget(new_button_object)
 
                 # Every time mouse moves on Index Selection screen, on_mouse_hover method will be called.
                 Window.bind(mouse_pos=self.on_mouse_hover)
 
                 # Set the height of the Topics menu based on heights and box padding.
-                self.topics_slider_box.height = len(self.topics_dic)*48+len(self.topics_dic)+1
+                self.topics_slider_box.height = (topics_count * 48) + topics_count + 1
 
                 # Topics dictionary should not be loaded again.
                 self.must_build_topics = False
@@ -156,20 +176,22 @@ class IndexSelection(Screen):
                 if button.state == "down" and (button != args[0]):
                     button.state = "normal"
 
-            #print self.topics_dic[args[0]]  # TODO delete
-            print args[0]
-
             # Create and add the topic title.
             topic = Factory.TopicTitle(text=args[0].text)
             self.indices_slider_stack.add_widget(topic)
 
             # Create and add the topic note.
-            topic_note = Factory.TopicTitle(text=args[0].text)
-            self.indices_slider_stack.add_widget(topic_note)
+            topic_description = Factory.TopicDescription(text=args[0].note)
+            self.indices_slider_stack.add_widget(topic_description)
+
+            #print self.topics_dic[args[0]]  # TODO delete after note addition
 
             # Create and add the topic index buttons.
-            for i in range(1, 279):
-                btn = Factory.IndexToggleButton(text="index")
+            for index in self.topics_dic[args[0]]:
+                btn = IndexToggleButton(
+                    text=index,
+                    note="Empty",
+                    selected=False)
                 self.indices_slider_stack.add_widget(btn)
 
         # Button is not pressed, which means it self toggled.
