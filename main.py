@@ -1,8 +1,8 @@
-import kivy
-kivy.require('1.9.0')
-
 # -*- coding: utf-8 -*-
 __author__ = 'Dimitris Xenakis'
+
+import kivy
+kivy.require('1.9.0')
 
 import os
 import threading
@@ -52,8 +52,20 @@ class Home(Screen):
 
 
 class IndexSelection(Screen):
+
     # TODO must set to True after update
     must_build_topics = True
+
+    # Recursively convert Unicode objects to strings objects.
+    def string_it(self, obj):
+        if isinstance(obj, dict):
+            return {self.string_it(key): self.string_it(value) for key, value in obj.iteritems()}
+        elif isinstance(obj, list):
+            return [self.string_it(element) for element in obj]
+        elif isinstance(obj, unicode):
+            return obj.encode('utf-8')
+        else:
+            return obj
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -71,15 +83,17 @@ class IndexSelection(Screen):
             # Checks if there is a coreDB available.
             try:
                 set_stored_coredb = open("./DB/core.db", "r")
-                set_coredb_py = json.load(set_stored_coredb)
+                set_coredb_py = self.string_it(json.load(set_stored_coredb))
                 set_stored_coredb.close()
 
                 # For each topic in core DB..
                 for topic_numbers in range(1, (set_coredb_py[2][0]['topics_num'])+1):
 
-                    # Grab the topic name.
-                    topic_name = str(set_coredb_py[2][topic_numbers][0]['name'])
-                    topic_id = "topic_btn_"+topic_name.lower().replace(" ", "_")
+                    # Grab the topic Info.
+                    topic_name = str(set_coredb_py[2][topic_numbers][0]['note']) # TODO fix
+
+                    #topic_name = str(set_coredb_py[2][topic_numbers][0]['name'])
+                    topic_id = "topic_btn_"+topic_name.lower().replace(" ", "_")  # TODO Check if ID will be used
 
                     # Create a new topic button object.
                     new_button_object = Factory.TopicToggleButton(
@@ -143,10 +157,15 @@ class IndexSelection(Screen):
                     button.state = "normal"
 
             #print self.topics_dic[args[0]]  # TODO delete
+            print args[0]
 
             # Create and add the topic title.
             topic = Factory.TopicTitle(text=args[0].text)
             self.indices_slider_stack.add_widget(topic)
+
+            # Create and add the topic note.
+            topic_note = Factory.TopicTitle(text=args[0].text)
+            self.indices_slider_stack.add_widget(topic_note)
 
             # Create and add the topic index buttons.
             for i in range(1, 279):
@@ -163,6 +182,7 @@ class IndexSelection(Screen):
 
             # Reset slider position back to top.
             self.indices_slider.scroll_y = 1
+
 
 class MapDesigner(Screen):
     pass
@@ -250,10 +270,12 @@ class MainWindow(BoxLayout):
                     (countries_py[1][country]["latitude"])])
 
             for topic in range(topics_py[0]["total"]):
-                topics_zip.append([{"name": (topics_py[1][topic]["value"])}])
+                topics_zip.append([
+                    {"name": (topics_py[1][topic]["value"]),
+                     "note": (topics_py[1][topic]["sourceNote"])}])
 
             # Add one last "Various" topic for all indicators without one.
-            topics_zip.append([{"name": "Various"}])
+            topics_zip.append([{"name": "Various", "note": "Various"}])
 
             # Append all indicators to their parent topic/topics.
             for indicator in range(wdi_py[0]["total"]):
@@ -303,8 +325,7 @@ class MainWindow(BoxLayout):
             os.remove("./DB/WDI.json")
 
         except Exception as e:
-            print e.__doc__
-            print e.message
+            print e.__doc__, e.message
             print "Could not update Coredb. Please try again."
         self.processing = False
 
@@ -317,7 +338,7 @@ class MainWindow(BoxLayout):
 
             # If there is any process running, wait until finish.
             while self.processing:
-                self.coredb_state.text = ("Updating Indices!\nDuration depends on your Internet speed..")
+                self.coredb_state.text = "Updating Indices!\nDuration depends on your Internet speed.."
                 time.sleep(1)
 
             # Try to open the json DB file.
@@ -329,8 +350,7 @@ class MainWindow(BoxLayout):
                 self.coredb_state.text = ("Latest DB Update:\n" + coredb_py[0]['table_date'])
 
             except Exception as e:
-                print e.__doc__
-                print e.message
+                print e.__doc__, e.message
                 self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
             time.sleep(2)
 
