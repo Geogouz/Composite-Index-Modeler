@@ -33,12 +33,11 @@
 
 <IndexToggleButton>: # Index Buttons
     color: (1, 1, 1, 1) if self.state == "down" else (0, 0, 0, 1)
-    font_size: 15
+    font_size: 16
     size_hint: None, None
     text_size: self.width-40, None
-    height: 20+self.texture_size[1]
     width: 380
-    bold: True
+    # height: 20+self.texture_size[1]
     background_normal: './Sources/wht_btn_normal.png'
     background_down: './Sources/wht_btn_down.png'
 
@@ -227,7 +226,7 @@
 
             BoxLayout:
                 size_hint_x: None
-                # 900 = 8(paddings) + 305(topics_slider) + 157(min width of my_indices) + 380(min index slide)
+                # 850 = 8(paddings) + 305(topics_slider) + 157(min width of my_indices) + 380(min index slide)
                 width: 0 if len(indices_slider_stack.children)==0 else 388+(abs(((root.width-850)//380)*380)+(((root.width-850)//380)*380))/2
 
                 ScrollView:

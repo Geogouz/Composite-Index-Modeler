@@ -52,8 +52,8 @@ class TopicToggleButton(ToggleButton):
 
 
 class IndexToggleButton(ToggleButton):
-    selected = BooleanProperty(False)
     note = StringProperty("")
+
 
 class Home(Screen):
     # TODO SAY INTRO ABOUT WDI
@@ -65,6 +65,10 @@ class IndexSelection(Screen):
     # TODO must set to True after update
     must_build_topics = True
 
+    # Prepare dictionary to store shown Index Buttons # TODO after proper bind to that move to inner section
+    shown_ind_btns = {}
+
+
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
         if isinstance(obj, dict):
@@ -75,6 +79,41 @@ class IndexSelection(Screen):
             return obj.encode('utf-8')
         else:
             return obj
+
+    def on_mouse_hover(self, *args):
+        for button in self.topics_dic.keys():
+            if button.collide_point(
+                    args[1][0],
+                    args[1][1]+(self.topics_slider.viewport_size[1]-Window.height)*self.topics_slider.scroll_y):
+                button.background_normal = './Sources/button_hovered.png'
+            else:
+                button.background_normal = './Sources/button_normal.png'
+
+    # This function sets the correct height for each index button.
+    def set_btn_height(self, *args):
+        # Calculate how many cols are inside the slider.
+        col = int((args[1]-8)//380)
+        # col = int((380+(abs(((self.width-850)//380)*380)+(((self.width-850)//380)*380))/2)//380)
+
+        for button in range(1, len(self.shown_ind_btns), col):
+
+            # Prepare the list to store each button height per line.
+            height_list = []
+
+            # Locate the highest texture_size per line.
+            for step in range(col):
+                height_list.append(self.shown_ind_btns[button+step].texture_size[1])
+                #print self.shown_ind_btns[button+step].texture_size[1]
+                # If current is last button, break.
+                if button+step == len(self.shown_ind_btns):
+                    break
+
+            # Renew the height of each button per line, to the highest one.
+            for step in range(col):
+                self.shown_ind_btns[button+step].height = max(height_list)+20
+                # If current is last button, break.
+                if button+step == len(self.shown_ind_btns):
+                    break
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -148,17 +187,7 @@ class IndexSelection(Screen):
                 print e.__doc__, "That which means no index DB has been found. Must update indices first."
                 # TODO UPDATE MESSAGE
 
-    def on_mouse_hover(self, *args):
-        for button in self.topics_dic.keys():
-            if button.collide_point(
-                    args[1][0],
-                    args[1][1]+(self.topics_slider.viewport_size[1]-Window.height)*self.topics_slider.scroll_y):
-                button.background_normal = './Sources/button_hovered.png'
-            else:
-                button.background_normal = './Sources/button_normal.png'
-
     def add_topic(self, *args):
-
         # If topic button is pressed, create index buttons.
         if args[0].state == "down":
 
@@ -184,15 +213,25 @@ class IndexSelection(Screen):
             topic_description = Factory.TopicDescription(text=args[0].note)
             self.indices_slider_stack.add_widget(topic_description)
 
-            #print self.topics_dic[args[0]]  # TODO delete after note addition
+            # Prepare var for each index button ID
+            index_btn_id = 0
 
             # Create and add the topic index buttons.
             for index in self.topics_dic[args[0]]:
+                index_btn_id += 1
                 btn = IndexToggleButton(
                     text=index,
-                    note="Empty",
-                    selected=False)
+                    note="Empty")  # TODO use
+
+                # Place the button in the stacklayout.
                 self.indices_slider_stack.add_widget(btn)
+
+                # Add the object button and it's ID sequence in the dictionary.
+                self.shown_ind_btns[index_btn_id] = btn
+
+            # Run until all button's pre-texture sizes are ready.
+            time.sleep(0.1)  # TODO USE WHILE INSTEAD
+            self.indices_slider_stack.bind(width=self.set_btn_height)
 
         # Button is not pressed, which means it self toggled.
         else:
@@ -347,8 +386,7 @@ class MainWindow(BoxLayout):
             os.remove("./DB/WDI.json")
 
         except Exception as e:
-            print e.__doc__, e.message
-            print "Could not update Coredb. Please try again."
+            print e.__doc__, e.message, "Could not update Coredb. Please try again."
         self.processing = False
 
     # This method checks for last core's index database update.
