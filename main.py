@@ -18,6 +18,7 @@ Config.set("graphics", "width", 1340)
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.stacklayout import StackLayout
 from kivy.animation import Animation
 from kivy.factory import Factory
 from kivy.core.window import Window
@@ -25,7 +26,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import BooleanProperty, StringProperty
 from kivy.uix.togglebutton import ToggleButton
 
-# Set WorldBank API static parameters. # TODO are those needed?
+# Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
 end_url = "?per_page=30000&format=json"
 
@@ -48,26 +49,76 @@ userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
 
 
 class TopicToggleButton(ToggleButton):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(TopicToggleButton, self).__init__(**kwargs)
+
     note = StringProperty("")
 
 
+class IndexStackLayout(StackLayout):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(IndexStackLayout, self).__init__(**kwargs)
+
+    def do_layout(self, *largs):
+        super(IndexStackLayout, self).do_layout()
+
+        # Try to fix each Index button.
+        try:
+            # Calculate how many cols are inside the slider.
+            col = int((self.width-8)//380)
+
+            for button in range(1, len(IndexSelection.shown_ind_btns), col):
+                # Prepare the list to store each button height per line.
+                height_list = []
+
+                # Locate the highest texture_size per line.
+                for step in range(col):
+                    height_list.append(IndexSelection.shown_ind_btns[button+step].texture_size[1])
+                    # If current is last button, break.
+                    if button+step == len(IndexSelection.shown_ind_btns):
+                        break
+
+                # Renew the height of each button per line, to the highest one.
+                for step in range(col):
+                    IndexSelection.shown_ind_btns[button+step].height = max(height_list)+20
+                    # If current is last button, break.
+                    if button+step == len(IndexSelection.shown_ind_btns):
+                        break
+        except Exception as e:
+            print e.__doc__, e.message
+
+
 class IndexToggleButton(ToggleButton):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(IndexToggleButton, self).__init__(**kwargs)
+
     note = StringProperty("")
 
 
 class Home(Screen):
-    # TODO SAY INTRO ABOUT WDI
-    pass
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(Home, self).__init__(**kwargs)
 
 
 class IndexSelection(Screen):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(IndexSelection, self).__init__(**kwargs)
 
     # TODO must set to True after update
     must_build_topics = True
 
     # Prepare dictionary to store shown Index Buttons # TODO after proper bind to that move to inner section
     shown_ind_btns = {}
-
 
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
@@ -89,31 +140,16 @@ class IndexSelection(Screen):
             else:
                 button.background_normal = './Sources/button_normal.png'
 
-    # This function sets the correct height for each index button.
-    def set_btn_height(self, *args):
-        # Calculate how many cols are inside the slider.
-        col = int((args[1]-8)//380)
-        # col = int((380+(abs(((self.width-850)//380)*380)+(((self.width-850)//380)*380))/2)//380)
+    # Function that clears the slider's stacklayout.
+    def clear_indices_stack(self):
+        # Clear all widgets from stack layout.
+        self.indices_slider_stack.clear_widgets()
 
-        for button in range(1, len(self.shown_ind_btns), col):
+        # Clear minimum_height of layout (needed cause of kivy version bug).
+        self.indices_slider_stack.minimum_height = 0
 
-            # Prepare the list to store each button height per line.
-            height_list = []
-
-            # Locate the highest texture_size per line.
-            for step in range(col):
-                height_list.append(self.shown_ind_btns[button+step].texture_size[1])
-                #print self.shown_ind_btns[button+step].texture_size[1]
-                # If current is last button, break.
-                if button+step == len(self.shown_ind_btns):
-                    break
-
-            # Renew the height of each button per line, to the highest one.
-            for step in range(col):
-                self.shown_ind_btns[button+step].height = max(height_list)+20
-                # If current is last button, break.
-                if button+step == len(self.shown_ind_btns):
-                    break
+        # Reset slider position back to top.
+        self.indices_slider.scroll_y = 1
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -191,14 +227,7 @@ class IndexSelection(Screen):
         # If topic button is pressed, create index buttons.
         if args[0].state == "down":
 
-            # Clear all widgets from stack layout.
-            self.indices_slider_stack.clear_widgets()
-
-            # Clear minimum_height (needed cause of kivy version bug).
-            self.indices_slider_stack.minimum_height = 0
-
-            # Reset slider position back to top.
-            self.indices_slider.scroll_y = 1
+            self.clear_indices_stack()
 
             # Switch topic buttons states.
             for button in self.topics_dic.keys():
@@ -229,35 +258,39 @@ class IndexSelection(Screen):
                 # Add the object button and it's ID sequence in the dictionary.
                 self.shown_ind_btns[index_btn_id] = btn
 
-            # Run until all button's pre-texture sizes are ready.
-            time.sleep(0.1)  # TODO USE WHILE INSTEAD
-            self.indices_slider_stack.bind(width=self.set_btn_height)
+            #self.indices_slider_stack.bind(width=self.set_btn_height)  # TODO KIVY
 
         # Button is not pressed, which means it self toggled.
         else:
-            # Clear all widgets from stack layout.
-            self.indices_slider_stack.clear_widgets()
-
-            # Clear minimum_height of layout (needed cause of kivy version bug).
-            self.indices_slider_stack.minimum_height = 0
-
-            # Reset slider position back to top.
-            self.indices_slider.scroll_y = 1
+            self.clear_indices_stack()
 
 
 class MapDesigner(Screen):
-    pass
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(MapDesigner, self).__init__(**kwargs)
 
 
 class CIMScreenManager(ScreenManager):
-    pass
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(CIMScreenManager, self).__init__(**kwargs)
 
 
 class CIMMenu(BoxLayout):
-    pass
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(CIMMenu, self).__init__(**kwargs)
 
 
 class MainWindow(BoxLayout):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(MainWindow, self).__init__(**kwargs)
 
     # Prepare kivy properties that show if a process or a popup are currently running. Set to False on app's init.
     processing = BooleanProperty(False)
@@ -284,7 +317,6 @@ class MainWindow(BoxLayout):
     # This method builds core's index database with indicators and countries.
     def core_build(self, *arg):
         # TODO Must tell the user to save his preferred indices because they will be lost
-        # TODO re-commend
         # A process just started running (in a new thread).
         self.processing = True
         self.threadonator(self.update_progress)

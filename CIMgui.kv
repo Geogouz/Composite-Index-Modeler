@@ -1,5 +1,18 @@
 #: import sm kivy.uix.screenmanager
 
+<TopicToggleButton>: # Topics Buttons
+    size_hint: 1, None
+    height: 48
+    background_normal: './Sources/button_normal.png'
+    background_down: './Sources/button_down.png'
+    bold: True
+    font_size: 14
+
+<IndexStackLayout>:
+    size_hint: 1, None
+    padding: 7, 1, 1, 1
+    height: self.minimum_height
+
 <TopicTitle@Label>: # Topics Title
     canvas.before:
         Color:
@@ -23,21 +36,13 @@
     italic: True
     font_size: 14
 
-<TopicToggleButton>: # Topics Buttons
-    size_hint: 1, None
-    height: 48
-    background_normal: './Sources/button_normal.png'
-    background_down: './Sources/button_down.png'
-    bold: True
-    font_size: 14
-
 <IndexToggleButton>: # Index Buttons
     color: (1, 1, 1, 1) if self.state == "down" else (0, 0, 0, 1)
     font_size: 16
     size_hint: None, None
     text_size: self.width-40, None
     width: 380
-    # height: 20+self.texture_size[1]
+    #height: 20+self.texture_size[1]
     background_normal: './Sources/wht_btn_normal.png'
     background_down: './Sources/wht_btn_down.png'
 
@@ -237,11 +242,8 @@
                     bar_color: (0.34, 0.76, 1, 1)
                     bar_margin: 1
                     bar_pos_y: "left"
-                    StackLayout:
+                    IndexStackLayout:
                         id: indices_slider_stack
-                        size_hint: 1, None
-                        padding: 7, 1, 1, 1
-                        height: indices_slider_stack.minimum_height
 
             BoxLayout:
                 canvas:
