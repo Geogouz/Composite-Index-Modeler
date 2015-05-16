@@ -37,14 +37,14 @@
     font_size: 14
 
 <IndexToggleButton>: # Index Buttons
-    color: (1, 1, 1, 1) if self.state == "down" else (0, 0, 0, 1)
+    color: (0, 0, 0, 1)
     font_size: 16
     size_hint: None, None
     text_size: self.width-40, None
     width: 380
-    #height: 20+self.texture_size[1]
+    bold: True if self.state == "down" else False
     background_normal: './Sources/wht_btn_normal.png'
-    background_down: './Sources/wht_btn_down.png'
+    background_down: './Sources/grey_btn_down.png'
 
 <AnimWidget@Widget>:  # Animation
     canvas:
@@ -230,6 +230,7 @@
         BoxLayout:
 
             BoxLayout:
+                orientation: "vertical"
                 size_hint_x: None
                 # 850 = 8(paddings) + 305(topics_slider) + 157(min width of my_indices) + 380(min index slide)
                 width: 0 if len(indices_slider_stack.children)==0 else 388+(abs(((root.width-850)//380)*380)+(((root.width-850)//380)*380))/2
@@ -244,6 +245,29 @@
                     bar_pos_y: "left"
                     IndexStackLayout:
                         id: indices_slider_stack
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: (0, 0, 0, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    size_hint: 1, None
+                    height: 1
+                Label:
+                    canvas.before:
+                        Color:
+                            rgba: (0.30, 0.35, 0.45, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    text: "Select an Index to read the description.." if root.selected_indices["feat_index"] is None else root.selected_indices["feat_index"].note
+                    size_hint: 1, None
+                    text_size: self.width-40, None
+                    height: 20+self.texture_size[1]
+                    color: (1, 1, 1, 1)
+                    italic: True
+                    font_size: 14
 
             BoxLayout:
                 canvas:

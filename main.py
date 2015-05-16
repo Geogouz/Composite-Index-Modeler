@@ -23,7 +23,7 @@ from kivy.animation import Animation
 from kivy.factory import Factory
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty
 from kivy.uix.togglebutton import ToggleButton
 
 # Set WorldBank API static parameters.
@@ -71,7 +71,7 @@ class IndexStackLayout(StackLayout):
             # Calculate how many cols are inside the slider.
             col = int((self.width-8)//380)
 
-            for button in range(1, len(IndexSelection.shown_ind_btns), col):
+            for button in range(1, len(IndexSelection.shown_ind_btns)+1, col):
                 # Prepare the list to store each button height per line.
                 height_list = []
 
@@ -88,8 +88,8 @@ class IndexStackLayout(StackLayout):
                     # If current is last button, break.
                     if button+step == len(IndexSelection.shown_ind_btns):
                         break
-        except Exception as e:
-            print e.__doc__, e.message
+        except:
+            pass
 
 
 class IndexToggleButton(ToggleButton):
@@ -117,8 +117,9 @@ class IndexSelection(Screen):
     # TODO must set to True after update
     must_build_topics = True
 
-    # Prepare dictionary to store shown Index Buttons # TODO after proper bind to that move to inner section
+    # Use this dictionary as a Class variable (usable from other Classes too).
     shown_ind_btns = {}
+    selected_indices = DictProperty({"feat_index": None, "my_index": {}})
 
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
@@ -150,6 +151,21 @@ class IndexSelection(Screen):
 
         # Reset slider position back to top.
         self.indices_slider.scroll_y = 1
+
+        # Clear the "feat_index".
+        self.selected_indices["feat_index"] = None
+
+    def on_index_selection(self, *args):
+        # If current index selection is the feat_index.
+        if args[0] == self.selected_indices["feat_index"]:
+            # It means the same button has been toggled and should clear the "feat_index".
+            self.selected_indices["feat_index"] = None
+        else:
+            try:
+                self.selected_indices["feat_index"].state = "normal"
+            except:
+                pass
+            self.selected_indices["feat_index"] = args[0]
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -245,20 +261,25 @@ class IndexSelection(Screen):
             # Prepare var for each index button ID
             index_btn_id = 0
 
+            # Prepare an empty dictionary to hold each index button object and it's ID.
+            IndexSelection.shown_ind_btns = {}
+
             # Create and add the topic index buttons.
             for index in self.topics_dic[args[0]]:
                 index_btn_id += 1
                 btn = IndexToggleButton(
                     text=index,
-                    note="Empty")  # TODO use
+                    note=self.topics_dic[args[0]][index])
+
+                # Bind each index button with the on_index_selection function.
+                btn.bind(on_release=self.on_index_selection)
+                # print index, self.topics_dic[args[0]][index]  # TODo del
 
                 # Place the button in the stacklayout.
                 self.indices_slider_stack.add_widget(btn)
 
-                # Add the object button and it's ID sequence in the dictionary.
-                self.shown_ind_btns[index_btn_id] = btn
-
-            #self.indices_slider_stack.bind(width=self.set_btn_height)  # TODO KIVY
+                # Add the button's ID and object button itself in the global "shown_ind_btns" dictionary.
+                IndexSelection.shown_ind_btns[index_btn_id] = btn
 
         # Button is not pressed, which means it self toggled.
         else:
