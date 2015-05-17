@@ -13,7 +13,7 @@ import json
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
-Config.set("graphics", "height", 750)
+Config.set("graphics", "height", 660)
 Config.set("graphics", "width", 1340)
 
 from kivy.app import App
@@ -57,6 +57,15 @@ class TopicToggleButton(ToggleButton):
     note = StringProperty("")
 
 
+class IndexToggleButton(ToggleButton):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(IndexToggleButton, self).__init__(**kwargs)
+
+    note = StringProperty("")
+
+
 class IndexStackLayout(StackLayout):
 
     def __init__(self, **kwargs):
@@ -92,22 +101,6 @@ class IndexStackLayout(StackLayout):
             pass
 
 
-class IndexToggleButton(ToggleButton):
-
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(IndexToggleButton, self).__init__(**kwargs)
-
-    note = StringProperty("")
-
-
-class Home(Screen):
-
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(Home, self).__init__(**kwargs)
-
-
 class IndexSelection(Screen):
 
     def __init__(self, **kwargs):
@@ -135,8 +128,8 @@ class IndexSelection(Screen):
     def on_mouse_hover(self, *args):
         for button in self.topics_dic.keys():
             if button.collide_point(
-                    args[1][0],
-                    args[1][1]+(self.topics_slider.viewport_size[1]-Window.height)*self.topics_slider.scroll_y):
+                    self.topics_slider.to_local(args[1][0], args[1][1])[0],
+                    self.topics_slider.to_local(args[1][0], args[1][1])[1]):
                 button.background_normal = './Sources/button_hovered.png'
             else:
                 button.background_normal = './Sources/button_normal.png'
@@ -273,7 +266,6 @@ class IndexSelection(Screen):
 
                 # Bind each index button with the on_index_selection function.
                 btn.bind(on_release=self.on_index_selection)
-                # print index, self.topics_dic[args[0]][index]  # TODo del
 
                 # Place the button in the stacklayout.
                 self.indices_slider_stack.add_widget(btn)
@@ -284,6 +276,13 @@ class IndexSelection(Screen):
         # Button is not pressed, which means it self toggled.
         else:
             self.clear_indices_stack()
+
+
+class Home(Screen):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(Home, self).__init__(**kwargs)
 
 
 class MapDesigner(Screen):

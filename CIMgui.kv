@@ -1,18 +1,5 @@
 #: import sm kivy.uix.screenmanager
 
-<TopicToggleButton>: # Topics Buttons
-    size_hint: 1, None
-    height: 48
-    background_normal: './Sources/button_normal.png'
-    background_down: './Sources/button_down.png'
-    bold: True
-    font_size: 14
-
-<IndexStackLayout>:
-    size_hint: 1, None
-    padding: 7, 1, 1, 1
-    height: self.minimum_height
-
 <TopicTitle@Label>: # Topics Title
     canvas.before:
         Color:
@@ -36,13 +23,31 @@
     italic: True
     font_size: 14
 
+<TopicToggleButton>: # Topics Buttons
+    size_hint: 1, None
+    height: 48
+    background_normal: './Sources/button_normal.png'
+    background_down: './Sources/button_down.png'
+    bold: True
+    font_size: 14
+
+<IndexStackLayout>:
+    size_hint: 1, None
+    padding: 7, 1, 1, 1
+    height: self.minimum_height
+
 <IndexToggleButton>: # Index Buttons
+    canvas.before:
+        Color:
+            rgba: (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
     color: (0, 0, 0, 1)
     font_size: 16
     size_hint: None, None
     text_size: self.width-40, None
     width: 380
-    bold: True if self.state == "down" else False
     background_normal: './Sources/wht_btn_normal.png'
     background_down: './Sources/grey_btn_down.png'
 
@@ -245,29 +250,45 @@
                     bar_pos_y: "left"
                     IndexStackLayout:
                         id: indices_slider_stack
-                BoxLayout:
-                    canvas:
-                        Color:
-                            rgba: (0, 0, 0, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                    size_hint: 1, None
-                    height: 1
-                Label:
-                    canvas.before:
-                        Color:
-                            rgba: (0.30, 0.35, 0.45, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                    text: "Select an Index to read the description.." if root.selected_indices["feat_index"] is None else root.selected_indices["feat_index"].note
-                    size_hint: 1, None
-                    text_size: self.width-40, None
-                    height: 20+self.texture_size[1]
-                    color: (1, 1, 1, 1)
-                    italic: True
-                    font_size: 14
+
+                Splitter:
+                    size_hint_y: None
+                    height: 50
+                    sizable_from: 'top'
+                    min_size: 50
+                    max_size: 200
+
+                    BoxLayout:
+                        orientation: "horizontal"
+
+                        ScrollView:
+                            canvas.before:
+                                Color:
+                                    rgba: (0.18, 0.18, 0.18, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+                            do_scroll_x: False
+                            bar_width: 5
+                            bar_inactive_color: (1, 1, 1, 1)
+                            bar_color: (0.34, 0.76, 1, 1)
+                            bar_margin: 1
+                            bar_pos_y: "right"
+
+                            Label:
+                                text: "Select an Index to read the description.." if root.selected_indices["feat_index"] is None else root.selected_indices["feat_index"].note
+                                text_size: self.width-40, None
+                                size_hint_y: None
+                                height: 20 + self.texture_size[1]
+                                color: (1, 1, 1, 1)
+                                font_size: 16
+
+                        Button:
+                            text: "ADD\nINDEX"
+                            size_hint_x: None
+                            width: 100
+                            halign: 'center'
+                            on_release: pass
 
             BoxLayout:
                 canvas:
