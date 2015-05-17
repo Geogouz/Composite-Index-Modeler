@@ -259,16 +259,15 @@
                     max_size: 200
 
                     BoxLayout:
+                        canvas.before:
+                            Color:
+                                rgba: (0.18, 0.18, 0.18, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
                         orientation: "horizontal"
 
                         ScrollView:
-                            canvas.before:
-                                Color:
-                                    rgba: (0.18, 0.18, 0.18, 1)
-                                Rectangle:
-                                    pos: self.pos
-                                    size: self.size
-                            do_scroll_x: False
                             bar_width: 5
                             bar_inactive_color: (1, 1, 1, 1)
                             bar_color: (0.34, 0.76, 1, 1)
@@ -281,7 +280,7 @@
                                 size_hint_y: None
                                 height: 20 + self.texture_size[1]
                                 color: (1, 1, 1, 1)
-                                font_size: 16
+                                font_size: 15
 
                         Button:
                             text: "ADD\nINDEX"
