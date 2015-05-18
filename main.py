@@ -126,7 +126,6 @@ class IndexSelection(Screen):
             return obj
 
     def on_mouse_hover(self, *args):
-        print "Windo bind"
         for button in self.topics_dic.keys():
             if button.collide_point(
                     self.topics_slider.to_local(args[1][0], args[1][1])[0],
@@ -134,6 +133,20 @@ class IndexSelection(Screen):
                 button.background_normal = './Sources/button_hovered.png'
             else:
                 button.background_normal = './Sources/button_normal.png'
+
+        if self.add_index_icon.collide_point(
+                self.add_index_container.to_local(args[1][0], args[1][1])[0],
+                self.add_index_container.to_local(args[1][0], args[1][1])[1]):
+            self.add_index_label.color = (0.34, 0.65, 0.90, 1)
+        else:
+            self.add_index_label.color = (1, 1, 1, 1)
+
+        if self.toggle_index_desc_icon.collide_point(
+                self.toggle_index_desc_container.to_local(args[1][0], args[1][1])[0],
+                self.toggle_index_desc_container.to_local(args[1][0], args[1][1])[1]):
+            self.toggle_index_desc_label.color = (0.34, 0.65, 0.90, 1)
+        else:
+            self.toggle_index_desc_label.color = (1, 1, 1, 1)
 
     # Function that clears the slider's stacklayout.
     def clear_indices_stack(self):
@@ -262,7 +275,8 @@ class IndexSelection(Screen):
             IndexSelection.shown_ind_btns = {}
 
             # Create and add the topic index buttons.
-            for index in self.topics_dic[args[0]]:
+            for index in sorted(self.topics_dic[args[0]].keys()):
+                print index
                 index_btn_id += 1
                 btn = IndexToggleButton(
                     text=index,

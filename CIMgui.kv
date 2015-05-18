@@ -195,6 +195,14 @@
     indices_slider_stack: indices_slider_stack.__self__
     index_desc_slider: index_desc_slider.__self__
 
+    toggle_index_desc_container: toggle_index_desc_container.__self__
+    toggle_index_desc_icon: toggle_index_desc_icon.__self__
+    toggle_index_desc_label: toggle_index_desc_label.__self__
+
+    add_index_container: add_index_container.__self__
+    add_index_icon: add_index_icon.__self__
+    add_index_label: add_index_label.__self__
+
     name: 'IndexSelectionScreen'
     BoxLayout:
         size_hint: (None, None)
@@ -279,12 +287,14 @@
                         width: 15
 
                     AnchorLayout:
+                        id: toggle_index_desc_container
                         size_hint: (None, 1)
                         anchor_x: "center"
                         anchor_y: "top"
                         width: 45
 
                         Button:
+                            id: toggle_index_desc_icon
                             size_hint: (None, None)
                             width: 45
                             height: 17
@@ -295,6 +305,7 @@
                                 else: index_desc_box.height = 80
 
                         Label:
+                            id: toggle_index_desc_label
                             size_hint: (1, None)
                             height: 50
                             text: "OPEN" if index_desc_box.height == 80 else "CLOSE"
@@ -318,16 +329,17 @@
                             font_size: 15
 
                     AnchorLayout:
+                        id: add_index_container
                         size_hint_x: None
 
                         BoxLayout:
                             size_hint: (None, None)
-                            height: add_btn_icon.height + add_btn_icon_label.height
-                            width: add_btn_icon.width
+                            height: add_index_icon.height + add_index_label.height
+                            width: add_index_icon.width
                             orientation: "vertical"
 
                             Button:
-                                id: add_btn_icon
+                                id: add_index_icon
                                 size_hint: (None, None)
                                 width: 50
                                 height: 35
@@ -336,7 +348,7 @@
                                 on_release: pass
 
                             Label:
-                                id: add_btn_icon_label
+                                id: add_index_label
                                 size_hint: (1, None)
                                 height: 15
                                 text: "ADD INDEX"
