@@ -274,16 +274,32 @@
                     size_hint_y: None
                     height: 80
 
-                    Button:
-                        text: "OPEN" if index_desc_box.height == 80 else "CLOSE"
-                        size_hint_x: None
-                        width: 80
-                        halign: 'center'
-                        background_down: './Sources/index_desc_up_normal.png' if index_desc_box.height == 80 else './Sources/index_desc_down_normal.png'
-                        background_normal: './Sources/index_desc_up_down.png' if index_desc_box.height == 80 else './Sources/index_desc_down_down.png'
-                        on_release:
-                            if index_desc_box.height == 80: index_desc_box.height = 200
-                            else: index_desc_box.height = 80
+                    BoxLayout:
+                        size_hint: (None, 1)
+                        width: 15
+
+                    AnchorLayout:
+                        size_hint: (None, 1)
+                        anchor_x: "center"
+                        anchor_y: "top"
+                        width: 45
+
+                        Button:
+                            size_hint: (None, None)
+                            width: 45
+                            height: 17
+                            background_down: './Sources/index_desc_up_down.png' if index_desc_box.height == 80 else './Sources/index_desc_down_down.png'
+                            background_normal: './Sources/index_desc_up_normal.png' if index_desc_box.height == 80 else './Sources/index_desc_down_normal.png'
+                            on_release:
+                                if index_desc_box.height == 80: index_desc_box.height = 200
+                                else: index_desc_box.height = 80
+
+                        Label:
+                            size_hint: (1, None)
+                            height: 50
+                            text: "OPEN" if index_desc_box.height == 80 else "CLOSE"
+                            color: (1, 1, 1, 1)
+                            font_size: 12
 
                     ScrollView:
                         id: index_desc_slider

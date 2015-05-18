@@ -126,6 +126,7 @@ class IndexSelection(Screen):
             return obj
 
     def on_mouse_hover(self, *args):
+        print "Windo bind"
         for button in self.topics_dic.keys():
             if button.collide_point(
                     self.topics_slider.to_local(args[1][0], args[1][1])[0],
