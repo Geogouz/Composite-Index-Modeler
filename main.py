@@ -160,6 +160,9 @@ class IndexSelection(Screen):
                 pass
             self.selected_indices["feat_index"] = args[0]
 
+        # Reset slider position back to top.
+        self.index_desc_slider.scroll_y = 1
+
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
     def build_indices(self):

@@ -7,8 +7,8 @@
         Rectangle:
             pos: self.pos
             size: self.size
-    size_hint: 1, None
-    text_size: self.width-40, None
+    size_hint: (1, None)
+    text_size: (self.width-40, None)
     height: 50+self.texture_size[1]
     color: (1, 1, 1, 1)
     bold: True
@@ -16,7 +16,7 @@
     halign: 'center'
 
 <TopicDescription@Label>: # Topics Description
-    size_hint: 1, None
+    size_hint: (1, None)
     text_size: self.width-40, None
     height: 60+self.texture_size[1]
     color: (0, 0, 0, 1)
@@ -24,7 +24,7 @@
     font_size: 14
 
 <TopicToggleButton>: # Topics Buttons
-    size_hint: 1, None
+    size_hint: (1, None)
     height: 48
     background_normal: './Sources/button_normal.png'
     background_down: './Sources/button_down.png'
@@ -32,8 +32,8 @@
     font_size: 14
 
 <IndexStackLayout>:
-    size_hint: 1, None
-    padding: 7, 1, 1, 1
+    size_hint: (1, None)
+    padding: (7, 1, 1, 1)
     height: self.minimum_height
 
 <IndexToggleButton>: # Index Buttons
@@ -45,8 +45,8 @@
             size: self.size
     color: (0, 0, 0, 1)
     font_size: 16
-    size_hint: None, None
-    text_size: self.width-40, None
+    size_hint: (None, None)
+    text_size: (self.width-40, None)
     width: 380
     background_normal: './Sources/wht_btn_normal.png'
     background_down: './Sources/grey_btn_down.png'
@@ -58,8 +58,8 @@
         Rectangle:
             pos: self.pos
             size: self.size
-    size_hint: None, None
-    size: 100, 2
+    size_hint: (None, None)
+    size: (100, 2)
 
 <MainWindow>:  # BoxLayout
     core_build_progress_bar: core_build_progress_bar.__self__
@@ -91,7 +91,7 @@
 
         Popup:
             id: coredb_update_popup
-            size_hint: None, None
+            size_hint: (None, None)
             height: 250
             width: 400
             title: "Update Indices Database"
@@ -106,7 +106,7 @@
                     size_hint_y: None
                     height: 80
                     text: "..."
-                    text_size: self.width, self.height
+                    text_size: (self.width, self.height)
                     halign: 'center'
                     valign: 'bottom'
 
@@ -128,7 +128,7 @@
                             root.popup_active = False
 
         Button:
-            size_hint: None, None
+            size_hint: (None, None)
             height: 50
             width: 90
             pos_hint: {'center_x': 0.5}
@@ -173,7 +173,7 @@
 
     name: 'Home'
     BoxLayout:
-        size_hint: None, None
+        size_hint: (None, None)
         size: root.size
         canvas.before:
             Color:
@@ -193,10 +193,11 @@
     indices_slider: indices_slider.__self__
     topics_slider_box: topics_slider_box.__self__
     indices_slider_stack: indices_slider_stack.__self__
+    index_desc_slider: index_desc_slider.__self__
 
     name: 'IndexSelectionScreen'
     BoxLayout:
-        size_hint: None, None
+        size_hint: (None, None)
         size: root.size
         canvas.before:
             Color:
@@ -251,43 +252,80 @@
                     IndexStackLayout:
                         id: indices_slider_stack
 
-                Splitter:
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: (0, 0, 0, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
                     size_hint_y: None
-                    height: 50
-                    sizable_from: 'top'
-                    min_size: 50
-                    max_size: 200
+                    height: 1
 
-                    BoxLayout:
-                        canvas.before:
-                            Color:
-                                rgba: (0.18, 0.18, 0.18, 1)
-                            Rectangle:
-                                pos: self.pos
-                                size: self.size
-                        orientation: "horizontal"
+                BoxLayout:
+                    id: index_desc_box
+                    canvas.before:
+                        Color:
+                            rgba: (0.18, 0.18, 0.18, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: 80
 
-                        ScrollView:
-                            bar_width: 5
-                            bar_inactive_color: (1, 1, 1, 1)
-                            bar_color: (0.34, 0.76, 1, 1)
-                            bar_margin: 1
-                            bar_pos_y: "right"
+                    Button:
+                        text: "OPEN" if index_desc_box.height == 80 else "CLOSE"
+                        size_hint_x: None
+                        width: 80
+                        halign: 'center'
+                        background_down: './Sources/index_desc_up_normal.png' if index_desc_box.height == 80 else './Sources/index_desc_down_normal.png'
+                        background_normal: './Sources/index_desc_up_down.png' if index_desc_box.height == 80 else './Sources/index_desc_down_down.png'
+                        on_release:
+                            if index_desc_box.height == 80: index_desc_box.height = 200
+                            else: index_desc_box.height = 80
+
+                    ScrollView:
+                        id: index_desc_slider
+                        bar_width: 5
+                        bar_inactive_color: (1, 1, 1, 1)
+                        bar_color: (0.34, 0.76, 1, 1)
+                        bar_margin: 1
+                        bar_pos_y: "right"
+
+                        Label:
+                            text: "Select an Index to read the description.." if root.selected_indices["feat_index"] is None else root.selected_indices["feat_index"].note
+                            text_size: (self.width-30, None)
+                            size_hint_y: None
+                            height: 30 + self.texture_size[1]
+                            color: (1, 1, 1, 1)
+                            font_size: 15
+
+                    AnchorLayout:
+                        size_hint_x: None
+
+                        BoxLayout:
+                            size_hint: (None, None)
+                            height: add_btn_icon.height + add_btn_icon_label.height
+                            width: add_btn_icon.width
+                            orientation: "vertical"
+
+                            Button:
+                                id: add_btn_icon
+                                size_hint: (None, None)
+                                width: 50
+                                height: 35
+                                background_normal: './Sources/btn_add_index_normal.png'
+                                background_down: './Sources/btn_add_index_down.png'
+                                on_release: pass
 
                             Label:
-                                text: "Select an Index to read the description.." if root.selected_indices["feat_index"] is None else root.selected_indices["feat_index"].note
-                                text_size: self.width-40, None
-                                size_hint_y: None
-                                height: 20 + self.texture_size[1]
+                                id: add_btn_icon_label
+                                size_hint: (1, None)
+                                height: 15
+                                text: "ADD INDEX"
                                 color: (1, 1, 1, 1)
-                                font_size: 15
-
-                        Button:
-                            text: "ADD\nINDEX"
-                            size_hint_x: None
-                            width: 100
-                            halign: 'center'
-                            on_release: pass
+                                font_size: 12
 
             BoxLayout:
                 canvas:
@@ -301,7 +339,7 @@
 
     name: 'MapDesignerScreen'
     BoxLayout:
-        size_hint: None, None
+        size_hint: (None, None)
         size: root.size
         canvas.before:
             Color:
@@ -313,5 +351,5 @@
         Label:
             italic: True
             text: "MapDesignerScreen"
-            color: 0, 0, 0, 1
+            color: (0, 0, 0, 1)
             halign: 'center'

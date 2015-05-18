@@ -2,7 +2,7 @@
 *.pyo
 .*.swp
 .*.swo
-.psd
 .buildozer
 .idea
 debug
+dev
