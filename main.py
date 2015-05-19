@@ -63,6 +63,7 @@ class IndexToggleButton(ToggleButton):
         # make sure we aren't overriding any important functionality
         super(IndexToggleButton, self).__init__(**kwargs)
 
+    code = StringProperty("")
     note = StringProperty("")
 
 
@@ -126,6 +127,7 @@ class IndexSelection(Screen):
             return obj
 
     def on_mouse_hover(self, *args):
+        #print self.selected_indices["my_indices"]
         for button in self.topics_dic.keys():
             if button.collide_point(
                     self.topics_slider.to_local(args[1][0], args[1][1])[0],
@@ -174,7 +176,6 @@ class IndexSelection(Screen):
             except:
                 pass
             self.selected_indices["feat_index"] = args[0]
-
         # Reset slider position back to top.
         self.index_desc_slider.scroll_y = 1
 
@@ -183,9 +184,23 @@ class IndexSelection(Screen):
         # If user has selected an Index..
         if not self.selected_indices["feat_index"] is None:
             # Add Index to my_indices.
-            self.selected_indices["my_indices"][self.selected_indices["feat_index"].text] = "ID"
+            self.selected_indices["my_indices"][self.selected_indices["feat_index"].text] = \
+                self.selected_indices["feat_index"].code
+
+            # Set proper btn backgrounds based on my_indices.
+            self.btn_index_background()
+
         else:
-            print "Select first an Index."
+            print "Select first an Index."  # TODO POPUP
+
+    # This function sets proper background_normal of index buttons.
+    def btn_index_background(self):
+        for btn in IndexSelection.shown_ind_btns.values():
+            # For each index button, search if it is in my_indices.
+            if btn.text in self.selected_indices["my_indices"].keys():
+                btn.background_normal = './Sources/blue_btn_down.png'
+            else:
+                btn.background_normal = './Sources/wht_btn_normal.png'
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -205,7 +220,7 @@ class IndexSelection(Screen):
                 set_stored_coredb = open("./DB/core.db", "r")
                 set_coredb_py = self.string_it(json.load(set_stored_coredb))
                 set_stored_coredb.close()
-                print set_coredb_py  # TODO DEL
+
                 # There is no topic at the beginning.
                 topics_count = 0
 
@@ -234,7 +249,8 @@ class IndexSelection(Screen):
                         indices_dic = {}
                         for index in range(1, set_coredb_py[2][topic_numbers][0]["indicators_num"]+1):
                             indices_dic[set_coredb_py[2][topic_numbers][index][1]] = \
-                                set_coredb_py[2][topic_numbers][index][2]
+                                [set_coredb_py[2][topic_numbers][index][0],
+                                 set_coredb_py[2][topic_numbers][index][2]]
 
                         # Store the keys and values from the DB to the cache dictionary.
                         self.topics_dic[new_button_object] = indices_dic
@@ -254,8 +270,7 @@ class IndexSelection(Screen):
             # If there is no core DB available it prompts for indices update.
             except Exception as e:
                 self.topics_dic = {}
-                print e.__doc__, "That which means no index DB has been found. Must update indices first."
-                # TODO UPDATE MESSAGE
+                print e.__doc__, "That which means no index DB has been found. Must update indices first."  # TODO UPDATE MESSAGE
 
     def add_topic(self, *args):
         # If topic button is pressed, create index buttons.
@@ -285,8 +300,9 @@ class IndexSelection(Screen):
             for index in sorted(self.topics_dic[args[0]].keys()):
                 index_btn_id += 1
                 btn = IndexToggleButton(
+                    code=self.topics_dic[args[0]][index][0],
                     text=index,
-                    note=self.topics_dic[args[0]][index])
+                    note=self.topics_dic[args[0]][index][1])
 
                 # Bind each index button with the on_index_selection function.
                 btn.bind(on_release=self.on_index_selection)
@@ -296,6 +312,9 @@ class IndexSelection(Screen):
 
                 # Add the button's ID and object button itself in the global "shown_ind_btns" dictionary.
                 IndexSelection.shown_ind_btns[index_btn_id] = btn
+
+            # Set proper btn backgrounds based on my_indices.
+            self.btn_index_background()
 
         # Button is not pressed, which means it self toggled.
         else:
