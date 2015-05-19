@@ -112,7 +112,7 @@ class IndexSelection(Screen):
 
     # Use this dictionary as a Class variable (usable from other Classes too).
     shown_ind_btns = {}
-    selected_indices = DictProperty({"feat_index": None, "my_index": {}})
+    selected_indices = DictProperty({"feat_index": None, "my_indices": {}})
 
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
@@ -162,6 +162,7 @@ class IndexSelection(Screen):
         # Clear the "feat_index".
         self.selected_indices["feat_index"] = None
 
+    # This function is called when an Index is selected.
     def on_index_selection(self, *args):
         # If current index selection is the feat_index.
         if args[0] == self.selected_indices["feat_index"]:
@@ -176,6 +177,15 @@ class IndexSelection(Screen):
 
         # Reset slider position back to top.
         self.index_desc_slider.scroll_y = 1
+
+    # This function is called when an Index is added to my_indices.
+    def on_my_indices(self, *args):
+        # If user has selected an Index..
+        if not self.selected_indices["feat_index"] is None:
+            # Add Index to my_indices.
+            self.selected_indices["my_indices"][self.selected_indices["feat_index"].text] = "ID"
+        else:
+            print "Select first an Index."
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -195,7 +205,7 @@ class IndexSelection(Screen):
                 set_stored_coredb = open("./DB/core.db", "r")
                 set_coredb_py = self.string_it(json.load(set_stored_coredb))
                 set_stored_coredb.close()
-
+                print set_coredb_py  # TODO DEL
                 # There is no topic at the beginning.
                 topics_count = 0
 
@@ -211,11 +221,9 @@ class IndexSelection(Screen):
                         # Grab the topic Info.
                         topic_note = str(set_coredb_py[2][topic_numbers][0]["note"])
                         topic_name = str(set_coredb_py[2][topic_numbers][0]["name"])
-                        topic_id = "topic_btn_"+topic_name.lower().replace(" ", "_")  # TODO Check if ID will be used
 
                         # Create a new topic button object.
                         new_button_object = TopicToggleButton(
-                            id=topic_id,
                             text=topic_name,
                             note=topic_note)
 
@@ -254,7 +262,6 @@ class IndexSelection(Screen):
         if args[0].state == "down":
 
             self.clear_indices_stack()
-
             # Switch topic buttons states.
             for button in self.topics_dic.keys():
                 if button.state == "down" and (button != args[0]):
@@ -276,7 +283,6 @@ class IndexSelection(Screen):
 
             # Create and add the topic index buttons.
             for index in sorted(self.topics_dic[args[0]].keys()):
-                print index
                 index_btn_id += 1
                 btn = IndexToggleButton(
                     text=index,
