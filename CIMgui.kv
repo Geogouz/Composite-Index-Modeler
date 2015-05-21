@@ -50,6 +50,42 @@
     width: 380
     background_down: './Sources/grey_btn_down.png'
 
+<MyIndexBox@BoxLayout>:
+    orientation: "vertical"
+    size_hint_y: None
+    padding: (5, 5, 5, 5)
+    canvas:
+        Color:
+            rgba: (0.18, 0.18, 0.18, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<LineBox@BoxLayout>:
+    size_hint_y: None
+    height: 1
+    canvas:
+        Color:
+            rgba: (0.34, 0.76, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<MyIndex@Label>: # Topics Description
+    size_hint: (1, None)
+    text_size: self.width, None
+    height: 5 + self.texture_size[1]
+    color: (1, 1, 1, 1)
+    font_size: 13
+
+<MyTopic@Label>: # Topics Description
+    size_hint: (1, None)
+    text_size: self.width, None
+    height: 10 + self.texture_size[1]
+    color: (0.34, 0.76, 1, 1)
+    font_size: 11
+    halign: 'right'
+
 <AnimWidget@Widget>:  # Animation
     canvas:
         Color:
@@ -201,6 +237,9 @@
     add_index_container: add_index_container.__self__
     add_index_icon: add_index_icon.__self__
     add_index_label: add_index_label.__self__
+
+    my_indices_search_sm: my_indices_search_sm.__self__
+    my_indices_container: my_indices_container.__self__
 
     name: 'IndexSelectionScreen'
     BoxLayout:
@@ -355,6 +394,7 @@
                                 font_size: 12
 
             BoxLayout:
+                orientation: "horizontal"
                 canvas:
                     Color:
                         rgba: (0.9, 0.9, 0.9, 1)
@@ -362,8 +402,96 @@
                         pos: self.pos
                         size: self.size
 
-<MapDesigner>:  # Screen
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: (0, 0, 0, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    size_hint: (None, 1)
+                    width: 1
 
+                ScreenManager:
+                    id: my_indices_search_sm
+                    transition: sm.NoTransition()
+
+                    Screen:
+                        name: "search_index"
+
+                        BoxLayout:
+                            orientation: "vertical"
+
+                            Button:
+                                size_hint_y: None
+                                height: 50
+                                text: "Search Index"
+                                bold: True
+                                color: (1, 1, 1, 1)
+                                background_normal: './Sources/search_my_indices_opened.png'
+                                background_down: './Sources/search_my_indices_pressed.png'
+
+                            BoxLayout:
+                                canvas:
+                                    Color:
+                                        rgba: (0.267, 0.259, 0.251, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+
+                            Button:
+                                size_hint_y: None
+                                height: 50
+                                text: "My Indices"
+                                bold: True
+                                color: (0.5, 0.5, 0.5, 1)
+                                background_normal: './Sources/my_indices_closed.png'
+                                background_down: './Sources/open_my_indices.png'
+                                on_release: my_indices_search_sm.current = "my_indices"
+
+                    Screen:
+                        name: "my_indices"
+
+                        BoxLayout:
+                            orientation: "vertical"
+
+                            Button:
+                                size_hint_y: None
+                                height: 50
+                                text: "Search Index"
+                                bold: True
+                                color: (0.5, 0.5, 0.5, 1)
+                                background_normal: './Sources/search_closed.png'
+                                background_down: './Sources/open_search.png'
+                                on_release: my_indices_search_sm.current = "search_index"
+
+                            Button:
+                                size_hint_y: None
+                                height: 50
+                                text: "My Indices"
+                                bold: True
+                                color: (1, 1, 1, 1)
+                                background_normal: './Sources/search_my_indices_opened.png'
+                                background_down: './Sources/search_my_indices_pressed.png'
+
+                            BoxLayout:
+                                id: my_indices_container
+                                orientation: "vertical"
+                                padding: (5, 5, 5, 5)
+
+                BoxLayout:
+                    canvas:
+                        Color:
+                            rgba: (0, 0, 0, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                    size_hint: (None, 1)
+                    width: 1
+
+
+
+<MapDesigner>:  # Screen
     name: 'MapDesignerScreen'
     BoxLayout:
         size_hint: (None, None)

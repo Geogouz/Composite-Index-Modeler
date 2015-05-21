@@ -65,6 +65,7 @@ class IndexToggleButton(ToggleButton):
 
     code = StringProperty("")
     note = StringProperty("")
+    topic = StringProperty("")
 
 
 class IndexStackLayout(StackLayout):
@@ -127,7 +128,6 @@ class IndexSelection(Screen):
             return obj
 
     def on_mouse_hover(self, *args):
-        #print self.selected_indices["my_indices"]
         for button in self.topics_dic.keys():
             if button.collide_point(
                     self.topics_slider.to_local(args[1][0], args[1][1])[0],
@@ -180,7 +180,9 @@ class IndexSelection(Screen):
         self.index_desc_slider.scroll_y = 1
 
     # This function is called when an Index is added to my_indices.
-    def on_my_indices(self, *args):
+    def on_my_indices(self):
+        print self.selected_indices
+
         # If user has selected an Index..
         if not self.selected_indices["feat_index"] is None:
             # Add Index to my_indices.
@@ -190,6 +192,25 @@ class IndexSelection(Screen):
             # Set proper btn backgrounds based on my_indices.
             self.btn_index_background()
 
+            # Create my_index_box to hold my_index and my_topic.
+            my_index_box = Factory.MyIndexBox()
+
+            # Create my_index Label.
+            my_index = Factory.MyIndex(text=self.selected_indices["feat_index"].text)
+
+            # Create my_topic Label.
+            my_topic = Factory.MyTopic(text=self.selected_indices["feat_index"].topic)
+
+            # Add my_index, my_topics and a LineBox in my_index_box.
+            my_index_box.add_widget(my_index)
+            my_index_box.add_widget(my_topic)
+            my_index_box.add_widget(Factory.LineBox())
+
+            # Add my_index_box in my_indices_container.
+            self.my_indices_container.add_widget(my_index_box)
+
+            # Switch to my_indices.
+            self.my_indices_search_sm.current = "my_indices"
         else:
             print "Select first an Index."  # TODO POPUP
 
@@ -199,8 +220,10 @@ class IndexSelection(Screen):
             # For each index button, search if it is in my_indices.
             if btn.text in self.selected_indices["my_indices"].keys():
                 btn.background_normal = './Sources/blue_btn_down.png'
+                btn.bold = True
             else:
                 btn.background_normal = './Sources/wht_btn_normal.png'
+                btn.bold = False
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -302,7 +325,8 @@ class IndexSelection(Screen):
                 btn = IndexToggleButton(
                     code=self.topics_dic[args[0]][index][0],
                     text=index,
-                    note=self.topics_dic[args[0]][index][1])
+                    note=self.topics_dic[args[0]][index][1],
+                    topic=args[0].text)
 
                 # Bind each index button with the on_index_selection function.
                 btn.bind(on_release=self.on_index_selection)
