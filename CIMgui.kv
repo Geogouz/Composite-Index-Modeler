@@ -53,7 +53,7 @@
 <MyIndexBox@BoxLayout>:
     orientation: "vertical"
     size_hint_y: None
-    padding: (5, 5, 5, 5)
+    padding: (2, 0, 2, 2)
     canvas:
         Color:
             rgba: (0.18, 0.18, 0.18, 1)
@@ -61,30 +61,44 @@
             pos: self.pos
             size: self.size
 
-<LineBox@BoxLayout>:
+<ShadeLine@BoxLayout>:
     size_hint_y: None
     height: 1
     canvas:
         Color:
-            rgba: (0.34, 0.76, 1, 1)
+            rgba: (0.28, 0.58, 0.78, 1)
         Rectangle:
             pos: self.pos
             size: self.size
 
 <MyIndex@Label>: # Topics Description
     size_hint: (1, None)
-    text_size: self.width, None
-    height: 5 + self.texture_size[1]
+    text_size: self.width-15, None
+    height: 15 + self.texture_size[1]
     color: (1, 1, 1, 1)
-    font_size: 13
+    font_size: 14
+    canvas.before:
+        Color:
+            rgba: (0.1, 0.3, 0.5, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 <MyTopic@Label>: # Topics Description
     size_hint: (1, None)
-    text_size: self.width, None
+    text_size: self.width-20, None
     height: 10 + self.texture_size[1]
-    color: (0.34, 0.76, 1, 1)
-    font_size: 11
+    color: (0.1, 0.3, 0.5, 1)
+    font_size: 12
+    bold: True
+    italic: True
     halign: 'right'
+    canvas.before:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 <AnimWidget@Widget>:  # Animation
     canvas:
@@ -477,6 +491,7 @@
                             BoxLayout:
                                 id: my_indices_container
                                 orientation: "vertical"
+                                spacing: 5
                                 padding: (5, 5, 5, 5)
 
                 BoxLayout:

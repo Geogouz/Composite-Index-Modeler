@@ -19,12 +19,14 @@ Config.set("graphics", "width", 1340)
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.stacklayout import StackLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.factory import Factory
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import BooleanProperty, StringProperty, DictProperty
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.button import Button
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -181,8 +183,6 @@ class IndexSelection(Screen):
 
     # This function is called when an Index is added to my_indices.
     def on_my_indices(self):
-        print self.selected_indices
-
         # If user has selected an Index..
         if not self.selected_indices["feat_index"] is None:
             # Add Index to my_indices.
@@ -192,8 +192,22 @@ class IndexSelection(Screen):
             # Set proper btn backgrounds based on my_indices.
             self.btn_index_background()
 
-            # Create my_index_box to hold my_index and my_topic.
+            # Create my_index_box to hold my_index components.
             my_index_box = Factory.MyIndexBox()
+
+            # Create btn_rmv_anchor to hold btn_rmv.
+            btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x= "right", padding=[0, 0, 10, 0])
+
+            # Create a removing index btn and add it to it's parent float.
+            btn_rmv = Button(size_hint=(None, None),
+                             height=12,
+                             width=12,
+                             border=(0, 0, 0, 0),
+                             background_down='./Sources/remove_normal.png',
+                             background_normal='./Sources/remove_down.png')
+
+            # Add btn_rmv in btn_rmv_anchor.
+            btn_rmv_anchor.add_widget(btn_rmv)
 
             # Create my_index Label.
             my_index = Factory.MyIndex(text=self.selected_indices["feat_index"].text)
@@ -201,10 +215,15 @@ class IndexSelection(Screen):
             # Create my_topic Label.
             my_topic = Factory.MyTopic(text=self.selected_indices["feat_index"].topic)
 
-            # Add my_index, my_topics and a LineBox in my_index_box.
+            # Add all components in my_index_box.
+            my_index_box.add_widget(btn_rmv_anchor)
+            my_index_box.add_widget(Factory.ShadeLine())
             my_index_box.add_widget(my_index)
             my_index_box.add_widget(my_topic)
-            my_index_box.add_widget(Factory.LineBox())
+
+            # Bind children heights to parent box.
+            my_index.bind(height=self.fix_my_index_h)
+            my_topic.bind(height=self.fix_my_index_h)
 
             # Add my_index_box in my_indices_container.
             self.my_indices_container.add_widget(my_index_box)
@@ -214,12 +233,21 @@ class IndexSelection(Screen):
         else:
             print "Select first an Index."  # TODO POPUP
 
+    def fix_my_index_h(self, *args):
+
+        # Init box height is the sum of the Top and Bottom box paddings
+        args[0].parent.height = args[0].parent.padding[3]
+
+        # For each child in box add it's height to the box.
+        for child in args[0].parent.children:
+            args[0].parent.height += child.height
+
     # This function sets proper background_normal of index buttons.
     def btn_index_background(self):
         for btn in IndexSelection.shown_ind_btns.values():
             # For each index button, search if it is in my_indices.
             if btn.text in self.selected_indices["my_indices"].keys():
-                btn.background_normal = './Sources/blue_btn_down.png'
+                btn.background_normal = './Sources/grey_btn_down.png'
                 btn.bold = True
             else:
                 btn.background_normal = './Sources/wht_btn_normal.png'
