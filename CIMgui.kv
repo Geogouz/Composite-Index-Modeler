@@ -459,10 +459,9 @@
                                 height: 50
 
                                 Image:
-                                    id: search_left_icon
                                     size_hint_x: None
                                     width: 8
-                                    source: './Sources/search_opened_icon1.png'
+                                    source: './Sources/opened_tab1.png'
                                     allow_stretch: False
 
                                 AnchorLayout:
@@ -485,10 +484,9 @@
                                         background_active: './Sources/search_background_active.png'
 
                                 Image:
-                                    id: search_right_icon
                                     size_hint_x: None
                                     width: 147
-                                    source: './Sources/search_opened_icon2.png'
+                                    source: './Sources/opened_tab2.png'
                                     allow_stretch: False
 
                             BoxLayout:
@@ -499,39 +497,137 @@
                                         pos: self.pos
                                         size: self.size
 
-                            Button:
+                            BoxLayout:
+                                canvas:
+                                    Color:
+                                        rgba: (33./255, 33./255, 33./255, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                orientation: "horizontal"
                                 size_hint_y: None
                                 height: 50
-                                text: "My Indices"
-                                color: (0.5, 0.5, 0.5, 1)
-                                background_normal: './Sources/my_indices_closed.png'
-                                background_down: './Sources/open_my_indices.png'
-                                on_release: my_indices_search_sm.current = "my_indices"
+
+                                Image:
+                                    size_hint_x: None
+                                    width: 8
+                                    source: './Sources/closed_tab1.png'
+                                    allow_stretch: False
+
+                                AnchorLayout:
+                                    anchor_x: "left"
+
+                                    Button:
+                                        size_hint_y: None
+                                        size_hint_x: None
+                                        height: 50
+                                        width: 10 + self.texture_size[0]
+                                        text: "My Indices"
+                                        bold: True
+                                        color: (0.5, 0.5, 0.5, 1)
+                                        background_normal: './Sources/my_indices_closed.png'
+                                        background_down: './Sources/open_my_indices.png'
+                                        on_release: my_indices_search_sm.current = "my_indices"
+
+                                Image:
+                                    size_hint_x: None
+                                    width: 147
+                                    source: './Sources/closed_tab2.png'
+                                    allow_stretch: False
 
                     Screen:
                         name: "my_indices"
 
                         BoxLayout:
                             orientation: "vertical"
+                            #on_release: my_indices_search_sm.current = "search_index"
 
-                            Button:
+                            BoxLayout:
+                                canvas:
+                                    Color:
+                                        rgba: (33./255, 33./255, 33./255, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                orientation: "horizontal"
                                 size_hint_y: None
                                 height: 50
-                                text: "Search Index"
-                                bold: True
-                                color: (0.5, 0.5, 0.5, 1)
-                                background_normal: './Sources/search_closed.png'
-                                background_down: './Sources/open_search.png'
-                                on_release: my_indices_search_sm.current = "search_index"
 
-                            Button:
+                                Image:
+                                    size_hint_x: None
+                                    width: 8
+                                    source: './Sources/closed_tab1.png'
+                                    allow_stretch: False
+
+                                AnchorLayout:
+                                    anchor_x: "left"
+
+                                    TextInput:
+                                        size_hint_y: None
+                                        size_hint_x: None
+                                        height: 40
+                                        width: 103
+                                        cursor_color: (0, 0, 0, 1)
+                                        foreground_color: (0, 0, 0, 1)
+                                        font_size: 13
+                                        hint_text: " Search.."
+                                        hint_text_color: (1, 1, 1, 1)
+                                        padding: (4, 12, 4, 0)
+                                        multiline: False
+                                        border: (0, 0, 0, 0)
+                                        background_normal: './Sources/search_background_normal_empty.png' if not bool(self.text) else './Sources/search_background_normal_filled.png'
+                                        background_active: './Sources/search_background_active.png'
+
+                                Image:
+                                    size_hint_x: None
+                                    width: 147
+                                    source: './Sources/closed_tab2.png'
+                                    allow_stretch: False
+
+                            BoxLayout:
+                                canvas:
+                                    Color:
+                                        rgba: (0, 0, 0, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                size_hint_y: None
+                                height: 2
+
+                            BoxLayout:
+                                canvas:
+                                    Color:
+                                        rgba: (33./255, 33./255, 33./255, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                orientation: "horizontal"
                                 size_hint_y: None
                                 height: 50
-                                text: "My Indices"
-                                bold: True
-                                color: (1, 1, 1, 1)
-                                background_normal: './Sources/search_opened.png'
-                                background_down: './Sources/search_my_indices_pressed.png'
+
+                                Image:
+                                    size_hint_x: None
+                                    width: 8
+                                    source: './Sources/opened_tab1.png'
+                                    allow_stretch: False
+
+                                AnchorLayout:
+                                    anchor_x: "left"
+
+                                    Label:
+                                        size_hint_y: None
+                                        size_hint_x: None
+                                        height: 50
+                                        width: 10 + self.texture_size[0]
+                                        text: "My Indices"
+                                        bold: True
+                                        color: (1, 1, 1, 1)
+
+                                Image:
+                                    size_hint_x: None
+                                    width: 147
+                                    source: './Sources/opened_tab2.png'
+                                    allow_stretch: False
 
                             ScrollView:
                                 id: my_indices_slider
