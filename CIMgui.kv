@@ -446,6 +446,7 @@
 
                         BoxLayout:
                             orientation: "vertical"
+                            #on_release: my_indices_search_sm.current = "my_indices"
 
                             BoxLayout:
                                 canvas:
@@ -517,7 +518,7 @@
                                 AnchorLayout:
                                     anchor_x: "left"
 
-                                    Button:
+                                    Label:
                                         size_hint_y: None
                                         size_hint_x: None
                                         height: 50
@@ -525,9 +526,6 @@
                                         text: "My Indices"
                                         bold: True
                                         color: (0.5, 0.5, 0.5, 1)
-                                        background_normal: './Sources/my_indices_closed.png'
-                                        background_down: './Sources/open_my_indices.png'
-                                        on_release: my_indices_search_sm.current = "my_indices"
 
                                 Image:
                                     size_hint_x: None
