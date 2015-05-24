@@ -265,6 +265,11 @@
     my_indices_slider: my_indices_slider.__self__
     my_indices_container: my_indices_container.__self__
 
+    search_screen: search_screen.__self__
+    my_indices_screen: my_indices_screen.__self__
+    search_bar: search_bar.__self__
+    my_indices_bar: my_indices_bar.__self__
+
     name: 'IndexSelectionScreen'
     BoxLayout:
         size_hint: (None, None)
@@ -442,6 +447,7 @@
                     transition: sm.NoTransition()
 
                     Screen:
+                        id: search_screen
                         name: "search_index"
 
                         BoxLayout:
@@ -499,6 +505,7 @@
                                         size: self.size
 
                             BoxLayout:
+                                id: my_indices_bar
                                 canvas:
                                     Color:
                                         rgba: (33./255, 33./255, 33./255, 1)
@@ -534,6 +541,7 @@
                                     allow_stretch: False
 
                     Screen:
+                        id: my_indices_screen
                         name: "my_indices"
 
                         BoxLayout:
@@ -541,6 +549,7 @@
                             #on_release: my_indices_search_sm.current = "search_index"
 
                             BoxLayout:
+                                id: search_bar
                                 canvas:
                                     Color:
                                         rgba: (33./255, 33./255, 33./255, 1)

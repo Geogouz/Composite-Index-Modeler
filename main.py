@@ -24,7 +24,7 @@ from kivy.animation import Animation
 from kivy.factory import Factory
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ListProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 
@@ -138,6 +138,7 @@ class IndexSelection(Screen):
         else:
             return obj
 
+    # Function that will run everytime mouse is moved.
     def on_mouse_hover(self, *args):
         for button in self.topics_dic.keys():
             if button.collide_point(
@@ -147,19 +148,31 @@ class IndexSelection(Screen):
             else:
                 button.background_normal = './Sources/button_normal.png'
 
-        if self.add_index_icon.collide_point(
-                self.add_index_container.to_local(args[1][0], args[1][1])[0],
-                self.add_index_container.to_local(args[1][0], args[1][1])[1]):
+        # Check if mouse is over add_index_icon.
+        if self.add_index_icon.collide_point(args[1][0], args[1][1]):
             self.add_index_label.color = (0.34, 0.65, 0.90, 1)
         else:
             self.add_index_label.color = (1, 1, 1, 1)
 
-        if self.toggle_index_desc_icon.collide_point(
-                self.toggle_index_desc_container.to_local(args[1][0], args[1][1])[0],
-                self.toggle_index_desc_container.to_local(args[1][0], args[1][1])[1]):
+        # Check if mouse is over toggle_index_desc_icon.
+        if self.toggle_index_desc_icon.collide_point(args[1][0], args[1][1]):
             self.toggle_index_desc_label.color = (0.34, 0.65, 0.90, 1)
         else:
             self.toggle_index_desc_label.color = (1, 1, 1, 1)
+
+        # Check if mouse is over search_bar.
+        if self.search_bar.collide_point(
+                self.my_indices_screen.to_local(args[1][0], args[1][1])[0],
+                self.my_indices_screen.to_local(args[1][0], args[1][1])[1]) and \
+                        self.my_indices_search_sm.current == "my_indices":
+            print "search_bar"
+
+        # Check if mouse is over my_indices_bar.
+        if self.my_indices_bar.collide_point(
+                self.search_screen.to_local(args[1][0], args[1][1])[0],
+                self.search_screen.to_local(args[1][0], args[1][1])[1]) and \
+                        self.my_indices_search_sm.current == "search_index":
+            print "my_indices_bar"
 
     # Function that clears the slider's stacklayout.
     def clear_indices_stack(self):
