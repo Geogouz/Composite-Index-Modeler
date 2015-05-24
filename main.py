@@ -91,13 +91,8 @@ class MyIndicesBar(BoxLayout):
         if self.my_indices_bar.collide_point(args[0].pos[0], args[0].pos[1]):
             self.parent.parent.parent.current = "my_indices"
 
-            # Leaving Search component.
-            SearchBar.go_search = False
-
 
 class SearchBar(BoxLayout):
-    # Define global property for search component status.
-    go_search = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -108,8 +103,6 @@ class SearchBar(BoxLayout):
         if self.search_bar.collide_point(args[0].pos[0], args[0].pos[1]):
             self.parent.parent.parent.current = "search_index"
 
-            # Entering Search component.
-            self.go_search = True
             #SearchArea.index_search.focus = True
 
 
@@ -277,9 +270,6 @@ class IndexSelection(Screen):
 
             # Switch to my_indices.
             self.my_indices_search_sm.current = "my_indices"
-
-            # Leaving Search component.
-            SearchBar.go_search = False
 
     def rmv_my_indices(self, *args):
         # Remove index from the dict with my indices.

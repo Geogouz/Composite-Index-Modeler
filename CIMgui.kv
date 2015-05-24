@@ -469,7 +469,7 @@
 
                 ScreenManager:
                     id: my_indices_search_sm
-                    transition: sm.NoTransition()
+                    transition: sm.FadeTransition(duration=0.2, clearcolor=(1,1,1,1))
 
                     Screen:
                         name: "search_index"
@@ -595,7 +595,7 @@
                     size_hint: (None, 1)
                     width: 1
 
-
+# Closed and listening Bar
 <MyIndicesBar>
     my_indices_bar: my_indices_bar.__self__
 
@@ -634,7 +634,7 @@
         source: './Sources/closed_tab2.png'
         allow_stretch: False
 
-
+# Closed and listening Bar
 <SearchBar>
     search_bar: search_bar.__self__
 
