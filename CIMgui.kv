@@ -61,6 +61,14 @@
             pos: self.pos
             size: self.size
 
+<Btn_Rmv>:
+    size_hint: (None, None)
+    height: 12
+    width: 12
+    border: (0, 0, 0, 0)
+    background_down: './Sources/remove_normal.png'
+    background_normal: './Sources/remove_down.png'
+
 <ShadeLine@BoxLayout>:
     size_hint_y: None
     height: 1
@@ -77,6 +85,7 @@
     height: 15 + self.texture_size[1]
     color: (1, 1, 1, 1)
     font_size: 14
+    bold: True
     canvas.before:
         Color:
             rgba: (0.1, 0.3, 0.5, 1)
@@ -253,6 +262,7 @@
     add_index_label: add_index_label.__self__
 
     my_indices_search_sm: my_indices_search_sm.__self__
+    my_indices_slider: my_indices_slider.__self__
     my_indices_container: my_indices_container.__self__
 
     name: 'IndexSelectionScreen'
@@ -366,6 +376,7 @@
 
                     ScrollView:
                         id: index_desc_slider
+                        do_scroll_x: False
                         bar_width: 5
                         bar_inactive_color: (1, 1, 1, 1)
                         bar_color: (0.34, 0.76, 1, 1)
@@ -436,14 +447,49 @@
                         BoxLayout:
                             orientation: "vertical"
 
-                            Button:
+                            BoxLayout:
+                                canvas:
+                                    Color:
+                                        rgba: (33./255, 33./255, 33./255, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                orientation: "horizontal"
                                 size_hint_y: None
                                 height: 50
-                                text: "Search Index"
-                                bold: True
-                                color: (1, 1, 1, 1)
-                                background_normal: './Sources/search_my_indices_opened.png'
-                                background_down: './Sources/search_my_indices_pressed.png'
+
+                                Image:
+                                    id: search_left_icon
+                                    size_hint_x: None
+                                    width: 8
+                                    source: './Sources/search_opened_icon1.png'
+                                    allow_stretch: False
+
+                                AnchorLayout:
+                                    anchor_x: "left"
+
+                                    TextInput:
+                                        size_hint_y: None
+                                        size_hint_x: None
+                                        height: 40
+                                        width: 103
+                                        cursor_color: (0, 0, 0, 1)
+                                        foreground_color: (0, 0, 0, 1)
+                                        font_size: 13
+                                        hint_text: " Search.."
+                                        hint_text_color: (1, 1, 1, 1)
+                                        padding: (4, 12, 4, 0)
+                                        multiline: False
+                                        border: (0, 0, 0, 0)
+                                        background_normal: './Sources/search_background_normal_empty.png' if not bool(self.text) else './Sources/search_background_normal_filled.png'
+                                        background_active: './Sources/search_background_active.png'
+
+                                Image:
+                                    id: search_right_icon
+                                    size_hint_x: None
+                                    width: 147
+                                    source: './Sources/search_opened_icon2.png'
+                                    allow_stretch: False
 
                             BoxLayout:
                                 canvas:
@@ -457,7 +503,6 @@
                                 size_hint_y: None
                                 height: 50
                                 text: "My Indices"
-                                bold: True
                                 color: (0.5, 0.5, 0.5, 1)
                                 background_normal: './Sources/my_indices_closed.png'
                                 background_down: './Sources/open_my_indices.png'
@@ -485,14 +530,25 @@
                                 text: "My Indices"
                                 bold: True
                                 color: (1, 1, 1, 1)
-                                background_normal: './Sources/search_my_indices_opened.png'
+                                background_normal: './Sources/search_opened.png'
                                 background_down: './Sources/search_my_indices_pressed.png'
 
-                            BoxLayout:
-                                id: my_indices_container
-                                orientation: "vertical"
-                                spacing: 5
-                                padding: (5, 5, 5, 5)
+                            ScrollView:
+                                id: my_indices_slider
+                                do_scroll_x: False
+                                bar_width: 3
+                                bar_inactive_color: (0, 0, 0, 1)
+                                bar_color: (0, 0, 0, 1)
+                                bar_margin: 1
+                                bar_pos_y: "right"
+
+                                GridLayout:
+                                    id: my_indices_container
+                                    size_hint_y: None
+                                    height: self.minimum_height
+                                    cols: 1
+                                    spacing: 10
+                                    padding: (5, 10, 5, 10)
 
                 BoxLayout:
                     canvas:
@@ -503,8 +559,6 @@
                             size: self.size
                     size_hint: (None, 1)
                     width: 1
-
-
 
 <MapDesigner>:  # Screen
     name: 'MapDesignerScreen'

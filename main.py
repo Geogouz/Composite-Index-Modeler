@@ -70,6 +70,15 @@ class IndexToggleButton(ToggleButton):
     topic = StringProperty("")
 
 
+class Btn_Rmv(Button):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(Btn_Rmv, self).__init__(**kwargs)
+
+    index = StringProperty("")
+
+
 class IndexStackLayout(StackLayout):
 
     def __init__(self, **kwargs):
@@ -184,7 +193,8 @@ class IndexSelection(Screen):
     # This function is called when an Index is added to my_indices.
     def on_my_indices(self):
         # If user has selected an Index..
-        if not self.selected_indices["feat_index"] is None:
+        if not self.selected_indices["feat_index"] is None and \
+                not (self.selected_indices["feat_index"].text in self.selected_indices["my_indices"]):
             # Add Index to my_indices.
             self.selected_indices["my_indices"][self.selected_indices["feat_index"].text] = \
                 self.selected_indices["feat_index"].code
@@ -199,12 +209,7 @@ class IndexSelection(Screen):
             btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x= "right", padding=[0, 0, 10, 0])
 
             # Create a removing index btn and add it to it's parent float.
-            btn_rmv = Button(size_hint=(None, None),
-                             height=12,
-                             width=12,
-                             border=(0, 0, 0, 0),
-                             background_down='./Sources/remove_normal.png',
-                             background_normal='./Sources/remove_down.png')
+            btn_rmv = Factory.Btn_Rmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indices)
 
             # Add btn_rmv in btn_rmv_anchor.
             btn_rmv_anchor.add_widget(btn_rmv)
@@ -230,8 +235,16 @@ class IndexSelection(Screen):
 
             # Switch to my_indices.
             self.my_indices_search_sm.current = "my_indices"
-        else:
-            print "Select first an Index."  # TODO POPUP
+
+    def rmv_my_indices(self, *args):
+        # Remove index from the dict with my indices.
+        self.selected_indices["my_indices"].pop(args[0].index, None)
+
+        # Remove that specific my_index_box.
+        self.my_indices_container.remove_widget(args[0].parent.parent)
+
+        # Set proper btn backgrounds based on my_indices.
+        self.btn_index_background()
 
     def fix_my_index_h(self, *args):
 
