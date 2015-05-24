@@ -1,5 +1,6 @@
 #: import sm kivy.uix.screenmanager
 
+
 <TopicTitle@Label>: # Topics Title
     canvas.before:
         Color:
@@ -15,6 +16,7 @@
     font_size: 38
     halign: 'center'
 
+
 <TopicDescription@Label>: # Topics Description
     size_hint: (1, None)
     text_size: self.width-40, None
@@ -22,6 +24,7 @@
     color: (0, 0, 0, 1)
     italic: True
     font_size: 14
+
 
 <TopicToggleButton>: # Topics Buttons
     size_hint: (1, None)
@@ -31,10 +34,12 @@
     bold: True
     font_size: 14
 
+
 <IndexStackLayout>:
     size_hint: (1, None)
     padding: (7, 1, 1, 1)
     height: self.minimum_height
+
 
 <IndexToggleButton>: # Index Buttons
     canvas.before:
@@ -50,6 +55,7 @@
     width: 380
     background_down: './Sources/grey_btn_down.png'
 
+
 <MyIndexBox@BoxLayout>:
     orientation: "vertical"
     size_hint_y: None
@@ -61,6 +67,7 @@
             pos: self.pos
             size: self.size
 
+
 <Btn_Rmv>:
     size_hint: (None, None)
     height: 12
@@ -68,6 +75,7 @@
     border: (0, 0, 0, 0)
     background_down: './Sources/remove_normal.png'
     background_normal: './Sources/remove_down.png'
+
 
 <ShadeLine@BoxLayout>:
     size_hint_y: None
@@ -78,6 +86,7 @@
         Rectangle:
             pos: self.pos
             size: self.size
+
 
 <MyIndex@Label>: # Topics Description
     size_hint: (1, None)
@@ -92,6 +101,7 @@
         Rectangle:
             pos: self.pos
             size: self.size
+
 
 <MyTopic@Label>: # Topics Description
     size_hint: (1, None)
@@ -109,6 +119,23 @@
             pos: self.pos
             size: self.size
 
+
+<SearchArea>:
+    size_hint_y: None
+    size_hint_x: None
+    height: 40
+    width: 103
+    cursor_color: (0, 0, 0, 1)
+    foreground_color: (0, 0, 0, 1)
+    font_size: 13
+    hint_text: " Search.."
+    hint_text_color: (1, 1, 1, 1)
+    padding: (4, 12, 4, 0)
+    multiline: False
+    background_normal: './Sources/search_background_normal_empty.png' if not bool(self.text) else './Sources/search_background_normal_filled.png'
+    background_active: './Sources/search_background_active_empty.png' if not bool(self.text) else './Sources/search_background_active.png'
+
+
 <AnimWidget@Widget>:  # Animation
     canvas:
         Color:
@@ -118,6 +145,7 @@
             size: self.size
     size_hint: (None, None)
     size: (100, 2)
+
 
 <MainWindow>:  # BoxLayout
     core_build_progress_bar: core_build_progress_bar.__self__
@@ -227,6 +255,7 @@
             height: 50
             on_release: manager.current = 'MapDesignerScreen'
 
+
 <Home>:  # Screen
 
     name: 'Home'
@@ -245,6 +274,7 @@
             text: "Help - How To - Tips"
             color: (0, 0, 0, 1)
             halign: 'center'
+
 
 <IndexSelection>:  # Screen
     topics_slider: topics_slider.__self__
@@ -467,21 +497,7 @@
                                 AnchorLayout:
                                     anchor_x: "left"
 
-                                    TextInput:
-                                        size_hint_y: None
-                                        size_hint_x: None
-                                        height: 40
-                                        width: 103
-                                        cursor_color: (0, 0, 0, 1)
-                                        foreground_color: (0, 0, 0, 1)
-                                        font_size: 13
-                                        hint_text: " Search.."
-                                        hint_text_color: (1, 1, 1, 1)
-                                        padding: (4, 12, 4, 0)
-                                        multiline: False
-                                        border: (0, 0, 0, 0)
-                                        background_normal: './Sources/search_background_normal_empty.png' if not bool(self.text) else './Sources/search_background_normal_filled.png'
-                                        background_active: './Sources/search_background_active.png'
+                                    SearchArea:
 
                                 Image:
                                     size_hint_x: None
@@ -647,16 +663,11 @@
             size_hint_x: None
             height: 40
             width: 103
-            cursor_color: (0, 0, 0, 1)
-            foreground_color: (0, 0, 0, 1)
             font_size: 13
             hint_text: " Search.."
             hint_text_color: (1, 1, 1, 1)
             padding: (4, 12, 4, 0)
-            multiline: False
-            border: (0, 0, 0, 0)
-            background_normal: './Sources/search_background_normal_empty.png' if not bool(self.text) else './Sources/search_background_normal_filled.png'
-            background_active: './Sources/search_background_active.png'
+            background_normal: './Sources/search_background_normal_empty.png'
 
     Image:
         size_hint_x: None

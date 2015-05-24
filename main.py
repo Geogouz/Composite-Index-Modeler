@@ -17,16 +17,17 @@ Config.set("graphics", "height", 660)
 Config.set("graphics", "width", 1340)
 
 from kivy.app import App
+from kivy.core.window import Window
+from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
-from kivy.factory import Factory
-from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty, ListProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -90,8 +91,13 @@ class MyIndicesBar(BoxLayout):
         if self.my_indices_bar.collide_point(args[0].pos[0], args[0].pos[1]):
             self.parent.parent.parent.current = "my_indices"
 
+            # Leaving Search component.
+            SearchBar.go_search = False
+
 
 class SearchBar(BoxLayout):
+    # Define global property for search component status.
+    go_search = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -101,6 +107,19 @@ class SearchBar(BoxLayout):
         # Check if mouse is over search_bar.
         if self.search_bar.collide_point(args[0].pos[0], args[0].pos[1]):
             self.parent.parent.parent.current = "search_index"
+
+            # Entering Search component.
+            self.go_search = True
+            #SearchArea.index_search.focus = True
+
+
+class SearchArea(TextInput):
+    index_search = ObjectProperty()
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(SearchArea, self).__init__(**kwargs)
+        SearchArea.index_search = self
 
 
 class IndexStackLayout(StackLayout):
@@ -258,6 +277,9 @@ class IndexSelection(Screen):
 
             # Switch to my_indices.
             self.my_indices_search_sm.current = "my_indices"
+
+            # Leaving Search component.
+            SearchBar.go_search = False
 
     def rmv_my_indices(self, *args):
         # Remove index from the dict with my indices.
