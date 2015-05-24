@@ -265,11 +265,6 @@
     my_indices_slider: my_indices_slider.__self__
     my_indices_container: my_indices_container.__self__
 
-    search_screen: search_screen.__self__
-    my_indices_screen: my_indices_screen.__self__
-    search_bar: search_bar.__self__
-    my_indices_bar: my_indices_bar.__self__
-
     name: 'IndexSelectionScreen'
     BoxLayout:
         size_hint: (None, None)
@@ -447,12 +442,10 @@
                     transition: sm.NoTransition()
 
                     Screen:
-                        id: search_screen
                         name: "search_index"
 
                         BoxLayout:
                             orientation: "vertical"
-                            #on_release: my_indices_search_sm.current = "my_indices"
 
                             BoxLayout:
                                 canvas:
@@ -504,92 +497,15 @@
                                         pos: self.pos
                                         size: self.size
 
-                            BoxLayout:
-                                id: my_indices_bar
-                                canvas:
-                                    Color:
-                                        rgba: (33./255, 33./255, 33./255, 1)
-                                    Rectangle:
-                                        pos: self.pos
-                                        size: self.size
-                                orientation: "horizontal"
-                                size_hint_y: None
-                                height: 50
-
-                                Image:
-                                    size_hint_x: None
-                                    width: 8
-                                    source: './Sources/closed_tab1.png'
-                                    allow_stretch: False
-
-                                AnchorLayout:
-                                    anchor_x: "left"
-
-                                    Label:
-                                        size_hint_y: None
-                                        size_hint_x: None
-                                        height: 50
-                                        width: 10 + self.texture_size[0]
-                                        text: "My Indices"
-                                        bold: True
-                                        color: (0.5, 0.5, 0.5, 1)
-
-                                Image:
-                                    size_hint_x: None
-                                    width: 147
-                                    source: './Sources/closed_tab2.png'
-                                    allow_stretch: False
+                            MyIndicesBar:
 
                     Screen:
-                        id: my_indices_screen
                         name: "my_indices"
 
                         BoxLayout:
                             orientation: "vertical"
-                            #on_release: my_indices_search_sm.current = "search_index"
 
-                            BoxLayout:
-                                id: search_bar
-                                canvas:
-                                    Color:
-                                        rgba: (33./255, 33./255, 33./255, 1)
-                                    Rectangle:
-                                        pos: self.pos
-                                        size: self.size
-                                orientation: "horizontal"
-                                size_hint_y: None
-                                height: 50
-
-                                Image:
-                                    size_hint_x: None
-                                    width: 8
-                                    source: './Sources/closed_tab1.png'
-                                    allow_stretch: False
-
-                                AnchorLayout:
-                                    anchor_x: "left"
-
-                                    TextInput:
-                                        size_hint_y: None
-                                        size_hint_x: None
-                                        height: 40
-                                        width: 103
-                                        cursor_color: (0, 0, 0, 1)
-                                        foreground_color: (0, 0, 0, 1)
-                                        font_size: 13
-                                        hint_text: " Search.."
-                                        hint_text_color: (1, 1, 1, 1)
-                                        padding: (4, 12, 4, 0)
-                                        multiline: False
-                                        border: (0, 0, 0, 0)
-                                        background_normal: './Sources/search_background_normal_empty.png' if not bool(self.text) else './Sources/search_background_normal_filled.png'
-                                        background_active: './Sources/search_background_active.png'
-
-                                Image:
-                                    size_hint_x: None
-                                    width: 147
-                                    source: './Sources/closed_tab2.png'
-                                    allow_stretch: False
+                            SearchBar:
 
                             BoxLayout:
                                 canvas:
@@ -662,6 +578,92 @@
                             size: self.size
                     size_hint: (None, 1)
                     width: 1
+
+
+<MyIndicesBar>
+    my_indices_bar: my_indices_bar.__self__
+
+    id: my_indices_bar
+    canvas.before:
+        Color:
+            rgba: (33./255, 33./255, 33./255, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: "horizontal"
+    size_hint_y: None
+    height: 50
+
+    Image:
+        size_hint_x: None
+        width: 8
+        source: './Sources/closed_tab1.png'
+        allow_stretch: False
+
+    AnchorLayout:
+        anchor_x: "left"
+
+        Label:
+            size_hint_y: None
+            size_hint_x: None
+            height: 50
+            width: 10 + self.texture_size[0]
+            text: "My Indices"
+            bold: True
+            color: (0.5, 0.5, 0.5, 1)
+
+    Image:
+        size_hint_x: None
+        width: 147
+        source: './Sources/closed_tab2.png'
+        allow_stretch: False
+
+
+<SearchBar>
+    search_bar: search_bar.__self__
+
+    id: search_bar
+    canvas.before:
+        Color:
+            rgba: (33./255, 33./255, 33./255, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: "horizontal"
+    size_hint_y: None
+    height: 50
+
+    Image:
+        size_hint_x: None
+        width: 8
+        source: './Sources/closed_tab1.png'
+        allow_stretch: False
+
+    AnchorLayout:
+        anchor_x: "left"
+
+        TextInput:
+            size_hint_y: None
+            size_hint_x: None
+            height: 40
+            width: 103
+            cursor_color: (0, 0, 0, 1)
+            foreground_color: (0, 0, 0, 1)
+            font_size: 13
+            hint_text: " Search.."
+            hint_text_color: (1, 1, 1, 1)
+            padding: (4, 12, 4, 0)
+            multiline: False
+            border: (0, 0, 0, 0)
+            background_normal: './Sources/search_background_normal_empty.png' if not bool(self.text) else './Sources/search_background_normal_filled.png'
+            background_active: './Sources/search_background_active.png'
+
+    Image:
+        size_hint_x: None
+        width: 147
+        source: './Sources/closed_tab2.png'
+        allow_stretch: False
+
 
 <MapDesigner>:  # Screen
     name: 'MapDesignerScreen'

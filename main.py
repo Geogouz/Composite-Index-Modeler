@@ -79,6 +79,30 @@ class Btn_Rmv(Button):
     index = StringProperty("")
 
 
+class MyIndicesBar(BoxLayout):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(MyIndicesBar, self).__init__(**kwargs)
+
+    def on_touch_down(self, *args):
+        # Check if mouse is over my_indices_bar.
+        if self.my_indices_bar.collide_point(args[0].pos[0], args[0].pos[1]):
+            self.parent.parent.parent.current = "my_indices"
+
+
+class SearchBar(BoxLayout):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(SearchBar, self).__init__(**kwargs)
+
+    def on_touch_down(self, *args):
+        # Check if mouse is over search_bar.
+        if self.search_bar.collide_point(args[0].pos[0], args[0].pos[1]):
+            self.parent.parent.parent.current = "search_index"
+
+
 class IndexStackLayout(StackLayout):
 
     def __init__(self, **kwargs):
@@ -159,20 +183,6 @@ class IndexSelection(Screen):
             self.toggle_index_desc_label.color = (0.34, 0.65, 0.90, 1)
         else:
             self.toggle_index_desc_label.color = (1, 1, 1, 1)
-
-        # Check if mouse is over search_bar.
-        if self.search_bar.collide_point(
-                self.my_indices_screen.to_local(args[1][0], args[1][1])[0],
-                self.my_indices_screen.to_local(args[1][0], args[1][1])[1]) and \
-                        self.my_indices_search_sm.current == "my_indices":
-            print "search_bar"
-
-        # Check if mouse is over my_indices_bar.
-        if self.my_indices_bar.collide_point(
-                self.search_screen.to_local(args[1][0], args[1][1])[0],
-                self.search_screen.to_local(args[1][0], args[1][1])[1]) and \
-                        self.my_indices_search_sm.current == "search_index":
-            print "my_indices_bar"
 
     # Function that clears the slider's stacklayout.
     def clear_indices_stack(self):
