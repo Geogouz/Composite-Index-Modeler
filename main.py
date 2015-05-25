@@ -87,9 +87,15 @@ class MyIndicesBar(BoxLayout):
         super(MyIndicesBar, self).__init__(**kwargs)
 
     def on_touch_down(self, *args):
+        super(MyIndicesBar, self).on_touch_down(*args)
         # Check if mouse is over my_indices_bar.
         if self.my_indices_bar.collide_point(args[0].pos[0], args[0].pos[1]):
-            self.parent.parent.parent.current = "my_indices"
+
+            # Switch Screens.
+            IndexSelection.glob_my_indices_search_sm.current = "my_indices"
+
+            # Remove previous text inputs.
+            SearchArea.index_search.text = ""
 
 
 class SearchBar(BoxLayout):
@@ -99,11 +105,18 @@ class SearchBar(BoxLayout):
         super(SearchBar, self).__init__(**kwargs)
 
     def on_touch_down(self, *args):
+        super(SearchBar, self).on_touch_down(*args)
         # Check if mouse is over search_bar.
         if self.search_bar.collide_point(args[0].pos[0], args[0].pos[1]):
-            self.parent.parent.parent.current = "search_index"
 
-            #SearchArea.index_search.focus = True
+            # Set scroll_y to 1, to prevent my_indices showing faulty while screen switching.
+            IndexSelection.glob_my_indices_slider.scroll_y = 1
+
+            # Switch Screens.
+            #IndexSelection.glob_my_indices_search_sm.current = "search_index"
+
+            # Focus the textinput area to begin search.
+            SearchArea.index_search.focus = True
 
 
 class SearchArea(TextInput):
@@ -151,6 +164,9 @@ class IndexStackLayout(StackLayout):
 
 
 class IndexSelection(Screen):
+
+    glob_my_indices_search_sm = ObjectProperty()
+    glob_my_indices = ObjectProperty()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -312,6 +328,10 @@ class IndexSelection(Screen):
             pass
 
         else:
+            # Connect global and instance variables of this Class to provide access to them from outside the Class.
+            IndexSelection.glob_my_indices_search_sm = self.my_indices_search_sm
+            IndexSelection.glob_my_indices_slider = self.my_indices_slider
+
             self.topics_dic = {}
 
             # Checks if there is a coreDB available.
