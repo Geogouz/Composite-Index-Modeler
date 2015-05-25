@@ -24,7 +24,7 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty, NumericProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -91,6 +91,10 @@ class MyIndicesBar(BoxLayout):
         # Check if mouse is over my_indices_bar.
         if self.my_indices_bar.collide_point(args[0].pos[0], args[0].pos[1]):
 
+            # Set opacity to 1, to stop preventing my_indices showing faulty while screen switching.
+            IndexSelection.glob_my_indices_slider.opacity = 1
+            print "(1 -> 2)", IndexSelection.glob_my_indices_slider.scroll_y
+
             # Switch Screens.
             IndexSelection.glob_my_indices_search_sm.current = "my_indices"
 
@@ -99,6 +103,7 @@ class MyIndicesBar(BoxLayout):
 
 
 class SearchBar(BoxLayout):
+    last_scroll_pos = NumericProperty()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -109,14 +114,18 @@ class SearchBar(BoxLayout):
         # Check if mouse is over search_bar.
         if self.search_bar.collide_point(args[0].pos[0], args[0].pos[1]):
 
+            SearchBar.last_scroll_pos = IndexSelection.glob_my_indices_slider.scroll_y
+
             # Set scroll_y to 1, to prevent my_indices showing faulty while screen switching.
             IndexSelection.glob_my_indices_slider.scroll_y = 1
 
             # Switch Screens.
-            #IndexSelection.glob_my_indices_search_sm.current = "search_index"
+            IndexSelection.glob_my_indices_search_sm.current = "search_index"
 
             # Focus the textinput area to begin search.
             SearchArea.index_search.focus = True
+
+            #print *popup_active # TODO 2 Inclement (..here)
 
 
 class SearchArea(TextInput):
@@ -284,8 +293,11 @@ class IndexSelection(Screen):
             # Add my_index_box in my_indices_container.
             self.my_indices_container.add_widget(my_index_box)
 
+            # Set opacity to 1, to stop preventing my_indices showing faulty while screen switching.
+            IndexSelection.glob_my_indices_slider.opacity = 1
+
             # Switch to my_indices.
-            self.my_indices_search_sm.current = "my_indices"
+            IndexSelection.glob_my_indices_search_sm.current = "my_indices"
 
     def rmv_my_indices(self, *args):
         # Remove index from the dict with my indices.
@@ -477,7 +489,7 @@ class MainWindow(BoxLayout):
 
     # Prepare kivy properties that show if a process or a popup are currently running. Set to False on app's init.
     processing = BooleanProperty(False)
-    popup_active = BooleanProperty(False)
+    popup_active = BooleanProperty(False)  # TODO 1 inclement (I want to access current popup_active value..)
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     def threadonator(self, *arg):
