@@ -295,6 +295,8 @@
     my_indices_slider: my_indices_slider.__self__
     my_indices_container: my_indices_container.__self__
 
+    search_area: search_area.__self__
+
     name: 'IndexSelectionScreen'
     BoxLayout:
         size_hint: (None, None)
@@ -478,6 +480,7 @@
                             orientation: "vertical"
 
                             BoxLayout:
+                                id: child
                                 canvas:
                                     Color:
                                         rgba: (33./255, 33./255, 33./255, 1)
@@ -497,7 +500,9 @@
                                 AnchorLayout:
                                     anchor_x: "left"
 
+                                    # TextInput
                                     SearchArea:
+                                        id: search_area
 
                                 Image:
                                     size_hint_x: None
@@ -513,7 +518,10 @@
                                         pos: self.pos
                                         size: self.size
 
+                            # BoxLayout
                             MyIndicesBar:
+                                mib_search_area: search_area
+                                mib_my_indices_search_sm: my_indices_search_sm
 
                     Screen:
                         name: "my_indices"
@@ -522,6 +530,9 @@
                             orientation: "vertical"
 
                             SearchBar:
+                                sb_search_area: search_area
+                                sb_my_indices_search_sm: my_indices_search_sm
+                                sb_my_indices_slider: my_indices_slider
 
                             BoxLayout:
                                 canvas:
@@ -597,9 +608,7 @@
 
 # Closed and listening Bar
 <MyIndicesBar>
-    my_indices_bar: my_indices_bar.__self__
 
-    id: my_indices_bar
     canvas.before:
         Color:
             rgba: (33./255, 33./255, 33./255, 1)
@@ -636,9 +645,7 @@
 
 # Closed and listening Bar
 <SearchBar>
-    search_bar: search_bar.__self__
 
-    id: search_bar
     canvas.before:
         Color:
             rgba: (33./255, 33./255, 33./255, 1)
@@ -659,6 +666,7 @@
         anchor_x: "left"
 
         TextInput:
+            is_focusable: False
             readonly: True
             size_hint_y: None
             size_hint_x: None

@@ -24,10 +24,11 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty, NumericProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.uix.behaviors import FocusBehavior
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -81,6 +82,8 @@ class Btn_Rmv(Button):
 
 
 class MyIndicesBar(BoxLayout):
+    mib_search_area = ObjectProperty()
+    mib_my_indices_search_sm = ObjectProperty()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -89,21 +92,20 @@ class MyIndicesBar(BoxLayout):
     def on_touch_down(self, *args):
         super(MyIndicesBar, self).on_touch_down(*args)
         # Check if mouse is over my_indices_bar.
-        if self.my_indices_bar.collide_point(args[0].pos[0], args[0].pos[1]):
-
-            # Set opacity to 1, to stop preventing my_indices showing faulty while screen switching.
-            IndexSelection.glob_my_indices_slider.opacity = 1
-            print "(1 -> 2)", IndexSelection.glob_my_indices_slider.scroll_y
+        if self.collide_point(args[0].pos[0], args[0].pos[1]):
 
             # Switch Screens.
-            IndexSelection.glob_my_indices_search_sm.current = "my_indices"
+            self.mib_my_indices_search_sm.current = "my_indices"
 
             # Remove previous text inputs.
-            SearchArea.index_search.text = ""
+            self.mib_search_area.text = ""
 
 
 class SearchBar(BoxLayout):
-    last_scroll_pos = NumericProperty()
+    sb_search_area = ObjectProperty()
+    sb_my_indices_search_sm = ObjectProperty()
+    sb_my_indices_slider = ObjectProperty()
+    #last_scroll_pos = NumericProperty()  # todo now
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -112,29 +114,25 @@ class SearchBar(BoxLayout):
     def on_touch_down(self, *args):
         super(SearchBar, self).on_touch_down(*args)
         # Check if mouse is over search_bar.
-        if self.search_bar.collide_point(args[0].pos[0], args[0].pos[1]):
+        if self.collide_point(args[0].pos[0], args[0].pos[1]):
 
-            SearchBar.last_scroll_pos = IndexSelection.glob_my_indices_slider.scroll_y
+            # This touch should not be used to defocus.
+            FocusBehavior.ignored_touch.append(args[0])
 
             # Set scroll_y to 1, to prevent my_indices showing faulty while screen switching.
-            IndexSelection.glob_my_indices_slider.scroll_y = 1
+            self.sb_my_indices_slider.scroll_y = 1
 
             # Switch Screens.
-            IndexSelection.glob_my_indices_search_sm.current = "search_index"
+            self.sb_my_indices_search_sm.current = "search_index"
 
             # Focus the textinput area to begin search.
-            SearchArea.index_search.focus = True
-
-            #print *popup_active # TODO 2 Inclement (..here)
-
+            self.sb_search_area.focus = True
 
 class SearchArea(TextInput):
-    index_search = ObjectProperty()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
         super(SearchArea, self).__init__(**kwargs)
-        SearchArea.index_search = self
 
 
 class IndexStackLayout(StackLayout):
@@ -173,9 +171,6 @@ class IndexStackLayout(StackLayout):
 
 
 class IndexSelection(Screen):
-
-    glob_my_indices_search_sm = ObjectProperty()
-    glob_my_indices = ObjectProperty()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -293,11 +288,11 @@ class IndexSelection(Screen):
             # Add my_index_box in my_indices_container.
             self.my_indices_container.add_widget(my_index_box)
 
-            # Set opacity to 1, to stop preventing my_indices showing faulty while screen switching.
-            IndexSelection.glob_my_indices_slider.opacity = 1
-
             # Switch to my_indices.
-            IndexSelection.glob_my_indices_search_sm.current = "my_indices"
+            self.my_indices_search_sm.current = "my_indices"
+
+            # Remove previous text inputs.
+            self.search_area.text = ""
 
     def rmv_my_indices(self, *args):
         # Remove index from the dict with my indices.
@@ -340,9 +335,6 @@ class IndexSelection(Screen):
             pass
 
         else:
-            # Connect global and instance variables of this Class to provide access to them from outside the Class.
-            IndexSelection.glob_my_indices_search_sm = self.my_indices_search_sm
-            IndexSelection.glob_my_indices_slider = self.my_indices_slider
 
             self.topics_dic = {}
 
@@ -489,7 +481,7 @@ class MainWindow(BoxLayout):
 
     # Prepare kivy properties that show if a process or a popup are currently running. Set to False on app's init.
     processing = BooleanProperty(False)
-    popup_active = BooleanProperty(False)  # TODO 1 inclement (I want to access current popup_active value..)
+    popup_active = BooleanProperty(False)
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     def threadonator(self, *arg):
