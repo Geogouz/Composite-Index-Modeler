@@ -394,7 +394,7 @@
                             height: 17
                             background_down: './Sources/index_desc_up_down.png' if index_desc_box.height == 80 else './Sources/index_desc_down_down.png'
                             background_normal: './Sources/index_desc_up_normal.png' if index_desc_box.height == 80 else './Sources/index_desc_down_normal.png'
-                            on_release:
+                            on_press:
                                 if index_desc_box.height == 80: index_desc_box.height = 200
                                 else: index_desc_box.height = 80
 
@@ -440,7 +440,7 @@
                                 height: 35
                                 background_normal: './Sources/btn_add_index_normal.png'
                                 background_down: './Sources/btn_add_index_down.png'
-                                on_release: root.on_my_indices()
+                                on_press: root.on_my_indices()
 
                             Label:
                                 id: add_index_label
@@ -520,19 +520,23 @@
 
                             # BoxLayout
                             MyIndicesBar:
-                                mib_search_area: search_area
                                 mib_my_indices_search_sm: my_indices_search_sm
 
                     Screen:
                         name: "my_indices"
 
+                        on_enter:
+                            my_indices_slider.opacity = 1
+                            search_area.focus = True
+                        on_pre_leave:
+                            my_indices_slider.opacity = 0
+                            search_area.text = ""
+
                         BoxLayout:
                             orientation: "vertical"
 
                             SearchBar:
-                                sb_search_area: search_area
                                 sb_my_indices_search_sm: my_indices_search_sm
-                                sb_my_indices_slider: my_indices_slider
 
                             BoxLayout:
                                 canvas:

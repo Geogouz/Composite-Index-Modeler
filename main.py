@@ -24,7 +24,7 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty, NumericProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -82,7 +82,6 @@ class Btn_Rmv(Button):
 
 
 class MyIndicesBar(BoxLayout):
-    mib_search_area = ObjectProperty()
     mib_my_indices_search_sm = ObjectProperty()
 
     def __init__(self, **kwargs):
@@ -97,15 +96,9 @@ class MyIndicesBar(BoxLayout):
             # Switch Screens.
             self.mib_my_indices_search_sm.current = "my_indices"
 
-            # Remove previous text inputs.
-            self.mib_search_area.text = ""
-
 
 class SearchBar(BoxLayout):
-    sb_search_area = ObjectProperty()
     sb_my_indices_search_sm = ObjectProperty()
-    sb_my_indices_slider = ObjectProperty()
-    #last_scroll_pos = NumericProperty()  # todo now
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -119,14 +112,8 @@ class SearchBar(BoxLayout):
             # This touch should not be used to defocus.
             FocusBehavior.ignored_touch.append(args[0])
 
-            # Set scroll_y to 1, to prevent my_indices showing faulty while screen switching.
-            self.sb_my_indices_slider.scroll_y = 1
-
             # Switch Screens.
             self.sb_my_indices_search_sm.current = "search_index"
-
-            # Focus the textinput area to begin search.
-            self.sb_search_area.focus = True
 
 class SearchArea(TextInput):
 
