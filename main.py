@@ -24,7 +24,7 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty, NumericProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -159,6 +159,8 @@ class IndexStackLayout(StackLayout):
 
 class IndexSelection(Screen):
 
+    is_manager = ObjectProperty()
+
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
         super(IndexSelection, self).__init__(**kwargs)
@@ -208,9 +210,6 @@ class IndexSelection(Screen):
         # Clear all widgets from stack layout.
         self.indices_slider_stack.clear_widgets()
 
-        # Clear minimum_height of layout (needed cause of kivy version bug).
-        self.indices_slider_stack.minimum_height = 0
-
         # Reset slider position back to top.
         self.indices_slider.scroll_y = 1
 
@@ -250,7 +249,7 @@ class IndexSelection(Screen):
             # Create btn_rmv_anchor to hold btn_rmv.
             btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x= "right", padding=[0, 0, 10, 0])
 
-            # Create a removing index btn and add it to it's parent float.
+            # Create a removing index btn.
             btn_rmv = Factory.Btn_Rmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indices)
 
             # Add btn_rmv in btn_rmv_anchor.
@@ -291,10 +290,22 @@ class IndexSelection(Screen):
         # Set proper btn backgrounds based on my_indices.
         self.btn_index_background()
 
-    def fix_my_index_h(self, *args):
+    # Function that clears all search results.
+    def clear_search_results(self, *args):
+        # Clear all widgets from search_results_container.
+        self.search_results_container.clear_widgets()
 
+        # Reset slider position back to top.
+        self.search_results_slider.scroll_y = 1
+
+        # Clear search area too because user pressed the clear button.
+        if len(args) == 1:
+            # Remove previous text inputs.
+            self.search_area.text = ""
+
+    def fix_my_index_h(self, *args):
         # Init box height is the sum of the Top and Bottom box paddings
-        args[0].parent.height = args[0].parent.padding[3]
+        args[0].parent.height = args[0].parent.padding[1] + args[0].parent.padding[3]
 
         # For each child in box add it's height to the box.
         for child in args[0].parent.children:
@@ -302,14 +313,88 @@ class IndexSelection(Screen):
 
     # This function sets proper background_normal of index buttons.
     def btn_index_background(self):
+        # For each index button..
         for btn in IndexSelection.shown_ind_btns.values():
-            # For each index button, search if it is in my_indices.
+            # search if it is in my_indices.
             if btn.text in self.selected_indices["my_indices"].keys():
                 btn.background_normal = './Sources/grey_btn_down.png'
                 btn.bold = True
             else:
                 btn.background_normal = './Sources/wht_btn_normal.png'
                 btn.bold = False
+
+    def search_results(self, keyword):
+        # Clears all search results.
+        self.clear_search_results()
+
+        # Create sr_toolbox to hold sr_title and clear_sr.
+        sr_toolbox = BoxLayout(orientation="vertical", size_hint_y=None, height=55)
+
+        # Create search Title Label.
+        sr_title = Factory.SR_Title()
+
+        # Create button to clear results.
+        clear_sr = Factory.SR_Clear(on_press=self.clear_search_results)
+
+        # Add search Title and clear button to sr_toolbox
+        sr_toolbox.add_widget(clear_sr)
+        sr_toolbox.add_widget(sr_title)
+
+        # Add sr_toolbox to search_results_container.
+        self.search_results_container.add_widget(sr_toolbox)
+
+        for topic in self.search_dic:
+            for index in self.search_dic[topic]:
+                if keyword.lower() in index.lower():
+
+                    # Create searched_index_box to hold searched_index components.
+                    searched_index_box = Factory.SearchBox()
+
+                    # Store original index name.
+                    orig_index = index
+
+                    # List to store occurrences.
+                    occurrences = []
+
+                    located = None
+                    # Convert each index into a marked index.
+                    while located != -1:
+                        located = index.lower().find(keyword.lower())
+                        if located != -1:
+                            occurrences.append(index.partition(index[located:located+len(keyword)])[0])
+                            occurrences.append("[color=ff0078][b]")
+                            occurrences.append(index.partition(index[located:located+len(keyword)])[1])
+                            occurrences.append("[/b][/color]")
+                            index = index.partition(index[located:located+len(keyword)])[2]
+                        else:
+                            occurrences.append(index)
+
+                    marked_index = ''.join(occurrences)
+
+                    # Create search result index Label.
+                    my_index = Factory.SR_Index(text=marked_index)
+
+                    # Create search result topic Label.
+                    my_topic = Factory.SR_Topic(text=topic)
+
+                    # Add all components in searched_index_box.
+                    searched_index_box.add_widget(my_topic)
+                    searched_index_box.add_widget(my_index)
+
+                    # Bind children heights to parent box.
+                    my_index.bind(height=self.fix_my_index_h)
+                    my_topic.bind(height=self.fix_my_index_h)
+
+                    # Add searched_index_box in search_results_container.
+                    self.search_results_container.add_widget(searched_index_box)
+
+        # Show number of search results.
+        if len(self.search_results_container.children) > 1:
+            sr_title.text = str(len(self.search_results_container.children)-1) + " matches found:"
+            sr_title.color = (0.1, 1, 0.1, 1)
+        else:
+            sr_title.text = "No results"
+            sr_title.color = (1, 0, 0, 1)
 
     # This method checks if there is any core DB available.
     # If there is, it creates the topics dictionary (topics - button objects).
@@ -328,24 +413,24 @@ class IndexSelection(Screen):
             # Checks if there is a coreDB available.
             try:
                 set_stored_coredb = open("./DB/core.db", "r")
-                set_coredb_py = self.string_it(json.load(set_stored_coredb))
+                self.set_coredb_py = self.string_it(json.load(set_stored_coredb))
                 set_stored_coredb.close()
 
                 # There is no topic at the beginning.
                 topics_count = 0
 
                 # For each topic in core DB..
-                for topic_numbers in range(1, (set_coredb_py[2][0]['topics_num'])+1):
+                for topic_numbers in range(1, (self.set_coredb_py[2][0]['topics_num'])+1):
 
                     # Except topics without Topic note.
-                    if set_coredb_py[2][topic_numbers][0]['note'] != "":
+                    if self.set_coredb_py[2][topic_numbers][0]['note'] != "":
 
                         # Count topics.
                         topics_count += 1
 
                         # Grab the topic Info.
-                        topic_note = str(set_coredb_py[2][topic_numbers][0]["note"])
-                        topic_name = str(set_coredb_py[2][topic_numbers][0]["name"])
+                        topic_note = str(self.set_coredb_py[2][topic_numbers][0]["note"])
+                        topic_name = str(self.set_coredb_py[2][topic_numbers][0]["name"])
 
                         # Create a new topic button object.
                         new_button_object = TopicToggleButton(
@@ -357,10 +442,10 @@ class IndexSelection(Screen):
 
                         # Build each separate dictionary with topic's indices.
                         indices_dic = {}
-                        for index in range(1, set_coredb_py[2][topic_numbers][0]["indicators_num"]+1):
-                            indices_dic[set_coredb_py[2][topic_numbers][index][1]] = \
-                                [set_coredb_py[2][topic_numbers][index][0],
-                                 set_coredb_py[2][topic_numbers][index][2]]
+                        for index in range(1, self.set_coredb_py[2][topic_numbers][0]["indicators_num"]+1):
+                            indices_dic[self.set_coredb_py[2][topic_numbers][index][1]] = \
+                                [self.set_coredb_py[2][topic_numbers][index][0],
+                                 self.set_coredb_py[2][topic_numbers][index][2]]
 
                         # Store the keys and values from the DB to the cache dictionary.
                         self.topics_dic[new_button_object] = indices_dic
@@ -377,10 +462,20 @@ class IndexSelection(Screen):
                 # Topics dictionary should not be loaded again.
                 self.must_build_topics = False
 
+                # This will build the live Search dictionary.
+                self.search_dic = {}
+                for first_depth_key in self.topics_dic:
+                    self.search_dic[first_depth_key.text] = []
+                    for second_depth_key in self.topics_dic[first_depth_key]:
+                        self.search_dic[first_depth_key.text].append(second_depth_key)
+
             # If there is no core DB available it prompts for indices update.
             except Exception as e:
                 self.topics_dic = {}
                 print e.__doc__, "That which means no index DB has been found. Must update indices first."  # TODO UPDATE MESSAGE
+
+        # After cache data are ready, switch screen.
+        self.is_manager.current = 'IndexSelectionScreen'
 
     def add_topic(self, *args):
         # If topic button is pressed, create index buttons.

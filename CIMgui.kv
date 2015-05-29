@@ -1,7 +1,7 @@
 #: import sm kivy.uix.screenmanager
 
 
-<TopicTitle@Label>: # Topics Title
+<TopicTitle@Label>:
     canvas.before:
         Color:
             rgba: (0.16, 0.2, 0.24, 1)
@@ -17,7 +17,7 @@
     halign: 'center'
 
 
-<TopicDescription@Label>: # Topics Description
+<TopicDescription@Label>:
     size_hint: (1, None)
     text_size: self.width-40, None
     height: 60+self.texture_size[1]
@@ -26,7 +26,7 @@
     font_size: 14
 
 
-<TopicToggleButton>: # Topics Buttons
+<TopicToggleButton>:
     size_hint: (1, None)
     height: 48
     background_normal: './Sources/button_normal.png'
@@ -41,7 +41,7 @@
     height: self.minimum_height
 
 
-<IndexToggleButton>: # Index Buttons
+<IndexToggleButton>:
     canvas.before:
         Color:
             rgba: (0, 0, 0, 1)
@@ -88,7 +88,7 @@
             size: self.size
 
 
-<MyIndex@Label>: # Topics Description
+<MyIndex@Label>:
     size_hint: (1, None)
     text_size: self.width-15, None
     height: 15 + self.texture_size[1]
@@ -103,7 +103,7 @@
             size: self.size
 
 
-<MyTopic@Label>: # Topics Description
+<MyTopic@Label>:
     size_hint: (1, None)
     text_size: self.width-20, None
     height: 10 + self.texture_size[1]
@@ -115,6 +115,69 @@
     canvas.before:
         Color:
             rgba: (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<SR_Title@Label>:
+    size_hint_y: None
+    height: 30
+    text_size: (self.width, self.height)
+    font_size: 15
+    italic: True
+    valign: "bottom"
+    padding_x: 10
+
+
+<SR_Clear@Button>:
+    size_hint_y: None
+    height: 25
+    text: "Clear results (X)"
+    italic: True
+    font_size: 12
+    color: (1, 1, 1, 1)
+    background_normal: './Sources/clear_search.png'
+
+<SR_Index@Label>: # Topics Description
+    size_hint: (1, None)
+    text_size: self.width-15, None
+    height: 15 + self.texture_size[1]
+    color: (0, 0, 0, 1)
+    font_size: 14
+    halign: 'left'
+    markup: True
+    canvas.before:
+        Color:
+            rgba: (0.9, 0.9, 0.9, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<SR_Topic@Label>: # Topics Description
+    size_hint: (1, None)
+    text_size: self.width-20, None
+    height: 10 + self.texture_size[1]
+    color: (0, 0, 0, 1)
+    font_size: 13
+    bold: True
+    halign: 'left'
+    canvas.before:
+        Color:
+            rgba: (0.75, 0.75, 0.75, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<SearchBox@BoxLayout>:
+    orientation: "vertical"
+    size_hint_y: None
+    padding: (2, 2, 2, 2)
+    canvas:
+        Color:
+            rgba: (0.18, 0.18, 0.18, 1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -150,7 +213,6 @@
 <MainWindow>:  # BoxLayout
     core_build_progress_bar: core_build_progress_bar.__self__
     coredb_state: coredb_state.__self__
-    manager: manager.__self__
     index_selection: index_selection.__self__
 
     orientation: "horizontal"
@@ -161,6 +223,7 @@
         Home:
         IndexSelection:
             id: index_selection
+            is_manager: manager
         MapDesigner:
 
     BoxLayout:
@@ -245,9 +308,7 @@
             halign: 'center'
             size_hint_y: None
             height: 50
-            on_release:
-                index_selection.build_indices()
-                manager.current = 'IndexSelectionScreen'
+            on_release: index_selection.build_indices()
 
         Button:
             text: "Mapper"
@@ -294,6 +355,8 @@
     my_indices_search_sm: my_indices_search_sm.__self__
     my_indices_slider: my_indices_slider.__self__
     my_indices_container: my_indices_container.__self__
+    search_results_slider: search_results_slider.__self__
+    search_results_container: search_results_container.__self__
 
     search_area: search_area.__self__
 
@@ -471,10 +534,15 @@
 
                 ScreenManager:
                     id: my_indices_search_sm
-                    transition: sm.FadeTransition(duration=0.2, clearcolor=(1,1,1,1))
+                    transition: sm.FadeTransition(duration=0.1, clearcolor=(1,1,1,1))
 
                     Screen:
                         name: "search_index"
+
+                        on_enter:
+                            search_area.focus = True
+                            search_results_slider.opacity = 1
+                        on_pre_leave: search_results_slider.opacity = 0
 
                         BoxLayout:
                             orientation: "vertical"
@@ -503,6 +571,7 @@
                                     # TextInput
                                     SearchArea:
                                         id: search_area
+                                        on_text: if len(self.text) > 2: root.search_results(self.text)
 
                                 Image:
                                     size_hint_x: None
@@ -510,13 +579,28 @@
                                     source: './Sources/opened_tab2.png'
                                     allow_stretch: False
 
-                            BoxLayout:
-                                canvas:
+                            ScrollView:
+                                id: search_results_slider
+                                canvas.before:
                                     Color:
                                         rgba: (0.267, 0.259, 0.251, 1)
                                     Rectangle:
                                         pos: self.pos
                                         size: self.size
+                                do_scroll_x: False
+                                bar_width: 2
+                                bar_inactive_color: (1, 1, 1, 1)
+                                bar_color: (1, 1, 1, 1)
+                                bar_margin: 2
+                                bar_pos_y: "right"
+
+                                GridLayout:
+                                    id: search_results_container
+                                    size_hint_y: None
+                                    height: self.minimum_height
+                                    cols: 1
+                                    spacing: 10
+                                    padding: (5, 10, 5, 10)
 
                             # BoxLayout
                             MyIndicesBar:
@@ -525,9 +609,7 @@
                     Screen:
                         name: "my_indices"
 
-                        on_enter:
-                            my_indices_slider.opacity = 1
-                            search_area.focus = True
+                        on_enter: my_indices_slider.opacity = 1
                         on_pre_leave:
                             my_indices_slider.opacity = 0
                             search_area.text = ""
