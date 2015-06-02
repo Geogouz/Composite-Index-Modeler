@@ -24,7 +24,7 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty, ListProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -54,18 +54,10 @@ userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
 
 class TopicToggleButton(ToggleButton):
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(TopicToggleButton, self).__init__(**kwargs)
-
     note = StringProperty("")
 
 
 class IndexToggleButton(ToggleButton):
-
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(IndexToggleButton, self).__init__(**kwargs)
 
     code = StringProperty("")
     note = StringProperty("")
@@ -74,19 +66,12 @@ class IndexToggleButton(ToggleButton):
 
 class Btn_Rmv(Button):
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(Btn_Rmv, self).__init__(**kwargs)
-
     index = StringProperty("")
 
 
 class MyIndicesBar(BoxLayout):
-    mib_my_indices_search_sm = ObjectProperty()
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(MyIndicesBar, self).__init__(**kwargs)
+    mib_my_indices_search_sm = ObjectProperty()
 
     def on_touch_down(self, *args):
         super(MyIndicesBar, self).on_touch_down(*args)
@@ -98,11 +83,8 @@ class MyIndicesBar(BoxLayout):
 
 
 class SearchBar(BoxLayout):
-    sb_my_indices_search_sm = ObjectProperty()
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(SearchBar, self).__init__(**kwargs)
+    sb_my_indices_search_sm = ObjectProperty()
 
     def on_touch_down(self, *args):
         super(SearchBar, self).on_touch_down(*args)
@@ -115,18 +97,13 @@ class SearchBar(BoxLayout):
             # Switch Screens.
             self.sb_my_indices_search_sm.current = "search_index"
 
+
 class SearchArea(TextInput):
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(SearchArea, self).__init__(**kwargs)
+    pass
 
 
 class IndexStackLayout(StackLayout):
-
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(IndexStackLayout, self).__init__(**kwargs)
 
     def do_layout(self, *largs):
         super(IndexStackLayout, self).do_layout()
@@ -157,13 +134,32 @@ class IndexStackLayout(StackLayout):
             pass
 
 
-class IndexSelection(Screen):
+class CIMScreenManager(ScreenManager):
 
-    is_manager = ObjectProperty()
+    mouse_pos = ListProperty(None)
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
-        super(IndexSelection, self).__init__(**kwargs)
+        super(CIMScreenManager, self).__init__(**kwargs)
+        Window.bind(mouse_pos=self.setter('mouse_pos'))
+
+    def on_mouse_pos(self, instance, value):
+        self.current_screen.mouse_pos = self.mouse_pos
+
+
+class MouseScreen(Screen):
+
+    mouse_pos = ListProperty(None)
+
+
+class Home(Screen):
+
+    pass
+
+
+class IndexSelection(MouseScreen):
+
+    is_manager = ObjectProperty()
 
     # TODO must set to True after update
     must_build_topics = True
@@ -184,23 +180,21 @@ class IndexSelection(Screen):
             return obj
 
     # Function that will run everytime mouse is moved.
-    def on_mouse_hover(self, *args):
+    def on_mouse_pos(self, *args):
         for button in self.topics_dic.keys():
-            if button.collide_point(
-                    self.topics_slider.to_local(args[1][0], args[1][1])[0],
-                    self.topics_slider.to_local(args[1][0], args[1][1])[1]):
+            if button.collide_point(*self.topics_slider.to_local(*args[1])):
                 button.background_normal = './Sources/button_hovered.png'
             else:
                 button.background_normal = './Sources/button_normal.png'
 
         # Check if mouse is over add_index_icon.
-        if self.add_index_icon.collide_point(args[1][0], args[1][1]):
+        if self.add_index_icon.collide_point(*args[1]):
             self.add_index_label.color = (0.34, 0.65, 0.90, 1)
         else:
             self.add_index_label.color = (1, 1, 1, 1)
 
         # Check if mouse is over toggle_index_desc_icon.
-        if self.toggle_index_desc_icon.collide_point(args[1][0], args[1][1]):
+        if self.toggle_index_desc_icon.collide_point(*args[1]):
             self.toggle_index_desc_label.color = (0.34, 0.65, 0.90, 1)
         else:
             self.toggle_index_desc_label.color = (1, 1, 1, 1)
@@ -453,9 +447,6 @@ class IndexSelection(Screen):
                         # Place the button inside the slider.
                         self.topics_slider_box.add_widget(new_button_object)
 
-                # Every time mouse moves on Index Selection screen, on_mouse_hover method will be called.
-                Window.bind(mouse_pos=self.on_mouse_hover)
-
                 # Set the height of the Topics menu based on heights and box padding.
                 self.topics_slider_box.height = (topics_count * 48) + topics_count + 1
 
@@ -527,39 +518,22 @@ class IndexSelection(Screen):
             self.clear_indices_stack()
 
 
-class Home(Screen):
+class IndexAlgebra(MouseScreen):
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(Home, self).__init__(**kwargs)
+    pass
 
 
 class MapDesigner(Screen):
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(MapDesigner, self).__init__(**kwargs)
-
-
-class CIMScreenManager(ScreenManager):
-
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(CIMScreenManager, self).__init__(**kwargs)
+    pass
 
 
 class CIMMenu(BoxLayout):
 
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(CIMMenu, self).__init__(**kwargs)
+    pass
 
 
 class MainWindow(BoxLayout):
-
-    def __init__(self, **kwargs):
-        # make sure we aren't overriding any important functionality
-        super(MainWindow, self).__init__(**kwargs)
 
     # Prepare kivy properties that show if a process or a popup are currently running. Set to False on app's init.
     processing = BooleanProperty(False)

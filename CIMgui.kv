@@ -139,7 +139,9 @@
     color: (1, 1, 1, 1)
     background_normal: './Sources/clear_search.png'
 
-<SR_Index@Label>: # Topics Description
+
+# Topics Description
+<SR_Index@Label>:
     size_hint: (1, None)
     text_size: self.width-15, None
     height: 15 + self.texture_size[1]
@@ -155,7 +157,8 @@
             size: self.size
 
 
-<SR_Topic@Label>: # Topics Description
+# Topics Description
+<SR_Topic@Label>:
     size_hint: (1, None)
     text_size: self.width-20, None
     height: 10 + self.texture_size[1]
@@ -199,7 +202,8 @@
     background_active: './Sources/search_background_active_empty.png' if not bool(self.text) else './Sources/search_background_active.png'
 
 
-<AnimWidget@Widget>:  # Animation
+# Animation
+<AnimWidget@Widget>:
     canvas:
         Color:
             rgba: (0.34, 0.76, 1, 1)
@@ -210,7 +214,8 @@
     size: (100, 2)
 
 
-<MainWindow>:  # BoxLayout
+# BoxLayout
+<MainWindow>:
     core_build_progress_bar: core_build_progress_bar.__self__
     coredb_state: coredb_state.__self__
     index_selection: index_selection.__self__
@@ -224,6 +229,7 @@
         IndexSelection:
             id: index_selection
             is_manager: manager
+        IndexAlgebra:
         MapDesigner:
 
     BoxLayout:
@@ -304,11 +310,18 @@
             on_release: manager.current = 'Home'
 
         Button:
-            text: "Index\nSelection"
+            text: "Indicator\nSelection"
             halign: 'center'
             size_hint_y: None
             height: 50
             on_release: index_selection.build_indices()
+
+        Button:
+            text: "Index\nAlgebra"
+            halign: 'center'
+            size_hint_y: None
+            height: 50
+            on_release: manager.current = 'IndexAlgebraScreen'
 
         Button:
             text: "Mapper"
@@ -317,7 +330,8 @@
             on_release: manager.current = 'MapDesignerScreen'
 
 
-<Home>:  # Screen
+# Screen
+<Home>:
 
     name: 'Home'
     BoxLayout:
@@ -337,7 +351,8 @@
             halign: 'center'
 
 
-<IndexSelection>:  # Screen
+# Screen
+<IndexSelection>:
     topics_slider: topics_slider.__self__
     indices_slider: indices_slider.__self__
     topics_slider_box: topics_slider_box.__self__
@@ -692,6 +707,7 @@
                     size_hint: (None, 1)
                     width: 1
 
+
 # Closed and listening Bar
 <MyIndicesBar>
 
@@ -728,6 +744,7 @@
         width: 147
         source: './Sources/closed_tab2.png'
         allow_stretch: False
+
 
 # Closed and listening Bar
 <SearchBar>
@@ -771,8 +788,39 @@
         allow_stretch: False
 
 
-<MapDesigner>:  # Screen
+# Screen
+<IndexAlgebra>:
+    name: 'IndexAlgebraScreen'
+
+    BoxLayout:
+        size_hint: (None, None)
+        size: root.size
+        canvas.before:
+            Color:
+                rgba: (0.22, 0.22, 0.22, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            italic: True
+            text: "IndexAlgebraScreen"
+            halign: 'center'
+
+        BoxLayout:
+            canvas:
+                Color:
+                    rgba: (0, 0, 0, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            size_hint: (None, 1)
+            width: 1
+
+# Screen
+<MapDesigner>:
     name: 'MapDesignerScreen'
+
     BoxLayout:
         size_hint: (None, None)
         size: root.size
