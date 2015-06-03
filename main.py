@@ -133,20 +133,20 @@ class IndexStackLayout(StackLayout):
 
 class CIMScreenManager(ScreenManager):
 
-    mouse_pos = ListProperty(None)
+    mouse_pos = ListProperty()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
         super(CIMScreenManager, self).__init__(**kwargs)
         Window.bind(mouse_pos=self.setter('mouse_pos'))
 
-    def on_mouse_pos(self, instance, value):
+    def on_mouse_pos(self, *args):
         self.current_screen.mouse_pos = self.mouse_pos
 
 
 class MouseScreen(Screen):
 
-    mouse_pos = ListProperty(None)
+    mouse_pos = ListProperty()
 
 
 class Home(Screen):
@@ -157,13 +157,17 @@ class Home(Screen):
 class IndexSelection(MouseScreen):
 
     is_manager = ObjectProperty()
-
-    # TODO must set to True after update
-    must_build_topics = True
-
-    # Use these dictionaries as Class properties.
-    shown_ind_btns = {}
     selected_indices = DictProperty({"feat_index": None, "my_indices": {}})
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(IndexSelection, self).__init__(**kwargs)
+
+        self.must_build_topics = True  # TODO must set to True after update
+        self.shown_ind_btns = {}
+        self.search_dic = None
+        self.topics_dic = None
+        self.set_coredb_py = None
 
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
@@ -239,7 +243,7 @@ class IndexSelection(MouseScreen):
             my_index_box = Factory.MyIndexBox()
 
             # Create btn_rmv_anchor to hold btn_rmv.
-            btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x= "right", padding=[0, 0, 10, 0])
+            btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x="right", padding=[0, 0, 10, 0])
 
             # Create a removing index btn.
             btn_rmv = Factory.BtnRmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indices)
@@ -295,7 +299,8 @@ class IndexSelection(MouseScreen):
             # Remove previous text inputs.
             self.search_area.text = ""
 
-    def fix_my_index_h(self, *args):
+    @staticmethod
+    def fix_my_index_h(*args):
         # Init box height is the sum of the Top and Bottom box paddings
         args[0].parent.height = args[0].parent.padding[1] + args[0].parent.padding[3]
 
@@ -341,9 +346,6 @@ class IndexSelection(MouseScreen):
 
                     # Create searched_index_box to hold searched_index components.
                     searched_index_box = Factory.SearchBox()
-
-                    # Store original index name.
-                    orig_index = index
 
                     # List to store occurrences.
                     occurrences = []
@@ -413,7 +415,7 @@ class IndexSelection(MouseScreen):
                 topics_count = 0
 
                 # For each topic in core DB..
-                for topic_numbers in range(1, (self.set_coredb_py[2][0]['topics_num'])+1):
+                for topic_numbers in range(1, int(self.set_coredb_py[2][0]['topics_num'])+1):
 
                     # Except topics without Topic note.
                     if self.set_coredb_py[2][topic_numbers][0]['note'] != "":
@@ -435,7 +437,7 @@ class IndexSelection(MouseScreen):
 
                         # Build each separate dictionary with topic's indices.
                         indices_dic = {}
-                        for index in range(1, self.set_coredb_py[2][topic_numbers][0]["indicators_num"]+1):
+                        for index in range(1, int(self.set_coredb_py[2][topic_numbers][0]["indicators_num"])+1):
                             indices_dic[self.set_coredb_py[2][topic_numbers][index][1]] = \
                                 [self.set_coredb_py[2][topic_numbers][index][0],
                                  self.set_coredb_py[2][topic_numbers][index][2]]
@@ -530,7 +532,8 @@ class IndexAlgebra(MouseScreen):
     model_indicators = DictProperty({})
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
-    def threadonator(self, *arg):
+    @staticmethod
+    def threadonator(*arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
 
     def get_indicators(self, *arg):
@@ -573,7 +576,8 @@ class MainWindow(BoxLayout):
     popup_active = BooleanProperty(False)
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
-    def threadonator(self, *arg):
+    @staticmethod
+    def threadonator(*arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
 
     @mainthread
@@ -687,22 +691,17 @@ class MainWindow(BoxLayout):
             json.dump(coredb, file_coredb)
             file_coredb.close()
 
+            # Close URL json files.
+            file_countries.close()
+            file_topics.close()
+            file_wdi.close()
+
         except Exception as e:
             print "1"
             self.popuper('Could not update Coredb.\nPlease try again.')
             print e.__doc__, e.message
 
-        finally:
-            self.processing = False
-            try:
-                # Close URL json files.
-                file_countries.close()
-                file_topics.close()
-                file_wdi.close()
-
-            except Exception as e:
-                print "2"
-                print e.__doc__, e.message
+        self.processing = False
 
     # This method checks for last core's index database update.
     def check(self, *arg):
