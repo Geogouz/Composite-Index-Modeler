@@ -4,11 +4,10 @@ __author__ = 'Dimitris Xenakis'
 import kivy
 kivy.require('1.9.0')
 
-import os
 import threading
 import time
 from datetime import datetime
-import urllib
+import urllib2
 import json
 
 from kivy.config import Config
@@ -37,7 +36,7 @@ from kivy.clock import mainthread
 start_url = "http://api.worldbank.org/"
 end_url = "?per_page=30000&format=json"
 
-# Set url catalogs. # TODO which of those needed?
+# Set url catalogs.
 countries = "countries/"
 topics = "topics/"
 indicators = "indicators/"
@@ -52,8 +51,6 @@ coredb_py = None
 userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
           ["SP.DYN.LE00.IN", "MYS.MEA.YSCH.25UP.MF", "SE.SCH.LIFE", "NY.GNP.PCAP.PP.CD", "UNDP.HDI.XD"]]
 
-# print start_url + countries + "GRC" + "/" + indicators + "AG.LND.FRST.K2" + "/" + end_url
-
 
 class TopicToggleButton(ToggleButton):
 
@@ -67,7 +64,7 @@ class IndexToggleButton(ToggleButton):
     topic = StringProperty("")
 
 
-class Btn_Rmv(Button):
+class BtnRmv(Button):
 
     index = StringProperty("")
 
@@ -111,11 +108,10 @@ class IndexStackLayout(StackLayout):
     def do_layout(self, *largs):
         super(IndexStackLayout, self).do_layout()
 
+        col = int((self.width-8)//380)
         # Try to fix each Index button.
-        try:
+        if col > 0:
             # Calculate how many cols are inside the slider.
-            col = int((self.width-8)//380)
-
             for button in range(1, len(IndexSelection.shown_ind_btns)+1, col):
                 # Prepare the list to store each button height per line.
                 height_list = []
@@ -133,8 +129,6 @@ class IndexStackLayout(StackLayout):
                     # If current is last button, break.
                     if button+step == len(IndexSelection.shown_ind_btns):
                         break
-        except:
-            pass
 
 
 class CIMScreenManager(ScreenManager):
@@ -219,12 +213,13 @@ class IndexSelection(MouseScreen):
         if args[0] == self.selected_indices["feat_index"]:
             # It means the same button has been toggled and should clear the "feat_index".
             self.selected_indices["feat_index"] = None
+
         else:
-            try:
+            if self.selected_indices["feat_index"] is not None:
                 self.selected_indices["feat_index"].state = "normal"
-            except:
-                pass
+
             self.selected_indices["feat_index"] = args[0]
+
         # Reset slider position back to top.
         self.index_desc_slider.scroll_y = 1
 
@@ -247,7 +242,7 @@ class IndexSelection(MouseScreen):
             btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x= "right", padding=[0, 0, 10, 0])
 
             # Create a removing index btn.
-            btn_rmv = Factory.Btn_Rmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indices)
+            btn_rmv = Factory.BtnRmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indices)
 
             # Add btn_rmv in btn_rmv_anchor.
             btn_rmv_anchor.add_widget(btn_rmv)
@@ -477,6 +472,7 @@ class IndexSelection(MouseScreen):
                     halign="center",
                     italic=True
                 ), size_hint=(None, None), size=(350, 180)).open()
+                print e.__doc__, e.message
 
     def add_topic(self, *args):
         # If topic button is pressed, create index buttons.
@@ -542,6 +538,11 @@ class IndexAlgebra(MouseScreen):
         self.model_indicators = self.ia_selected_indices.selected_indices["my_indices"]
         if len(self.model_indicators) == 0:
             self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
+        else:
+            for value in self.model_indicators.values():
+                print start_url + countries + indicators + value + "/" + end_url
+            # http://api.worldbank.org/countries/indicators/AG.LND.FRST.K2/?per_page=30000&format=json
+
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
 
@@ -553,6 +554,7 @@ class IndexAlgebra(MouseScreen):
             halign="center",
             italic=True
         ), size_hint=(None, None), size=(350, 180)).open()
+
 
 class MapDesigner(Screen):
 
@@ -573,6 +575,15 @@ class MainWindow(BoxLayout):
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     def threadonator(self, *arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
+
+    @mainthread
+    def popuper(self, message):
+        Popup(title='Notice..', content=Label(
+            text=message,
+            font_size=15,
+            halign="center",
+            italic=True
+        ), size_hint=(None, None), size=(350, 180)).open()
 
     # Loading bar
     def update_progress(self, *arg):
@@ -601,25 +612,15 @@ class MainWindow(BoxLayout):
             c_link = start_url + countries + end_url
             t_link = start_url + topics + end_url
 
-            # Save sources into json files.
-            urllib.urlretrieve(c_link, "./DB/Countries.json")
-            urllib.urlretrieve(t_link, "./DB/Topics.json")
-            urllib.urlretrieve(wdi_url, "./DB/WDI.json")
+            # Store opened JSON data from World Bank to vars.
+            file_countries = urllib2.urlopen(c_link)
+            file_topics = urllib2.urlopen(t_link)
+            file_wdi = urllib2.urlopen(wdi_url)
 
-            # Open json files.
-            file_countries = open("./DB/Countries.json", "r")
-            file_topics = open("./DB/Topics.json", "r")
-            file_wdi = open("./DB/WDI.json", "r")
-
-            # Convert json files into temp python structures.
+            # Convert JSON data into temp python structures.
             countries_py = json.load(file_countries)
             topics_py = json.load(file_topics)
             wdi_py = json.load(file_wdi)
-
-            # Close json files.
-            file_countries.close()
-            file_topics.close()
-            file_wdi.close()
 
             # Zip python structures into a single DB list.
             countries_zip = [[]]
@@ -686,14 +687,22 @@ class MainWindow(BoxLayout):
             json.dump(coredb, file_coredb)
             file_coredb.close()
 
-            # Delete temp downloaded json files.
-            os.remove("./DB/Countries.json")
-            os.remove("./DB/Topics.json")
-            os.remove("./DB/WDI.json")
-
         except Exception as e:
-            print e.__doc__, e.message, "Could not update Coredb. Please try again."
-        self.processing = False
+            print "1"
+            self.popuper('Could not update Coredb.\nPlease try again.')
+            print e.__doc__, e.message
+
+        finally:
+            self.processing = False
+            try:
+                # Close URL json files.
+                file_countries.close()
+                file_topics.close()
+                file_wdi.close()
+
+            except Exception as e:
+                print "2"
+                print e.__doc__, e.message
 
     # This method checks for last core's index database update.
     def check(self, *arg):
@@ -715,8 +724,14 @@ class MainWindow(BoxLayout):
 
                 self.coredb_state.text = ("Latest DB Update:\n" + coredb_py[0]['table_date'])
 
-            except Exception as e:
+            # No file found.
+            except IOError:
                 self.coredb_state.text = "No valid Database found!\nPlease update it."
+
+            # Something unexpected just happened.
+            except Exception as e:
+                print "def check(self, *arg):", e.__doc__, e.message
+
             time.sleep(2)
 
 
