@@ -230,6 +230,7 @@
             id: index_selection
             is_manager: manager
         IndexAlgebra:
+            ia_selected_indices: index_selection
         MapDesigner:
 
     BoxLayout:
@@ -249,7 +250,7 @@
             size_hint: (None, None)
             height: 250
             width: 400
-            title: "Update Indices Database"
+            title: "Update Indicator Database"
             on_parent:
                 if self.parent == main_boxlayout: self.parent.remove_widget(self)
 
@@ -284,12 +285,12 @@
 
         Button:
             size_hint: (None, None)
-            height: 50
+            height: 35
             width: 90
             pos_hint: {'center_x': 0.5}
             bold: True
-            font_size: 15
-            text: "Update\nIndex DB"
+            font_size: 14
+            text: "Update DB"
             halign: 'center'
             on_release:
                 root.popup_active = True
@@ -669,8 +670,8 @@
                                         size_hint_y: None
                                         size_hint_x: None
                                         height: 50
-                                        width: 10 + self.texture_size[0]
-                                        text: "My Indices"
+                                        width: 8 + self.texture_size[0]
+                                        text: "My Indicators"
                                         bold: True
                                         color: (1, 1, 1, 1)
 
@@ -734,8 +735,8 @@
             size_hint_y: None
             size_hint_x: None
             height: 50
-            width: 10 + self.texture_size[0]
-            text: "My Indices"
+            width: 8 + self.texture_size[0]
+            text: "My Indicators"
             bold: True
             color: (0.5, 0.5, 0.5, 1)
 
@@ -790,32 +791,232 @@
 
 # Screen
 <IndexAlgebra>:
+    btn_get_indicators: btn_get_indicators.__self__
+
     name: 'IndexAlgebraScreen'
-
     BoxLayout:
-        size_hint: (None, None)
-        size: root.size
-        canvas.before:
-            Color:
-                rgba: (0.22, 0.22, 0.22, 1)
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-        Label:
-            italic: True
-            text: "IndexAlgebraScreen"
-            halign: 'center'
 
         BoxLayout:
+            orientation: "vertical"
+
+            BoxLayout:
+                size_hint_y: None
+                height: 100
+                padding: (5, 5, 0, 5)
+                canvas.before:
+                    Color:
+                        rgba: (0.22, 0.22, 0.22, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                BoxLayout:
+                    size_hint_x: None
+                    width: 130
+                    orientation: "vertical"
+
+                    ToggleButton:
+                        id: btn_get_indicators
+                        size_hint: (None, None)
+                        width: 130
+                        height: 68
+                        background_normal: './Sources/get_indicators_btn_normal.png'
+                        background_down: './Sources/get_indicators_btn_down.png'
+                        background_disabled_down: './Sources/get_indicators_btn_down.png'
+                        on_state: if self.state == "down": root.threadonator(root.get_indicators)
+
+                    Label:
+                        canvas.before:
+                            Color:
+                                rgba: (1, 1, 1, 1) if btn_get_indicators.state == "normal" else (0.96, 0.26, 0.21, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+                        size_hint: (None, None)
+                        height: 22
+                        width: 130
+                        font_size: 13
+                        color: (0.96, 0.26, 0.21, 1) if btn_get_indicators.state == "normal" else (1, 1, 1, 1)
+                        text: "Get Indicator Data"
+
+                BoxLayout:
+                    size_hint_x: None
+                    # 542 = sibling widths
+                    width: root.width - 542
+
+                # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
+                BoxLayout:
+                    spacing: 5
+                    padding: (1, 0, 5, 0)
+                    canvas.before:
+                        Color:
+                            rgba: (0.22, 0.22, 0.22, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    BoxLayout:
+                        size_hint_x: None
+                        width: 130
+                        orientation: "vertical"
+
+                        ToggleButton:
+                            id: btn_view_indicators
+                            size_hint: (None, None)
+                            width: 130
+                            height: 68
+                            background_normal: './Sources/view_indicators_btn_normal.png'
+                            background_down: './Sources/view_indicators_btn_down.png'
+                            on_press: pass
+
+                        Label:
+                            canvas.before:
+                                Color:
+                                    rgba: (1, 1, 1, 1) if btn_view_indicators.state == "normal" else (0.96, 0.26, 0.21, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                            size_hint: (None, None)
+                            height: 22
+                            width: 130
+                            font_size: 13
+                            color: (0.96, 0.26, 0.21, 1) if btn_view_indicators.state == "normal" else (1, 1, 1, 1)
+                            text: "View Indicator Data"
+
+                    BoxLayout:
+                        size_hint_x: None
+                        width: 130
+                        orientation: "vertical"
+
+                        ToggleButton:
+                            id: btn_series_selection
+                            size_hint: (None, None)
+                            width: 130
+                            height: 68
+                            background_normal: './Sources/series_selection_btn_normal.png'
+                            background_down: './Sources/series_selection_btn_down.png'
+                            on_press: pass
+
+                        Label:
+                            canvas.before:
+                                Color:
+                                    rgba: (1, 1, 1, 1) if btn_series_selection.state == "normal" else (0.96, 0.26, 0.21, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                            size_hint: (None, None)
+                            height: 22
+                            width: 130
+                            font_size: 13
+                            color: (0.96, 0.26, 0.21, 1) if btn_series_selection.state == "normal" else (1, 1, 1, 1)
+                            text: "Series Selection"
+
+                    BoxLayout:
+                        size_hint_x: None
+                        width: 130
+                        orientation: "vertical"
+
+                        ToggleButton:
+                            id: btn_index_algebra
+                            size_hint: (None, None)
+                            width: 130
+                            height: 68
+                            background_normal: './Sources/index_algebra_btn_normal.png'
+                            background_down: './Sources/index_algebra_btn_down.png'
+                            on_press: pass
+
+                        Label:
+                            canvas.before:
+                                Color:
+                                    rgba: (1, 1, 1, 1) if btn_index_algebra.state == "normal" else (0.96, 0.26, 0.21, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                            size_hint: (None, None)
+                            height: 22
+                            width: 130
+                            font_size: 13
+                            color: (0.96, 0.26, 0.21, 1) if btn_index_algebra.state == "normal" else (1, 1, 1, 1)
+                            text: "Index Algebra"
+
+            BoxLayout:
+                size_hint_y: None
+                height: 1
+                canvas:
+                    Color:
+                        rgba: (0, 0, 0, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+            BoxLayout:
+                size_hint_y: None
+                # 100 = above toolbar height
+                height: root.height - 102
+                canvas:
+                    Color:
+                        rgba: (1, 1, 1, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint_x: None
+                    width: 300
+                    padding: (0, 0, 0, (self.height - 220))
+                    canvas:
+                        Color:
+                            rgba: (0.9, 0.9, 0.9, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    BoxLayout:
+                        size_hint_y: None
+                        height: 168
+                        orientation: "vertical"
+
+                        Image:
+                            size_hint: (None, None)
+                            height: 128
+                            width: 300
+                            source: './Sources/Select_Indicators_First.png'
+                            allow_stretch: False
+
+                        Label:
+                            size_hint: (None, None)
+                            height: 60
+                            width: 300
+                            bold: True
+                            font_size: 25
+                            color: (1, 1, 1, 1)
+                            halign: "center"
+                            text: "Use button above\nto get your data.."
+
+                BoxLayout:
+                    size_hint_x: None
+                    width: 1
+                    canvas:
+                        Color:
+                            rgba: (0, 0, 0, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+        BoxLayout:
+            size_hint_x: None
+            width: 1
             canvas:
                 Color:
                     rgba: (0, 0, 0, 1)
                 Rectangle:
                     pos: self.pos
                     size: self.size
-            size_hint: (None, 1)
-            width: 1
 
 # Screen
 <MapDesigner>:

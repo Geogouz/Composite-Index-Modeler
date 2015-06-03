@@ -27,8 +27,11 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty, ListProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.behaviors import FocusBehavior
+from kivy.uix.popup import Popup
+from kivy.clock import mainthread
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -164,7 +167,7 @@ class IndexSelection(MouseScreen):
     # TODO must set to True after update
     must_build_topics = True
 
-    # Use this dictionary as a Class variable (usable from other Classes too).
+    # Use these dictionaries as Class properties.
     shown_ind_btns = {}
     selected_indices = DictProperty({"feat_index": None, "my_indices": {}})
 
@@ -398,7 +401,8 @@ class IndexSelection(MouseScreen):
 
         # If topics dictionary shouldn't be loaded, do nothing.
         if not self.must_build_topics:
-            pass
+            # Switch screen without updating indicator database.
+            self.is_manager.current = 'IndexSelectionScreen'
 
         else:
 
@@ -460,13 +464,19 @@ class IndexSelection(MouseScreen):
                     for second_depth_key in self.topics_dic[first_depth_key]:
                         self.search_dic[first_depth_key.text].append(second_depth_key)
 
+                # After cache data are ready, switch screen.
+                self.is_manager.current = 'IndexSelectionScreen'
+
             # If there is no core DB available it prompts for indices update.
             except Exception as e:
                 self.topics_dic = {}
-                print e.__doc__, "That which means no index DB has been found. Must update indices first."  # TODO UPDATE MESSAGE
-
-        # After cache data are ready, switch screen.
-        self.is_manager.current = 'IndexSelectionScreen'
+                self.is_manager.current = 'Home'
+                Popup(title='Notice..', content=Label(
+                    text='No Indicator available.\nUpdate the database first.',
+                    font_size=15,
+                    halign="center",
+                    italic=True
+                ), size_hint=(None, None), size=(350, 180)).open()
 
     def add_topic(self, *args):
         # If topic button is pressed, create index buttons.
@@ -520,8 +530,29 @@ class IndexSelection(MouseScreen):
 
 class IndexAlgebra(MouseScreen):
 
-    pass
+    # Use this dictionary as a Class property to store chosen indicators.
+    model_indicators = DictProperty({})
 
+    # This method can generate new threads, so that main thread (GUI) won't get frozen.
+    def threadonator(self, *arg):
+        threading.Thread(target=arg[0], args=(arg,)).start()
+
+    def get_indicators(self, *arg):
+        self.btn_get_indicators.disabled = True
+        self.model_indicators = self.ia_selected_indices.selected_indices["my_indices"]
+        if len(self.model_indicators) == 0:
+            self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
+        self.btn_get_indicators.disabled = False
+        self.btn_get_indicators.state = "normal"
+
+    @mainthread
+    def popuper(self, message):
+        Popup(title='Notice..', content=Label(
+            text=message,
+            font_size=15,
+            halign="center",
+            italic=True
+        ), size_hint=(None, None), size=(350, 180)).open()
 
 class MapDesigner(Screen):
 
@@ -673,7 +704,7 @@ class MainWindow(BoxLayout):
 
             # If there is any process running, wait until finish.
             while self.processing:
-                self.coredb_state.text = "Updating Indices!\nDuration depends on your Internet speed.."
+                self.coredb_state.text = "Updating indicator database!\nDuration depends on your Internet speed.."
                 time.sleep(1)
 
             # Try to open the json DB file.
@@ -685,8 +716,7 @@ class MainWindow(BoxLayout):
                 self.coredb_state.text = ("Latest DB Update:\n" + coredb_py[0]['table_date'])
 
             except Exception as e:
-                print e.__doc__, e.message
-                self.coredb_state.text = "No valid Indices Database found!\nPlease update it."
+                self.coredb_state.text = "No valid Database found!\nPlease update it."
             time.sleep(2)
 
 
