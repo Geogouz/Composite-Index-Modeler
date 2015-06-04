@@ -968,7 +968,6 @@
                     orientation: "vertical"
                     size_hint_x: None
                     width: 300
-                    padding: (0, 0, 0, (self.height - 300))
                     canvas:
                         Color:
                             rgba: (0.9, 0.9, 0.9, 1)
@@ -977,9 +976,9 @@
                             size: self.size
 
                     BoxLayout:
-                        size_hint_y: None
-                        height: 168
+                        opacity: 1 if not indicator_list.children else 0
                         orientation: "vertical"
+                        padding: (0, 0, 0, (self.parent.height - 300))
 
                         Image:
                             size_hint: (None, None)
@@ -997,6 +996,37 @@
                             color: (1, 1, 1, 1)
                             halign: "center"
                             text: "Use button above\nto get your data.."
+
+                    BoxLayout:
+                        id: indicator_list
+                        size_hint: (None, None)
+                        size: (0, 0) if not self.children else (300, self.parent.height)
+                        orientation: "vertical"
+                        canvas:
+                            Color:
+                                rgba: (0.4, 0.1, 0.9, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+                        BoxLayout:
+                            size_hint: (None, None)
+                            height: 167
+                            width: 300
+                            canvas:
+                                Color:
+                                    rgba: (0.2, 0.4, 0.3, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                            Image:
+                                size_hint: (None, None)
+                                height: 167
+                                width: 300
+                                source: './Sources/indicators_widget.png'
+                                allow_stretch: False
+
 
                 BoxLayout:
                     size_hint_x: None

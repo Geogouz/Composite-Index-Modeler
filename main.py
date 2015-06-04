@@ -468,7 +468,7 @@ class IndexSelection(MouseScreen):
             except Exception as e:
                 self.topics_dic = {}
                 self.is_manager.current = 'Home'
-                Popup(title='Notice..', content=Label(
+                Popup(title='Warning:', content=Label(
                     text='No Indicator available.\nUpdate the database first.',
                     font_size=15,
                     halign="center",
@@ -543,15 +543,15 @@ class IndexAlgebra(MouseScreen):
             self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
         else:
             for value in self.model_indicators.values():
-                print start_url + countries + indicators + value + "/" + end_url
-            # http://api.worldbank.org/countries/indicators/AG.LND.FRST.K2/?per_page=30000&format=json
+                indicator_address = start_url + countries + indicators + value + "/" + end_url
+                print indicator_address
 
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
 
     @mainthread
     def popuper(self, message):
-        Popup(title='Notice..', content=Label(
+        Popup(title='Warning:', content=Label(
             text=message,
             font_size=15,
             halign="center",
@@ -582,7 +582,7 @@ class MainWindow(BoxLayout):
 
     @mainthread
     def popuper(self, message):
-        Popup(title='Notice..', content=Label(
+        Popup(title='Warning:', content=Label(
             text=message,
             font_size=15,
             halign="center",
@@ -617,9 +617,9 @@ class MainWindow(BoxLayout):
             t_link = start_url + topics + end_url
 
             # Store opened JSON data from World Bank to vars.
-            file_countries = urllib2.urlopen(c_link)
-            file_topics = urllib2.urlopen(t_link)
-            file_wdi = urllib2.urlopen(wdi_url)
+            file_countries = urllib2.urlopen(c_link, timeout=60)
+            file_topics = urllib2.urlopen(t_link, timeout=60)
+            file_wdi = urllib2.urlopen(wdi_url, timeout=60)
 
             # Convert JSON data into temp python structures.
             countries_py = json.load(file_countries)
