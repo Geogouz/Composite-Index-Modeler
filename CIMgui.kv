@@ -229,7 +229,7 @@
         IndexSelection:
             id: index_selection
             is_manager: manager
-        IndexAlgebra:
+        IndexCreation:
             ia_selected_indices: index_selection
         MapDesigner:
 
@@ -318,11 +318,11 @@
             on_release: index_selection.build_indices()
 
         Button:
-            text: "Index\nAlgebra"
+            text: "Index\nCreation"
             halign: 'center'
             size_hint_y: None
             height: 50
-            on_release: manager.current = 'IndexAlgebraScreen'
+            on_release: manager.current = 'IndexCreationScreen'
 
         Button:
             text: "Mapper"
@@ -790,10 +790,10 @@
 
 
 # Screen
-<IndexAlgebra>:
+<IndexCreation>:
     btn_get_indicators: btn_get_indicators.__self__
 
-    name: 'IndexAlgebraScreen'
+    name: 'IndexCreationScreen'
     BoxLayout:
 
         BoxLayout:
@@ -1002,31 +1002,103 @@
                         size_hint: (None, None)
                         size: (0, 0) if not self.children else (300, self.parent.height)
                         orientation: "vertical"
-                        canvas:
-                            Color:
-                                rgba: (0.4, 0.1, 0.9, 1)
-                            Rectangle:
-                                pos: self.pos
-                                size: self.size
 
                         BoxLayout:
                             size_hint: (None, None)
-                            height: 167
-                            width: 300
+                            size: (300, 167)
+                            padding: (19, 10, 19, 17)
+                            spacing: 7
+                            orientation: "vertical"
                             canvas:
                                 Color:
-                                    rgba: (0.2, 0.4, 0.3, 1)
+                                    rgba: (1, 1, 1, 1)
                                 Rectangle:
+                                    source: './Sources/indicators_widget.png'
                                     pos: self.pos
                                     size: self.size
 
-                            Image:
+                            BoxLayout:
+                                orientation: "horizontal"
                                 size_hint: (None, None)
-                                height: 167
-                                width: 300
-                                source: './Sources/indicators_widget.png'
-                                allow_stretch: False
+                                size: (262, 70)
 
+                                ScrollView:
+                                    canvas.before:
+                                        Color:
+                                            rgba: (0.22, 0.22, 0.22, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                    do_scroll_x: False
+                                    bar_width: 2
+                                    bar_inactive_color: (0.8, 0.8, 0.8, 1)
+                                    bar_color: (0.96, 0.26, 0.21, 1)
+                                    bar_margin: 3
+                                    bar_pos_y: "right"
+
+                                    Label:
+                                        canvas.before:
+                                            Color:
+                                                rgba: (0, 1, 0, 0)
+                                            Rectangle:
+                                                pos: self.pos
+                                                size: self.size
+                                        size_hint: (None, None)
+                                        width: 212
+                                        padding_y: 8
+                                        height: self.texture_size[1]
+                                        text_size: (self.width-16, None)
+                                        italic: True
+                                        font_size: 13
+                                        text: "CO2 emissions from other sectors, excluding residential buildings and commercial CO2 emissions from other sectors, excluding residential buildings and commercial.."
+
+                                Label:
+                                    size_hint: (None, None)
+                                    size: (50, 70)
+                                    canvas.before:
+                                        Color:
+                                            rgba: (0.96, 0.26, 0.21, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                    font_size: 30 if len(self.text) == 2 else 15
+                                    text: "IA"
+
+                            BoxLayout:
+                                size_hint: (None, None)
+                                size: (262, 63)
+                                canvas:
+                                    Color:
+                                        rgba: (0.7, 0.7, 0.7, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                padding: (0, 0, 0, 0)
+                                spacing: 1
+
+                                Label:
+                                    canvas:
+                                        Color:
+                                            rgba: (1, 1, 1, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+
+                                Label:
+                                    canvas:
+                                        Color:
+                                            rgba: (1, 1, 1, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+
+                                Label:
+                                    canvas:
+                                        Color:
+                                            rgba: (1, 1, 1, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
 
                 BoxLayout:
                     size_hint_x: None

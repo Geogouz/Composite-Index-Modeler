@@ -526,7 +526,7 @@ class IndexSelection(MouseScreen):
             self.clear_indices_stack()
 
 
-class IndexAlgebra(MouseScreen):
+class IndexCreation(MouseScreen):
 
     # Use this dictionary as a Class property to store chosen indicators.
     model_indicators = DictProperty({})
