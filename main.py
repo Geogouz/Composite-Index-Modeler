@@ -44,9 +44,6 @@ indicators = "indicators/"
 # Set url for World Development Indicators (WDI)
 wdi_url = "http://api.worldbank.org/source/2/indicators/?per_page=30000&format=json"
 
-# Prepare the file to store core's index database.
-coredb_py = None
-
 # Set userdb
 userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
           ["SP.DYN.LE00.IN", "MYS.MEA.YSCH.25UP.MF", "SE.SCH.LIFE", "NY.GNP.PCAP.PP.CD", "UNDP.HDI.XD"]]
@@ -71,6 +68,7 @@ class BtnRmv(Button):
 
 class MyIndicesBar(BoxLayout):
 
+    # Link to ScreenManager
     mib_my_indices_search_sm = ObjectProperty()
 
     def on_touch_down(self, *args):
@@ -84,6 +82,7 @@ class MyIndicesBar(BoxLayout):
 
 class SearchBar(BoxLayout):
 
+    # Link to ScreenManager
     sb_my_indices_search_sm = ObjectProperty()
 
     def on_touch_down(self, *args):
@@ -156,8 +155,11 @@ class Home(Screen):
 
 class IndexSelection(MouseScreen):
 
+    # Link to CIMScreenManager
     is_manager = ObjectProperty()
-    selected_indices = DictProperty({"feat_index": None, "my_indices": {}})
+
+    selected_indices = DictProperty({"feat_index": None, "my_indices": {}, "model_indicators": {}})  # TODO Use of model_indicators?
+    coredb_py = ObjectProperty()
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -167,7 +169,6 @@ class IndexSelection(MouseScreen):
         self.shown_ind_btns = {}
         self.search_dic = None
         self.topics_dic = None
-        self.set_coredb_py = None
 
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
@@ -408,24 +409,24 @@ class IndexSelection(MouseScreen):
             # Checks if there is a coreDB available.
             try:
                 set_stored_coredb = open("./DB/core.db", "r")
-                self.set_coredb_py = self.string_it(json.load(set_stored_coredb))
+                self.coredb_py = self.string_it(json.load(set_stored_coredb))
                 set_stored_coredb.close()
 
                 # There is no topic at the beginning.
                 topics_count = 0
 
                 # For each topic in core DB..
-                for topic_numbers in range(1, int(self.set_coredb_py[2][0]['topics_num'])+1):
+                for topic_numbers in range(1, int(self.coredb_py[2][0]['topics_num'])+1):
 
                     # Except topics without Topic note.
-                    if self.set_coredb_py[2][topic_numbers][0]['note'] != "":
+                    if self.coredb_py[2][topic_numbers][0]['note'] != "":
 
                         # Count topics.
                         topics_count += 1
 
                         # Grab the topic Info.
-                        topic_note = str(self.set_coredb_py[2][topic_numbers][0]["note"])
-                        topic_name = str(self.set_coredb_py[2][topic_numbers][0]["name"])
+                        topic_note = str(self.coredb_py[2][topic_numbers][0]["note"])
+                        topic_name = str(self.coredb_py[2][topic_numbers][0]["name"])
 
                         # Create a new topic button object.
                         new_button_object = TopicToggleButton(
@@ -437,10 +438,10 @@ class IndexSelection(MouseScreen):
 
                         # Build each separate dictionary with topic's indices.
                         indices_dic = {}
-                        for index in range(1, int(self.set_coredb_py[2][topic_numbers][0]["indicators_num"])+1):
-                            indices_dic[self.set_coredb_py[2][topic_numbers][index][1]] = \
-                                [self.set_coredb_py[2][topic_numbers][index][0],
-                                 self.set_coredb_py[2][topic_numbers][index][2]]
+                        for index in range(1, int(self.coredb_py[2][topic_numbers][0]["indicators_num"])+1):
+                            indices_dic[self.coredb_py[2][topic_numbers][index][1]] = \
+                                [self.coredb_py[2][topic_numbers][index][0],
+                                 self.coredb_py[2][topic_numbers][index][2]]
 
                         # Store the keys and values from the DB to the cache dictionary.
                         self.topics_dic[new_button_object] = indices_dic
@@ -528,23 +529,106 @@ class IndexSelection(MouseScreen):
 
 class IndexCreation(MouseScreen):
 
-    # Use this dictionary as a Class property to store chosen indicators.
-    model_indicators = DictProperty({})
+    # Link to IndexSelection
+    ic_index_selection = ObjectProperty()
+
+    all_indicators_data = DictProperty({})
+    country_list = ListProperty()
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     @staticmethod
     def threadonator(*arg):
         threading.Thread(target=arg[0], args=(arg,)).start()
 
+    # Recursively convert Unicode objects to strings objects.
+    def string_it(self, obj):
+        if isinstance(obj, dict):
+            return {self.string_it(key): self.string_it(value) for key, value in obj.iteritems()}
+        elif isinstance(obj, list):
+            return [self.string_it(element) for element in obj]
+        elif isinstance(obj, unicode):
+            return obj.encode('utf-8')
+        else:
+            return obj
+
     def get_indicators(self, *arg):
         self.btn_get_indicators.disabled = True
-        self.model_indicators = self.ia_selected_indices.selected_indices["my_indices"]
-        if len(self.model_indicators) == 0:
+
+        # Shortcut for "my_indices"
+        mi = self.ic_index_selection.selected_indices["my_indices"]
+
+        if len(mi) == 0:
             self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
+
         else:
-            for value in self.model_indicators.values():
-                indicator_address = start_url + countries + indicators + value + "/" + end_url
-                print indicator_address
+            # Reset indicator data from current database.
+            self.all_indicators_data = {}
+
+            # CleanUP country list.
+            self.country_list = []
+
+            # Reset connection list.
+            connections = []
+
+
+
+            # Create dictionary to connect model's ID's to WorldBank's ID's.
+            #for .. in mi.values():
+            id_conn = {"IA": "EG.USE.CRNW.ZS"}
+
+
+            # Prepare Indicator ID's along with their basic structure.
+            self.all_indicators_data = {"IA": {}}
+
+
+
+
+            # Prepare Country List and place it inside all_indicators_data.
+            for i in range(1, self.ic_index_selection.coredb_py[1][0]["countries_num"]+1):
+                country = self.ic_index_selection.coredb_py[1][i][1]
+                self.country_list.append(country)
+
+                for key in self.all_indicators_data:
+                    self.all_indicators_data[key][country] = []
+
+            try:
+                for short_id in self.all_indicators_data:
+
+                    indicator_address = start_url + countries + indicators + id_conn[short_id] + "/" + end_url
+                    #print indicator_address
+
+                    # Define World Bank connection (JSON data).
+                    ind_data_connection = urllib2.urlopen(indicator_address, timeout=15)
+
+                    # Add current connection to the list with all connections.
+                    connections.append(ind_data_connection)
+
+                    # Convert JSON data into temp python structure.
+                    ind_data_py = self.string_it(json.load(ind_data_connection))
+
+                    # For each record in the json file..
+                    for record in range(len(ind_data_py[1])):
+                        country = ind_data_py[1][record]["country"]["value"]
+                        year = ind_data_py[1][record]["date"]
+                        value = ind_data_py[1][record]["value"]
+
+                        self.all_indicators_data[short_id][country].append([year, value])
+
+                    print self.all_indicators_data
+
+            except Exception as e:
+                self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)
+
+            finally:
+
+                try:
+                    # Close created connections to WorldBank.
+                    for conn in connections:
+                        conn.close()
+
+                # Something really unexpected just happened.
+                except Exception as e:
+                    print "def core_build(self, *arg):", type(e), e.__doc__, e.message
 
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
@@ -616,7 +700,7 @@ class MainWindow(BoxLayout):
             c_link = start_url + countries + end_url
             t_link = start_url + topics + end_url
 
-            # Store opened JSON data from World Bank to vars.
+            # Define World Bank connections (JSON data).
             file_countries = urllib2.urlopen(c_link, timeout=60)
             file_topics = urllib2.urlopen(t_link, timeout=60)
             file_wdi = urllib2.urlopen(wdi_url, timeout=60)
@@ -691,22 +775,28 @@ class MainWindow(BoxLayout):
             json.dump(coredb, file_coredb)
             file_coredb.close()
 
-            # Close URL json files.
-            file_countries.close()
-            file_topics.close()
-            file_wdi.close()
-
         except Exception as e:
-            print "1"
-            self.popuper('Could not update Coredb.\nPlease try again.')
-            print e.__doc__, e.message
+            self.popuper("Could not update Coredb.\nPlease try again.\n\n"+e.message)
+
+        # Close URL json files.
+        finally:
+            try:
+                file_countries.close()
+                file_topics.close()
+                file_wdi.close()
+
+            # If there is no connection, do nothing.
+            except UnboundLocalError:
+                pass
+
+            # Something really unexpected just happened.
+            except Exception as e:
+                print "def core_build(self, *arg):", type(e), e.__doc__, e.message
 
         self.processing = False
 
     # This method checks for last core's index database update.
     def check(self, *arg):
-        global coredb_py
-
         # For as long as the popup window is shown.
         while self.popup_active and (not CIMgui.app_closed):
 
@@ -718,18 +808,18 @@ class MainWindow(BoxLayout):
             # Try to open the json DB file.
             try:
                 stored_coredb = open("./DB/core.db", "r")
-                coredb_py = json.load(stored_coredb)
+                py_coredb = json.load(stored_coredb)
                 stored_coredb.close()
 
-                self.coredb_state.text = ("Latest DB Update:\n" + coredb_py[0]['table_date'])
+                self.coredb_state.text = ("Latest DB Update:\n" + py_coredb[0]['table_date'])
 
             # No file found.
             except IOError:
                 self.coredb_state.text = "No valid Database found!\nPlease update it."
 
-            # Something unexpected just happened.
+            # Something really unexpected just happened.
             except Exception as e:
-                print "def check(self, *arg):", e.__doc__, e.message
+                print "def check(self, *arg):", type(e), e.__doc__, e.message
 
             time.sleep(2)
 
