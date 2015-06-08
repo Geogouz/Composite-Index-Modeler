@@ -69,21 +69,21 @@ class BtnRmv(Button):
 class MyIndicesBar(BoxLayout):
 
     # Link to ScreenManager
-    mib_my_indices_search_sm = ObjectProperty()
+    mib_my_indicators_search_sm = ObjectProperty()
 
     def on_touch_down(self, *args):
         super(MyIndicesBar, self).on_touch_down(*args)
-        # Check if mouse is over my_indices_bar.
+        # Check if mouse is over my_indicators_bar.
         if self.collide_point(args[0].pos[0], args[0].pos[1]):
 
             # Switch Screens.
-            self.mib_my_indices_search_sm.current = "my_indices"
+            self.mib_my_indicators_search_sm.current = "my_indicators"
 
 
 class SearchBar(BoxLayout):
 
     # Link to ScreenManager
-    sb_my_indices_search_sm = ObjectProperty()
+    sb_my_indicators_search_sm = ObjectProperty()
 
     def on_touch_down(self, *args):
         super(SearchBar, self).on_touch_down(*args)
@@ -94,7 +94,7 @@ class SearchBar(BoxLayout):
             FocusBehavior.ignored_touch.append(args[0])
 
             # Switch Screens.
-            self.sb_my_indices_search_sm.current = "search_index"
+            self.sb_my_indicators_search_sm.current = "search_index"
 
 
 class SearchArea(TextInput):
@@ -158,7 +158,7 @@ class IndexSelection(MouseScreen):
     # Link to CIMScreenManager
     is_manager = ObjectProperty()
 
-    selected_indices = DictProperty({"feat_index": None, "my_indices": {}, "model_indicators": {}})  # TODO Use of model_indicators?
+    selected_indices = DictProperty({"feat_index": None, "my_indicators": {}, "model_indicators": {}})  # TODO Use of model_indicators?
     coredb_py = ObjectProperty()
 
     def __init__(self, **kwargs):
@@ -228,16 +228,16 @@ class IndexSelection(MouseScreen):
         # Reset slider position back to top.
         self.index_desc_slider.scroll_y = 1
 
-    # This function is called when an Index is added to my_indices.
-    def on_my_indices(self):
+    # This function is called when an Index is added to my_indicators.
+    def on_my_indicators(self):
         # If user has selected an Index..
         if not self.selected_indices["feat_index"] is None and \
-                not (self.selected_indices["feat_index"].text in self.selected_indices["my_indices"]):
-            # Add Index to my_indices.
-            self.selected_indices["my_indices"][self.selected_indices["feat_index"].text] = \
+                not (self.selected_indices["feat_index"].text in self.selected_indices["my_indicators"]):
+            # Add Index to my_indicators.
+            self.selected_indices["my_indicators"][self.selected_indices["feat_index"].text] = \
                 self.selected_indices["feat_index"].code
 
-            # Set proper btn backgrounds based on my_indices.
+            # Set proper btn backgrounds based on my_indicators.
             self.btn_index_background()
 
             # Create my_index_box to hold my_index components.
@@ -247,7 +247,7 @@ class IndexSelection(MouseScreen):
             btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x="right", padding=[0, 0, 10, 0])
 
             # Create a removing index btn.
-            btn_rmv = Factory.BtnRmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indices)
+            btn_rmv = Factory.BtnRmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indicators)
 
             # Add btn_rmv in btn_rmv_anchor.
             btn_rmv_anchor.add_widget(btn_rmv)
@@ -268,23 +268,23 @@ class IndexSelection(MouseScreen):
             my_index.bind(height=self.fix_my_index_h)
             my_topic.bind(height=self.fix_my_index_h)
 
-            # Add my_index_box in my_indices_container.
-            self.my_indices_container.add_widget(my_index_box)
+            # Add my_index_box in my_indicators_container.
+            self.my_indicators_container.add_widget(my_index_box)
 
-            # Switch to my_indices.
-            self.my_indices_search_sm.current = "my_indices"
+            # Switch to my_indicators.
+            self.my_indicators_search_sm.current = "my_indicators"
 
             # Remove previous text inputs.
             self.search_area.text = ""
 
-    def rmv_my_indices(self, *args):
+    def rmv_my_indicators(self, *args):
         # Remove index from the dict with my indices.
-        self.selected_indices["my_indices"].pop(args[0].index, None)
+        self.selected_indices["my_indicators"].pop(args[0].index, None)
 
         # Remove that specific my_index_box.
-        self.my_indices_container.remove_widget(args[0].parent.parent)
+        self.my_indicators_container.remove_widget(args[0].parent.parent)
 
-        # Set proper btn backgrounds based on my_indices.
+        # Set proper btn backgrounds based on my_indicators.
         self.btn_index_background()
 
     # Function that clears all search results.
@@ -313,8 +313,8 @@ class IndexSelection(MouseScreen):
     def btn_index_background(self):
         # For each index button..
         for btn in IndexSelection.shown_ind_btns.values():
-            # search if it is in my_indices.
-            if btn.text in self.selected_indices["my_indices"].keys():
+            # search if it is in my_indicators.
+            if btn.text in self.selected_indices["my_indicators"].keys():
                 btn.background_normal = './Sources/grey_btn_down.png'
                 btn.bold = True
             else:
@@ -466,7 +466,7 @@ class IndexSelection(MouseScreen):
                 self.is_manager.current = 'IndexSelectionScreen'
 
             # If there is no core DB available it prompts for indices update.
-            except Exception as e:
+            except IOError:
                 self.topics_dic = {}
                 self.is_manager.current = 'Home'
                 Popup(title='Warning:', content=Label(
@@ -475,7 +475,10 @@ class IndexSelection(MouseScreen):
                     halign="center",
                     italic=True
                 ), size_hint=(None, None), size=(350, 180)).open()
-                print e.__doc__, e.message
+
+            # Something really unexpected just happened.
+            except Exception as e:
+                print "def build_indices(self):", type(e), e.__doc__, e.message
 
     def add_topic(self, *args):
         # If topic button is pressed, create index buttons.
@@ -519,7 +522,7 @@ class IndexSelection(MouseScreen):
                 # Add the button's ID and object button itself in the global "shown_ind_btns" dictionary.
                 IndexSelection.shown_ind_btns[index_btn_id] = btn
 
-            # Set proper btn backgrounds based on my_indices.
+            # Set proper btn backgrounds based on my_indicators.
             self.btn_index_background()
 
         # Button is not pressed, which means it self toggled.
@@ -554,8 +557,8 @@ class IndexCreation(MouseScreen):
     def get_indicators(self, *arg):
         self.btn_get_indicators.disabled = True
 
-        # Shortcut for "my_indices"
-        mi = self.ic_index_selection.selected_indices["my_indices"]
+        # Shortcut for "my_indicators"
+        mi = self.ic_index_selection.selected_indices["my_indicators"]
 
         if len(mi) == 0:
             self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
@@ -570,18 +573,61 @@ class IndexCreation(MouseScreen):
             # Reset connection list.
             connections = []
 
+            # Sort keys for the ID sequence.
+            sorted_indicators = mi.keys()
+            sorted_indicators.sort()
 
+            # Number of my indicators.
+            items = len(sorted_indicators)
 
-            # Create dictionary to connect model's ID's to WorldBank's ID's.
-            #for .. in mi.values():
-            id_conn = {"IA": "EG.USE.CRNW.ZS"}
+            # Prepare dictionary to link model's ID's to WorldBank's ID's.
+            id_conn = {}
 
+            # Characters to use for ID creation
+            abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            # This var will show ID creation sequence.
+            items_created = 0
 
-            # Prepare Indicator ID's along with their basic structure.
-            self.all_indicators_data = {"IA": {}}
+            # Create short ID's, store that link to a dict and prepare each generic structure. (UPTO 26)
+            for i in abc:
 
+                short_id = "I"+i
 
+                # Update ID link dictionary.
+                id_conn[short_id] = mi[sorted_indicators[items_created]]
 
+                # Prepare the basic structure for each indicator.
+                self.all_indicators_data[short_id] = {}
+
+                items_created += 1
+                if items_created == items:
+                    break
+
+            # Prepare new ID creation sequence.
+            items_created = 0
+
+            # Continue creating short ID's, store that link to a dict and prepare each generic structure. (UPTO 676)
+            if items-26 > 0:
+                for i in abc:
+                    for j in abc:
+
+                        print "yo"
+                        short_id = "I"+i+j
+
+                        # Update ID link dictionary.
+                        id_conn[short_id] = mi[sorted_indicators[items_created+26]]
+
+                        # Prepare the basic structure for each indicator.
+                        self.all_indicators_data[short_id] = {}
+
+                        items_created += 1
+                        if items_created == items-26:
+                            break
+                    if items_created == items-26:
+                        break
+
+            print id_conn
+            print self.all_indicators_data
 
             # Prepare Country List and place it inside all_indicators_data.
             for i in range(1, self.ic_index_selection.coredb_py[1][0]["countries_num"]+1):
@@ -595,17 +641,17 @@ class IndexCreation(MouseScreen):
                 for short_id in self.all_indicators_data:
 
                     indicator_address = start_url + countries + indicators + id_conn[short_id] + "/" + end_url
-                    #print indicator_address
 
                     # Define World Bank connection (JSON data).
-                    ind_data_connection = urllib2.urlopen(indicator_address, timeout=15)
+                    ind_data_connection = urllib2.urlopen(indicator_address, timeout=60)
 
                     # Add current connection to the list with all connections.
                     connections.append(ind_data_connection)
 
                     # Convert JSON data into temp python structure.
                     ind_data_py = self.string_it(json.load(ind_data_connection))
-
+                    print "Indicator Data Downloaded"
+                    """
                     # For each record in the json file..
                     for record in range(len(ind_data_py[1])):
                         country = ind_data_py[1][record]["country"]["value"]
@@ -613,8 +659,8 @@ class IndexCreation(MouseScreen):
                         value = ind_data_py[1][record]["value"]
 
                         self.all_indicators_data[short_id][country].append([year, value])
-
-                    print self.all_indicators_data
+                    """
+                    #print self.all_indicators_data
 
             except Exception as e:
                 self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)
@@ -628,7 +674,7 @@ class IndexCreation(MouseScreen):
 
                 # Something really unexpected just happened.
                 except Exception as e:
-                    print "def core_build(self, *arg):", type(e), e.__doc__, e.message
+                    print "def get_indicators(self, *arg):", type(e), e.__doc__, e.message
 
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"

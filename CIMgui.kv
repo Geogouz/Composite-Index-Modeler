@@ -124,7 +124,7 @@
     size_hint_y: None
     height: 30
     text_size: (self.width, self.height)
-    font_size: 15
+    font_size: 14
     italic: True
     valign: "bottom"
     padding_x: 10
@@ -368,9 +368,9 @@
     add_index_icon: add_index_icon.__self__
     add_index_label: add_index_label.__self__
 
-    my_indices_search_sm: my_indices_search_sm.__self__
-    my_indices_slider: my_indices_slider.__self__
-    my_indices_container: my_indices_container.__self__
+    my_indicators_search_sm: my_indicators_search_sm.__self__
+    my_indicators_slider: my_indicators_slider.__self__
+    my_indicators_container: my_indicators_container.__self__
     search_results_slider: search_results_slider.__self__
     search_results_container: search_results_container.__self__
 
@@ -419,7 +419,7 @@
             BoxLayout:
                 orientation: "vertical"
                 size_hint_x: None
-                # 850 = 8(paddings) + 305(topics_slider) + 157(min width of my_indices) + 380(min index slide)
+                # 850 = 8(paddings) + 305(topics_slider) + 157(min width of my_indicators) + 380(min index slide)
                 width: 0 if len(indices_slider_stack.children)==0 else 388+(abs(((root.width-850)//380)*380)+(((root.width-850)//380)*380))/2
 
                 ScrollView:
@@ -519,7 +519,7 @@
                                 height: 35
                                 background_normal: './Sources/btn_add_index_normal.png'
                                 background_down: './Sources/btn_add_index_down.png'
-                                on_press: root.on_my_indices()
+                                on_press: root.on_my_indicators()
 
                             Label:
                                 id: add_index_label
@@ -549,7 +549,7 @@
                     width: 1
 
                 ScreenManager:
-                    id: my_indices_search_sm
+                    id: my_indicators_search_sm
                     transition: sm.FadeTransition(duration=0.1, clearcolor=(1,1,1,1))
 
                     Screen:
@@ -620,21 +620,21 @@
 
                             # BoxLayout
                             MyIndicesBar:
-                                mib_my_indices_search_sm: my_indices_search_sm
+                                mib_my_indicators_search_sm: my_indicators_search_sm
 
                     Screen:
-                        name: "my_indices"
+                        name: "my_indicators"
 
-                        on_enter: my_indices_slider.opacity = 1
+                        on_enter: my_indicators_slider.opacity = 1
                         on_pre_leave:
-                            my_indices_slider.opacity = 0
+                            my_indicators_slider.opacity = 0
                             search_area.text = ""
 
                         BoxLayout:
                             orientation: "vertical"
 
                             SearchBar:
-                                sb_my_indices_search_sm: my_indices_search_sm
+                                sb_my_indicators_search_sm: my_indicators_search_sm
 
                             BoxLayout:
                                 canvas:
@@ -682,7 +682,7 @@
                                     allow_stretch: False
 
                             ScrollView:
-                                id: my_indices_slider
+                                id: my_indicators_slider
                                 do_scroll_x: False
                                 bar_width: 3
                                 bar_inactive_color: (0, 0, 0, 1)
@@ -691,7 +691,7 @@
                                 bar_pos_y: "right"
 
                                 GridLayout:
-                                    id: my_indices_container
+                                    id: my_indicators_container
                                     size_hint_y: None
                                     height: self.minimum_height
                                     cols: 1
@@ -1061,8 +1061,8 @@
                                         Rectangle:
                                             pos: self.pos
                                             size: self.size
-                                    font_size: 30 if len(self.text) == 2 else 15
-                                    text: "IA"
+                                    font_size: 30 if len(self.text) == 2 else 20
+                                    text: "IWW"
 
                             BoxLayout:
                                 size_hint: (None, None)
