@@ -9,11 +9,11 @@
             pos: self.pos
             size: self.size
     size_hint: (1, None)
-    text_size: (self.width-40, None)
     height: 50+self.texture_size[1]
     color: (1, 1, 1, 1)
     bold: True
     font_size: 38
+    text_size: (self.width-40, None)
     halign: 'center'
 
 
@@ -105,12 +105,12 @@
 
 <MyTopic@Label>:
     size_hint: (1, None)
-    text_size: self.width-20, None
     height: 10 + self.texture_size[1]
     color: (0.1, 0.3, 0.5, 1)
     font_size: 12
     bold: True
     italic: True
+    text_size: self.width-20, None
     halign: 'right'
     canvas.before:
         Color:
@@ -143,10 +143,10 @@
 # Topics Description
 <SR_Index@Label>:
     size_hint: (1, None)
-    text_size: self.width-15, None
     height: 15 + self.texture_size[1]
     color: (0, 0, 0, 1)
     font_size: 14
+    text_size: self.width-15, None
     halign: 'left'
     markup: True
     canvas.before:
@@ -160,11 +160,11 @@
 # Topics Description
 <SR_Topic@Label>:
     size_hint: (1, None)
-    text_size: self.width-20, None
     height: 10 + self.texture_size[1]
     color: (0, 0, 0, 1)
     font_size: 13
     bold: True
+    text_size: self.width-20, None
     halign: 'left'
     canvas.before:
         Color:
@@ -291,7 +291,6 @@
             bold: True
             font_size: 14
             text: "Update DB"
-            halign: 'center'
             on_release:
                 root.popup_active = True
                 root.threadonator(root.check)
@@ -302,7 +301,9 @@
             height: 70
             italic: True
             text: "CIM Version\n1.0.0"
+            text_size: (self.width, self.height)
             halign: 'center'
+            valign: 'middle'
 
         Button:
             text: "Home"
@@ -312,14 +313,18 @@
 
         Button:
             text: "Indicator\nSelection"
+            text_size: (self.width, self.height)
             halign: 'center'
+            valign: 'middle'
             size_hint_y: None
             height: 50
             on_release: index_selection.build_indices()
 
         Button:
             text: "Index\nCreation"
+            text_size: (self.width, self.height)
             halign: 'center'
+            valign: 'middle'
             size_hint_y: None
             height: 50
             on_release: manager.current = 'IndexCreationScreen'
@@ -349,7 +354,6 @@
             italic: True
             text: "Help - How To - Tips"
             color: (0, 0, 0, 1)
-            halign: 'center'
 
 
 # Screen
@@ -994,6 +998,7 @@
                             bold: True
                             font_size: 25
                             color: (1, 1, 1, 1)
+                            text_size: (self.width, self.height)
                             halign: "center"
                             text: "Use button above\nto get your data.."
 
@@ -1006,9 +1011,9 @@
                         BoxLayout:
                             size_hint: (None, None)
                             size: (300, 167)
+                            orientation: "vertical"
                             padding: (19, 10, 19, 17)
                             spacing: 7
-                            orientation: "vertical"
                             canvas:
                                 Color:
                                     rgba: (1, 1, 1, 1)
@@ -1018,9 +1023,9 @@
                                     size: self.size
 
                             BoxLayout:
-                                orientation: "horizontal"
                                 size_hint: (None, None)
                                 size: (262, 70)
+                                orientation: "horizontal"
 
                                 ScrollView:
                                     canvas.before:
@@ -1037,16 +1042,15 @@
                                     bar_pos_y: "right"
 
                                     Label:
+                                        size_hint: (None, None)
+                                        size: (212, self.texture_size[1])
                                         canvas.before:
                                             Color:
                                                 rgba: (0, 1, 0, 0)
                                             Rectangle:
                                                 pos: self.pos
                                                 size: self.size
-                                        size_hint: (None, None)
-                                        width: 212
                                         padding_y: 8
-                                        height: self.texture_size[1]
                                         text_size: (self.width-16, None)
                                         italic: True
                                         font_size: 13
@@ -1067,16 +1071,18 @@
                             BoxLayout:
                                 size_hint: (None, None)
                                 size: (262, 63)
+                                spacing: 1
                                 canvas:
                                     Color:
                                         rgba: (0.7, 0.7, 0.7, 1)
                                     Rectangle:
                                         pos: self.pos
                                         size: self.size
-                                padding: (0, 0, 0, 0)
-                                spacing: 1
 
-                                Label:
+                                BoxLayout:
+                                    size_hint: (None, None)
+                                    size: (60, 63)
+                                    orientation: "vertical"
                                     canvas:
                                         Color:
                                             rgba: (1, 1, 1, 1)
@@ -1084,7 +1090,29 @@
                                             pos: self.pos
                                             size: self.size
 
-                                Label:
+                                    Label:
+                                        size_hint: (None, None)
+                                        size: (60, 31)
+                                        text: "444"
+                                        font_size: 23
+                                        bold: True
+                                        color: (0.9, 0.1, 0.1, 1)
+
+                                    Label:
+                                        size_hint: (None, None)
+                                        size: (60, 32)
+                                        italic: True
+                                        text_size: (self.width, self.height)
+                                        halign: "center"
+                                        valign: "bottom"
+                                        text: "Regions\nW/O Data"
+                                        font_size: 12
+                                        color: (0.33, 0.33, 0.33, 1)
+
+                                BoxLayout:
+                                    size_hint: (None, None)
+                                    size: (90, 63)
+                                    orientation: "vertical"
                                     canvas:
                                         Color:
                                             rgba: (1, 1, 1, 1)
@@ -1092,13 +1120,124 @@
                                             pos: self.pos
                                             size: self.size
 
-                                Label:
+                                    BoxLayout:
+                                        size_hint: (None, None)
+                                        size: (90, 15)
+                                        spacing: 5
+
+                                        Label:
+                                            size_hint: (None, None)
+                                            size: (45, 15)
+                                            text_size: (self.width, self.height)
+                                            halign: "right"
+                                            valign: "middle"
+                                            text: "60-80:"
+                                            font_size: 11
+                                            color: (0.33, 0.33, 0.33, 1)
+
+                                        Label:
+                                            size_hint: (None, None)
+                                            size: (45, 15)
+                                            text_size: (self.width, self.height)
+                                            halign: "left"
+                                            valign: "middle"
+                                            text: "959"
+                                            font_size: 14
+                                            bold: True
+                                            color: (0.1, 0.5, 0.1, 1)
+
+                                    BoxLayout:
+                                        size_hint: (None, None)
+                                        size: (90, 15)
+                                        spacing: 5
+
+                                        Label:
+                                            size_hint: (None, None)
+                                            size: (45, 15)
+                                            text_size: (self.width, self.height)
+                                            halign: "right"
+                                            valign: "middle"
+                                            text: "80-00:"
+                                            font_size: 11
+                                            color: (0.33, 0.33, 0.33, 1)
+
+                                        Label:
+                                            size_hint: (None, None)
+                                            size: (45, 15)
+                                            text_size: (self.width, self.height)
+                                            halign: "left"
+                                            valign: "middle"
+                                            text: "1585"
+                                            font_size: 14
+                                            bold: True
+                                            color: (0.1, 0.5, 0.1, 1)
+
+                                    BoxLayout:
+                                        size_hint: (None, None)
+                                        size: (90, 15)
+                                        spacing: 5
+
+                                        Label:
+                                            size_hint: (None, None)
+                                            size: (45, 15)
+                                            text_size: (self.width, self.height)
+                                            halign: "right"
+                                            valign: "middle"
+                                            text: "00+:"
+                                            font_size: 11
+                                            color: (0.33, 0.33, 0.33, 1)
+
+                                        Label:
+                                            size_hint: (None, None)
+                                            size: (45, 15)
+                                            text_size: (self.width, self.height)
+                                            halign: "left"
+                                            valign: "middle"
+                                            text: "2759"
+                                            font_size: 14
+                                            bold: True
+                                            color: (0.1, 0.5, 0.1, 1)
+
+                                    Label:
+                                        size_hint: (None, None)
+                                        size: (90, 18)
+                                        text_size: (self.width, self.height)
+                                        halign: "center"
+                                        valign: "bottom"
+                                        italic: True
+                                        text: "Total Records"
+                                        font_size: 12
+                                        color: (0.33, 0.33, 0.33, 1)
+
+                                BoxLayout:
+                                    size_hint: (None, None)
+                                    size: (110, 63)
+                                    orientation: "vertical"
                                     canvas:
                                         Color:
                                             rgba: (1, 1, 1, 1)
                                         Rectangle:
                                             pos: self.pos
                                             size: self.size
+
+                                    Label:
+                                        size_hint: (None, None)
+                                        size: (110, 31)
+                                        text: "951.014"
+                                        font_size: 23
+                                        bold: True
+                                        color: (0, 0, 0, 1)
+
+                                    Label:
+                                        size_hint: (None, None)
+                                        size: (110, 32)
+                                        italic: True
+                                        text_size: (self.width, self.height)
+                                        halign: "center"
+                                        valign: "bottom"
+                                        text: "Diachronic\nUnweighted Mean"
+                                        font_size: 12
+                                        color: (0.33, 0.33, 0.33, 1)
 
                 BoxLayout:
                     size_hint_x: None
@@ -1138,4 +1277,3 @@
             italic: True
             text: "MapDesignerScreen"
             color: (0, 0, 0, 1)
-            halign: 'center'

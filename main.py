@@ -554,6 +554,19 @@ class IndexCreation(MouseScreen):
         else:
             return obj
 
+    @mainthread
+    def popuper(self, message):
+        Popup(title='Warning:', content=Label(
+            text=message,
+            font_size=15,
+            halign="center",
+            italic=True
+        ), size_hint=(None, None), size=(350, 180)).open()
+
+    @mainthread
+    def spawn_indicator_widget(*args):
+        print args
+
     def get_indicators(self, *arg):
         self.btn_get_indicators.disabled = True
 
@@ -626,8 +639,8 @@ class IndexCreation(MouseScreen):
                     if items_created == items-26:
                         break
 
-            print id_conn
-            print self.all_indicators_data
+            #print id_conn
+            #print self.all_indicators_data
 
             # Prepare Country List and place it inside all_indicators_data.
             for i in range(1, self.ic_index_selection.coredb_py[1][0]["countries_num"]+1):
@@ -643,24 +656,60 @@ class IndexCreation(MouseScreen):
                     indicator_address = start_url + countries + indicators + id_conn[short_id] + "/" + end_url
 
                     # Define World Bank connection (JSON data).
-                    ind_data_connection = urllib2.urlopen(indicator_address, timeout=60)
+                    ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
 
                     # Add current connection to the list with all connections.
                     connections.append(ind_data_connection)
 
                     # Convert JSON data into temp python structure.
                     ind_data_py = self.string_it(json.load(ind_data_connection))
-                    print "Indicator Data Downloaded"
-                    """
+
                     # For each record in the json file..
                     for record in range(len(ind_data_py[1])):
                         country = ind_data_py[1][record]["country"]["value"]
-                        year = ind_data_py[1][record]["date"]
+                        year = int(ind_data_py[1][record]["date"])
                         value = ind_data_py[1][record]["value"]
 
                         self.all_indicators_data[short_id][country].append([year, value])
-                    """
-                    #print self.all_indicators_data
+
+                    # Begin statistic calculations.
+                    # Track number of countries with no data available for any year.
+                    empty_countries = 0
+
+                    country_averages = []
+
+                    plus1960 = 0
+                    plus1980 = 0
+                    plus2000 = 0
+
+                    for country in self.all_indicators_data[short_id]:
+                        sum_value = 0
+                        available_years = 0
+                        for year in self.all_indicators_data[short_id][country]:
+                            if year[1]:
+                                sum_value += float(year[1])
+                                available_years += 1
+                                if year[0] < 1980:
+                                    plus1960 += 1
+                                elif year[0] < 2000:
+                                    plus1980 += 1
+                                else:
+                                    plus2000 += 1
+
+                        if available_years == 0:
+                            empty_countries += 1
+                        else:
+                            #print "mean of country", country, "is", sum_value, "/", available_years, "=", sum_value/available_years
+                            country_averages.append(sum_value/available_years)
+
+                    ind_review = [empty_countries,
+                                  len(country_averages),
+                                  sum(country_averages)/len(country_averages),
+                                  plus1960,
+                                  plus1980,
+                                  plus2000]
+
+                    self.spawn_indicator_widget(ind_review)
 
             except Exception as e:
                 self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)
@@ -679,14 +728,6 @@ class IndexCreation(MouseScreen):
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
 
-    @mainthread
-    def popuper(self, message):
-        Popup(title='Warning:', content=Label(
-            text=message,
-            font_size=15,
-            halign="center",
-            italic=True
-        ), size_hint=(None, None), size=(350, 180)).open()
 
 
 class MapDesigner(Screen):
