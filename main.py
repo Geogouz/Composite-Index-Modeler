@@ -610,8 +610,8 @@ class IndexCreation(MouseScreen):
         rvw_widget_main_layout = Factory.RvwWidgetMainLayout()
         rvw_widget_head_layout = BoxLayout(orientation="horizontal", size_hint=(None, None), size=(262, 70))
         rvw_widget_scroll = Factory.RvwWidgetScroll()
-        rvw_widget_title = Factory.RvwWidgetTitle()
-        rvw_widget_short_id = Factory.RvwWidgetShortID()
+        rvw_widget_title = Factory.RvwWidgetTitle(text=str(args[0][6]))
+        rvw_widget_short_id = Factory.RvwWidgetShortID(text=str(args[0][5]))
         rvw_widget_foot_layout = Factory.RvwWidgetFootLayout()
         rvw_widget_calc1 = Factory.RvwWidgetCalc(width=60)
         rvw_widget_calc1_data = Factory.RvwWidgetCalcData(size=(60, 31), text=str(args[0][0]), color=(0.9, 0.1, 0.1, 1))
@@ -668,7 +668,7 @@ class IndexCreation(MouseScreen):
 
     def get_indicators(self, *arg):
 
-        # Shortcut for "my_indicators"
+        # Simple and reversed shortcut for "my_indicators".
         mi = self.ic_index_selection.selected_indices["my_indicators"]
 
         # Reset indicator data from current database.
@@ -701,7 +701,7 @@ class IndexCreation(MouseScreen):
             short_id = "I"+i
 
             # Update ID link dictionary.
-            id_conn[short_id] = mi[self.sorted_indicators[items_created]]
+            id_conn[self.sorted_indicators[items_created]] = short_id
 
             # Prepare the basic structure for each indicator.
             self.all_indicators_data[short_id] = {}
@@ -721,7 +721,7 @@ class IndexCreation(MouseScreen):
                     short_id = "I"+i+j
 
                     # Update ID link dictionary.
-                    id_conn[short_id] = mi[self.sorted_indicators[items_created+26]]
+                    id_conn[self.sorted_indicators[items_created+26]] = short_id
 
                     # Prepare the basic structure for each indicator.
                     self.all_indicators_data[short_id] = {}
@@ -741,9 +741,10 @@ class IndexCreation(MouseScreen):
                 self.all_indicators_data[key][country] = []
 
         try:
-            for short_id in self.all_indicators_data:
+            for indicator in self.sorted_indicators:
 
-                indicator_address = start_url + countries + indicators + id_conn[short_id] + "/" + end_url
+                short_id = id_conn[indicator]
+                indicator_address = start_url + countries + indicators + mi[indicator] + "/" + end_url
 
                 # Define World Bank connection (JSON data).
                 ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
@@ -791,24 +792,29 @@ class IndexCreation(MouseScreen):
                     else:
                         country_averages.append(sum_value/available_years)
 
+                # Format numbers to be more friendly.
+                tup = str("%.5G" % (sum(country_averages)/len(country_averages))).partition('E')
+                mean = (('[size=12]E'.join((tup[0], tup[-1]))+"[/size]")
+                        .replace("[size=12]E[/size]", ""))\
+                    .replace(".", ",")
+
+                print sum(country_averages)/len(country_averages), mean
+
                 ind_review = [empty_countries,
-
-
-
-                              "2134.2",
-                              #sum(country_averages)/len(country_averages),
-                              #str("%.2e" % sum(country_averages)/len(country_averages)+"[size=<integer>]"+"hithere"+"[/size]"),
-
-
-
+                              mean,
                               plus1960,
                               plus1980,
-                              plus2000]
+                              plus2000,
+                              short_id,
+                              indicator]
 
                 self.spawn_indicator_widget(ind_review)
 
         except Exception as e:
             self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)
+
+            # Flush sorted_indicators to alert that download did not end with success.
+            self.sorted_indicators = []
 
         finally:
 
