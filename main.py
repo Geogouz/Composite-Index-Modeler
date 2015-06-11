@@ -44,10 +44,6 @@ indicators = "indicators/"
 # Set url for World Development Indicators (WDI)
 wdi_url = "http://api.worldbank.org/source/2/indicators/?per_page=30000&format=json"
 
-# Set userdb
-userdb = [["GRC", "ALB", "ITA", "TUR", "CYP"],
-          ["SP.DYN.LE00.IN", "MYS.MEA.YSCH.25UP.MF", "SE.SCH.LIFE", "NY.GNP.PCAP.PP.CD", "UNDP.HDI.XD"]]
-
 
 class TopicToggleButton(ToggleButton):
 
@@ -158,7 +154,11 @@ class IndexSelection(MouseScreen):
     # Link to CIMScreenManager
     is_manager = ObjectProperty()
 
-    selected_indices = DictProperty({"feat_index": None, "my_indicators": {}, "model_indicators": {}})  # TODO Use of model_indicators?
+    # Link to IndexCreation
+    is_index_creation = ObjectProperty()
+
+    selected_indices = DictProperty({"feat_index": None, "my_indicators": {}})
+
     coredb_py = ObjectProperty()
 
     def __init__(self, **kwargs):
@@ -169,6 +169,21 @@ class IndexSelection(MouseScreen):
         self.shown_ind_btns = {}
         self.search_dic = None
         self.topics_dic = None
+
+    # This function updates status Icon that belongs to IndexCreation Class.
+    @mainthread
+    def dl_status_icon_setter(self):
+        # If there is no active Indicator data download..
+        if not self.is_index_creation.btn_get_indicators.disabled:
+            # Compare my_indicators to sorted_indicators so we know if we must re-download model data.
+            my_in = self.selected_indices["my_indicators"].keys()
+            my_in.sort()
+
+            # If lists are the same..
+            if my_in == self.is_index_creation.sorted_indicators:
+                self.is_index_creation.downloading_state_icon.source = './Sources/status_valid.png'
+            else:
+                self.is_index_creation.downloading_state_icon.source = './Sources/status_error.png'
 
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
@@ -277,6 +292,9 @@ class IndexSelection(MouseScreen):
             # Remove previous text inputs.
             self.search_area.text = ""
 
+            # Check if indicator data must be downloaded again.
+            self.dl_status_icon_setter()
+
     def rmv_my_indicators(self, *args):
         # Remove index from the dict with my indices.
         self.selected_indices["my_indicators"].pop(args[0].index, None)
@@ -286,6 +304,9 @@ class IndexSelection(MouseScreen):
 
         # Set proper btn backgrounds based on my_indicators.
         self.btn_index_background()
+
+        # Check if indicator data must be downloaded again.
+        self.dl_status_icon_setter()
 
     # Function that clears all search results.
     def clear_search_results(self, *args):
@@ -535,6 +556,9 @@ class IndexCreation(MouseScreen):
     # Link to IndexSelection
     ic_index_selection = ObjectProperty()
 
+    # List to show which indicator review is currently loaded.
+    sorted_indicators = ListProperty([])
+
     all_indicators_data = DictProperty({})
     country_list = ListProperty()
 
@@ -563,170 +587,243 @@ class IndexCreation(MouseScreen):
             italic=True
         ), size_hint=(None, None), size=(350, 180)).open()
 
+    def dl_manager(self):
+
+        # Clear model's indicator list.
+        self.indicator_list.clear_widgets()
+
+        # If I have no indicator in my list do nothing but alert.
+        if not self.ic_index_selection.selected_indices["my_indicators"]:
+            self.btn_get_indicators.state = "normal"
+            self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
+
+        else:
+            self.btn_get_indicators.disabled = True
+            self.downloading_state_icon.source = './Sources/loader.gif'
+            self.threadonator(self.get_indicators)
+
     @mainthread
-    def spawn_indicator_widget(*args):
-        print args
+    def spawn_indicator_widget(self, *args):
+        print args[0]
+
+        # Creation and placement of each widget part.
+        rvw_widget_main_layout = Factory.RvwWidgetMainLayout()
+        rvw_widget_head_layout = BoxLayout(orientation="horizontal", size_hint=(None, None), size=(262, 70))
+        rvw_widget_scroll = Factory.RvwWidgetScroll()
+        rvw_widget_title = Factory.RvwWidgetTitle()
+        rvw_widget_short_id = Factory.RvwWidgetShortID()
+        rvw_widget_foot_layout = Factory.RvwWidgetFootLayout()
+        rvw_widget_calc1 = Factory.RvwWidgetCalc(width=60)
+        rvw_widget_calc1_data = Factory.RvwWidgetCalcData(size=(60, 31), text=str(args[0][0]), color=(0.9, 0.1, 0.1, 1))
+        rvw_widget_calc1_desc = Factory.RvwWidgetCalcDesc(size=(60, 32), text="Regions\nW/O Data")
+        rvw_widget_calc2 = Factory.RvwWidgetCalc(width=90)
+        rvw_widget_calc2_sum1 = BoxLayout(size_hint=(None, None), size=(90, 15), spacing=5)
+        rvw_widget_calc2_sum1_desc = Factory.RvwWidgetCalc2Desc(text="60-80:")
+        rvw_widget_calc2_sum1_data = Factory.RvwWidgetCalc2Data(text=str(args[0][2]))
+        rvw_widget_calc2_sum2 = BoxLayout(size_hint=(None, None), size=(90, 15), spacing=5)
+        rvw_widget_calc2_sum2_desc = Factory.RvwWidgetCalc2Desc(text="80-00:")
+        rvw_widget_calc2_sum2_data = Factory.RvwWidgetCalc2Data(text=str(args[0][3]))
+        rvw_widget_calc2_sum3 = BoxLayout(size_hint=(None, None), size=(90, 15), spacing=5)
+        rvw_widget_calc2_sum3_desc = Factory.RvwWidgetCalc2Desc(text="00+:")
+        rvw_widget_calc2_sum3_data = Factory.RvwWidgetCalc2Data(text=str(args[0][4]))
+        rvw_widget_calc2_desc = Factory.RvwWidgetCalcDesc(size=(90, 18), text="Total Records")
+        rvw_widget_calc3 = Factory.RvwWidgetCalc(width=110)
+        rvw_widget_calc3_data = Factory.RvwWidgetCalcData(size=(110, 31), text=args[0][1], color=(0, 0, 0, 1))
+        rvw_widget_calc3_desc = Factory.RvwWidgetCalcDesc(size=(110, 32), text="Diachronic\nUnweighted Mean")
+
+        rvw_widget_scroll.add_widget(rvw_widget_title)
+
+        rvw_widget_head_layout.add_widget(rvw_widget_scroll)
+        rvw_widget_head_layout.add_widget(rvw_widget_short_id)
+
+        rvw_widget_calc1.add_widget(rvw_widget_calc1_data)
+        rvw_widget_calc1.add_widget(rvw_widget_calc1_desc)
+
+        rvw_widget_calc2_sum1.add_widget(rvw_widget_calc2_sum1_desc)
+        rvw_widget_calc2_sum1.add_widget(rvw_widget_calc2_sum1_data)
+
+        rvw_widget_calc2_sum2.add_widget(rvw_widget_calc2_sum2_desc)
+        rvw_widget_calc2_sum2.add_widget(rvw_widget_calc2_sum2_data)
+
+        rvw_widget_calc2_sum3.add_widget(rvw_widget_calc2_sum3_desc)
+        rvw_widget_calc2_sum3.add_widget(rvw_widget_calc2_sum3_data)
+
+        rvw_widget_calc2.add_widget(rvw_widget_calc2_sum1)
+        rvw_widget_calc2.add_widget(rvw_widget_calc2_sum2)
+        rvw_widget_calc2.add_widget(rvw_widget_calc2_sum3)
+        rvw_widget_calc2.add_widget(rvw_widget_calc2_desc)
+
+        rvw_widget_calc3.add_widget(rvw_widget_calc3_data)
+        rvw_widget_calc3.add_widget(rvw_widget_calc3_desc)
+
+        rvw_widget_foot_layout.add_widget(rvw_widget_calc1)
+        rvw_widget_foot_layout.add_widget(rvw_widget_calc2)
+        rvw_widget_foot_layout.add_widget(rvw_widget_calc3)
+
+        rvw_widget_main_layout.add_widget(rvw_widget_head_layout)
+        rvw_widget_main_layout.add_widget(rvw_widget_foot_layout)
+
+        # Finally, add new widget inside model's indicator list.
+        self.indicator_list.add_widget(rvw_widget_main_layout)
 
     def get_indicators(self, *arg):
-        self.btn_get_indicators.disabled = True
 
         # Shortcut for "my_indicators"
         mi = self.ic_index_selection.selected_indices["my_indicators"]
 
-        if len(mi) == 0:
-            self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
+        # Reset indicator data from current database.
+        self.all_indicators_data = {}
 
-        else:
-            # Reset indicator data from current database.
-            self.all_indicators_data = {}
+        # CleanUP country list.
+        self.country_list = []
 
-            # CleanUP country list.
-            self.country_list = []
+        # Reset connection list.
+        connections = []
 
-            # Reset connection list.
-            connections = []
+        # Sort keys for the ID sequence.
+        self.sorted_indicators = mi.keys()
+        self.sorted_indicators.sort()
 
-            # Sort keys for the ID sequence.
-            sorted_indicators = mi.keys()
-            sorted_indicators.sort()
+        # Number of my indicators.
+        items = len(self.sorted_indicators)
 
-            # Number of my indicators.
-            items = len(sorted_indicators)
+        # Prepare dictionary to link model's ID's to WorldBank's ID's.
+        id_conn = {}
 
-            # Prepare dictionary to link model's ID's to WorldBank's ID's.
-            id_conn = {}
+        # Characters to use for ID creation
+        abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        # This var will show ID creation sequence.
+        items_created = 0
 
-            # Characters to use for ID creation
-            abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            # This var will show ID creation sequence.
-            items_created = 0
+        # Create short ID's, store that link to a dict and prepare each generic structure. (UPTO 26)
+        for i in abc:
 
-            # Create short ID's, store that link to a dict and prepare each generic structure. (UPTO 26)
+            short_id = "I"+i
+
+            # Update ID link dictionary.
+            id_conn[short_id] = mi[self.sorted_indicators[items_created]]
+
+            # Prepare the basic structure for each indicator.
+            self.all_indicators_data[short_id] = {}
+
+            items_created += 1
+            if items_created == items:
+                break
+
+        # Prepare new ID creation sequence.
+        items_created = 0
+
+        # Continue creating short ID's, store that link to a dict and prepare each generic structure. (UPTO 676)
+        if items-26 > 0:
             for i in abc:
+                for j in abc:
 
-                short_id = "I"+i
+                    short_id = "I"+i+j
 
-                # Update ID link dictionary.
-                id_conn[short_id] = mi[sorted_indicators[items_created]]
+                    # Update ID link dictionary.
+                    id_conn[short_id] = mi[self.sorted_indicators[items_created+26]]
 
-                # Prepare the basic structure for each indicator.
-                self.all_indicators_data[short_id] = {}
+                    # Prepare the basic structure for each indicator.
+                    self.all_indicators_data[short_id] = {}
 
-                items_created += 1
-                if items_created == items:
-                    break
-
-            # Prepare new ID creation sequence.
-            items_created = 0
-
-            # Continue creating short ID's, store that link to a dict and prepare each generic structure. (UPTO 676)
-            if items-26 > 0:
-                for i in abc:
-                    for j in abc:
-
-                        print "yo"
-                        short_id = "I"+i+j
-
-                        # Update ID link dictionary.
-                        id_conn[short_id] = mi[sorted_indicators[items_created+26]]
-
-                        # Prepare the basic structure for each indicator.
-                        self.all_indicators_data[short_id] = {}
-
-                        items_created += 1
-                        if items_created == items-26:
-                            break
+                    items_created += 1
                     if items_created == items-26:
                         break
+                if items_created == items-26:
+                    break
 
-            #print id_conn
-            #print self.all_indicators_data
+        # Prepare Country List and place it inside all_indicators_data.
+        for i in range(1, self.ic_index_selection.coredb_py[1][0]["countries_num"]+1):
+            country = self.ic_index_selection.coredb_py[1][i][1]
+            self.country_list.append(country)
 
-            # Prepare Country List and place it inside all_indicators_data.
-            for i in range(1, self.ic_index_selection.coredb_py[1][0]["countries_num"]+1):
-                country = self.ic_index_selection.coredb_py[1][i][1]
-                self.country_list.append(country)
+            for key in self.all_indicators_data:
+                self.all_indicators_data[key][country] = []
 
-                for key in self.all_indicators_data:
-                    self.all_indicators_data[key][country] = []
+        try:
+            for short_id in self.all_indicators_data:
+
+                indicator_address = start_url + countries + indicators + id_conn[short_id] + "/" + end_url
+
+                # Define World Bank connection (JSON data).
+                ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
+
+                # Add current connection to the list with all connections.
+                connections.append(ind_data_connection)
+
+                # Convert JSON data into temp python structure.
+                ind_data_py = self.string_it(json.load(ind_data_connection))
+
+                # For each record in the json file..
+                for record in range(len(ind_data_py[1])):
+                    country = ind_data_py[1][record]["country"]["value"]
+                    year = int(ind_data_py[1][record]["date"])
+                    value = ind_data_py[1][record]["value"]
+
+                    self.all_indicators_data[short_id][country].append([year, value])
+
+                # Begin statistic calculations.
+                # Track number of countries with no data available for any year.
+                empty_countries = 0
+
+                country_averages = []
+
+                plus1960 = 0
+                plus1980 = 0
+                plus2000 = 0
+
+                for country in self.all_indicators_data[short_id]:
+                    sum_value = 0
+                    available_years = 0
+                    for year in self.all_indicators_data[short_id][country]:
+                        if year[1]:
+                            sum_value += float(year[1])
+                            available_years += 1
+                            if year[0] < 1980:
+                                plus1960 += 1
+                            elif year[0] < 2000:
+                                plus1980 += 1
+                            else:
+                                plus2000 += 1
+
+                    if available_years == 0:
+                        empty_countries += 1
+                    else:
+                        country_averages.append(sum_value/available_years)
+
+                ind_review = [empty_countries,
+
+
+
+                              "2134.2",
+                              #sum(country_averages)/len(country_averages),
+                              #str("%.2e" % sum(country_averages)/len(country_averages)+"[size=<integer>]"+"hithere"+"[/size]"),
+
+
+
+                              plus1960,
+                              plus1980,
+                              plus2000]
+
+                self.spawn_indicator_widget(ind_review)
+
+        except Exception as e:
+            self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)
+
+        finally:
 
             try:
-                for short_id in self.all_indicators_data:
+                # Close created connections to WorldBank.
+                for conn in connections:
+                    conn.close()
 
-                    indicator_address = start_url + countries + indicators + id_conn[short_id] + "/" + end_url
-
-                    # Define World Bank connection (JSON data).
-                    ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
-
-                    # Add current connection to the list with all connections.
-                    connections.append(ind_data_connection)
-
-                    # Convert JSON data into temp python structure.
-                    ind_data_py = self.string_it(json.load(ind_data_connection))
-
-                    # For each record in the json file..
-                    for record in range(len(ind_data_py[1])):
-                        country = ind_data_py[1][record]["country"]["value"]
-                        year = int(ind_data_py[1][record]["date"])
-                        value = ind_data_py[1][record]["value"]
-
-                        self.all_indicators_data[short_id][country].append([year, value])
-
-                    # Begin statistic calculations.
-                    # Track number of countries with no data available for any year.
-                    empty_countries = 0
-
-                    country_averages = []
-
-                    plus1960 = 0
-                    plus1980 = 0
-                    plus2000 = 0
-
-                    for country in self.all_indicators_data[short_id]:
-                        sum_value = 0
-                        available_years = 0
-                        for year in self.all_indicators_data[short_id][country]:
-                            if year[1]:
-                                sum_value += float(year[1])
-                                available_years += 1
-                                if year[0] < 1980:
-                                    plus1960 += 1
-                                elif year[0] < 2000:
-                                    plus1980 += 1
-                                else:
-                                    plus2000 += 1
-
-                        if available_years == 0:
-                            empty_countries += 1
-                        else:
-                            #print "mean of country", country, "is", sum_value, "/", available_years, "=", sum_value/available_years
-                            country_averages.append(sum_value/available_years)
-
-                    ind_review = [empty_countries,
-                                  len(country_averages),
-                                  sum(country_averages)/len(country_averages),
-                                  plus1960,
-                                  plus1980,
-                                  plus2000]
-
-                    self.spawn_indicator_widget(ind_review)
-
+            # Something really unexpected just happened.
             except Exception as e:
-                self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)
-
-            finally:
-
-                try:
-                    # Close created connections to WorldBank.
-                    for conn in connections:
-                        conn.close()
-
-                # Something really unexpected just happened.
-                except Exception as e:
-                    print "def get_indicators(self, *arg):", type(e), e.__doc__, e.message
+                print "def get_indicators(self, *arg):", type(e), e.__doc__, e.message
 
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
+
 
 
 

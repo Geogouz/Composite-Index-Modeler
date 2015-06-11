@@ -1,6 +1,127 @@
 #: import sm kivy.uix.screenmanager
 
 
+<RvwWidgetMainLayout@BoxLayout>:
+    size_hint: (None, None)
+    size: (300, 167)
+    orientation: "vertical"
+    padding: (19, 10, 19, 17)
+    spacing: 7
+    canvas:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            source: './Sources/indicators_widget.png'
+            pos: self.pos
+            size: self.size
+
+
+<RvwWidgetScroll@ScrollView>:
+    canvas.before:
+        Color:
+            rgba: (0.22, 0.22, 0.22, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    do_scroll_x: False
+    bar_width: 2
+    bar_inactive_color: (0.8, 0.8, 0.8, 1)
+    bar_color: (0.96, 0.26, 0.21, 1)
+    bar_margin: 3
+    bar_pos_y: "right"
+
+
+<RvwWidgetTitle@Label>:
+    size_hint: (None, None)
+    size: (212, self.texture_size[1])
+    canvas.before:
+        Color:
+            rgba: (0, 1, 0, 0)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    padding_y: 8
+    text_size: (self.width-16, None)
+    italic: True
+    font_size: 13
+    text: "PM2.5 pollution, population exposed to PM2.5 pollution, population exposed to levels levels exceeding WHO guideline value (% of total)"
+
+
+<RvwWidgetShortID@Label>:
+    size_hint: (None, None)
+    size: (50, 70)
+    canvas.before:
+        Color:
+            rgba: (0.96, 0.26, 0.21, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    font_size: 30 if len(self.text) == 2 else 20
+    text: "IWW"
+
+
+<RvwWidgetFootLayout@BoxLayout>:
+    size_hint: (None, None)
+    size: (262, 63)
+    spacing: 1
+    canvas:
+        Color:
+            rgba: (0.7, 0.7, 0.7, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<RvwWidgetCalc@BoxLayout>:
+    size_hint: (None, None)
+    height: 63
+    orientation: "vertical"
+    canvas:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<RvwWidgetCalcData@Label>:
+    size_hint: (None, None)
+    font_size: 20
+    bold: True
+    markup: True
+
+
+<RvwWidgetCalcDesc@Label>:
+    size_hint: (None, None)
+    italic: True
+    text_size: (self.width, self.height)
+    halign: "center"
+    valign: "bottom"
+    font_size: 12
+    color: (0.33, 0.33, 0.33, 1)
+
+
+<RvwWidgetCalc2Desc@Label>:
+    size_hint: (None, None)
+    size: (45, 15)
+    text_size: (self.width, self.height)
+    halign: "right"
+    valign: "middle"
+    font_size: 11
+    color: (0.33, 0.33, 0.33, 1)
+
+
+<RvwWidgetCalc2Data@Label>:
+    size_hint: (None, None)
+    size: (45, 15)
+    text_size: (self.width, self.height)
+    halign: "left"
+    valign: "middle"
+    font_size: 14
+    bold: True
+    color: (0, 0.45, 0, 1)
+
+
 <TopicTitle@Label>:
     canvas.before:
         Color:
@@ -140,7 +261,6 @@
     background_normal: './Sources/clear_search.png'
 
 
-# Topics Description
 <SR_Index@Label>:
     size_hint: (1, None)
     height: 15 + self.texture_size[1]
@@ -157,7 +277,6 @@
             size: self.size
 
 
-# Topics Description
 <SR_Topic@Label>:
     size_hint: (1, None)
     height: 10 + self.texture_size[1]
@@ -229,7 +348,9 @@
         IndexSelection:
             id: index_selection
             is_manager: manager
+            is_index_creation: index_creation
         IndexCreation:
+            id: index_creation
             ic_index_selection: index_selection
         MapDesigner:
 
@@ -796,6 +917,8 @@
 # Screen
 <IndexCreation>:
     btn_get_indicators: btn_get_indicators.__self__
+    indicator_list: indicator_list.__self__
+    downloading_state_icon: downloading_state_icon.__self__
 
     name: 'IndexCreationScreen'
     BoxLayout:
@@ -827,22 +950,41 @@
                         background_normal: './Sources/get_indicators_btn_normal.png'
                         background_down: './Sources/get_indicators_btn_down.png'
                         background_disabled_down: './Sources/get_indicators_btn_down.png'
-                        on_state: if self.state == "down": root.threadonator(root.get_indicators)
+                        on_state: if self.state == "down": root.dl_manager()
+                        on_disabled: if not self.disabled: root.ic_index_selection.dl_status_icon_setter()
 
                     Label:
                         canvas.before:
                             Color:
-                                rgba: (1, 1, 1, 1) if btn_get_indicators.state == "normal" else (0.96, 0.26, 0.21, 1)
+                                rgba: (1, 1, 1, 1) if not btn_get_indicators.disabled else (0.96, 0.26, 0.21, 1)
                             Rectangle:
                                 pos: self.pos
                                 size: self.size
 
                         size_hint: (None, None)
-                        height: 22
-                        width: 130
+                        size: (130, 22)
                         font_size: 13
-                        color: (0.96, 0.26, 0.21, 1) if btn_get_indicators.state == "normal" else (1, 1, 1, 1)
+                        color: (0.96, 0.26, 0.21, 1) if not btn_get_indicators.disabled else (1, 1, 1, 1)
                         text: "Get Indicator Data"
+
+                RelativeLayout:
+                    size_hint: (None, None)
+
+                    Image:
+                        size_hint: (None, None)
+                        size: (41, 90)
+                        source: './Sources/status_right_border.png'
+                        allow_stretch: False
+
+                    Image:
+                        id: downloading_state_icon
+                        size_hint: (None, None)
+                        size: (32, 90)
+                        pos: (4, 0)
+                        source: './Sources/status_error.png'
+                        anim_delay: 0.15 if self.source == './Sources/loader.gif' else -1
+                        allow_stretch: False
+
 
                 BoxLayout:
                     size_hint_x: None
@@ -959,7 +1101,7 @@
 
             BoxLayout:
                 size_hint_y: None
-                # 100 = above toolbar height
+                # 102 = above toolbar height
                 height: root.height - 102
                 canvas:
                     Color:
@@ -1000,244 +1142,23 @@
                             color: (1, 1, 1, 1)
                             text_size: (self.width, self.height)
                             halign: "center"
-                            text: "Use button above\nto get your data.."
+                            text: "Use button above\nto download your data.."
 
-                    BoxLayout:
-                        id: indicator_list
+                    ScrollView:
+                        id: topics_slider
                         size_hint: (None, None)
-                        size: (0, 0) if not self.children else (300, self.parent.height)
-                        orientation: "vertical"
+                        size: (0, 0) if not indicator_list.children else (300, self.parent.height)
+                        do_scroll_x: False
+                        bar_width: 3
+                        bar_margin: 2
+                        bar_inactive_color: (0, 0, 0, 1)
+                        bar_color: (0.96, 0.26, 0.21, 1)
 
                         BoxLayout:
+                            id: indicator_list
                             size_hint: (None, None)
-                            size: (300, 167)
+                            size: (0, 0) if not self.children else (300, 167*len(self.children))
                             orientation: "vertical"
-                            padding: (19, 10, 19, 17)
-                            spacing: 7
-                            canvas:
-                                Color:
-                                    rgba: (1, 1, 1, 1)
-                                Rectangle:
-                                    source: './Sources/indicators_widget.png'
-                                    pos: self.pos
-                                    size: self.size
-
-                            BoxLayout:
-                                size_hint: (None, None)
-                                size: (262, 70)
-                                orientation: "horizontal"
-
-                                ScrollView:
-                                    canvas.before:
-                                        Color:
-                                            rgba: (0.22, 0.22, 0.22, 1)
-                                        Rectangle:
-                                            pos: self.pos
-                                            size: self.size
-                                    do_scroll_x: False
-                                    bar_width: 2
-                                    bar_inactive_color: (0.8, 0.8, 0.8, 1)
-                                    bar_color: (0.96, 0.26, 0.21, 1)
-                                    bar_margin: 3
-                                    bar_pos_y: "right"
-
-                                    Label:
-                                        size_hint: (None, None)
-                                        size: (212, self.texture_size[1])
-                                        canvas.before:
-                                            Color:
-                                                rgba: (0, 1, 0, 0)
-                                            Rectangle:
-                                                pos: self.pos
-                                                size: self.size
-                                        padding_y: 8
-                                        text_size: (self.width-16, None)
-                                        italic: True
-                                        font_size: 13
-                                        text: "PM2.5 pollution, population exposed to levels exceeding WHO guideline value (% of total)"
-
-                                Label:
-                                    size_hint: (None, None)
-                                    size: (50, 70)
-                                    canvas.before:
-                                        Color:
-                                            rgba: (0.96, 0.26, 0.21, 1)
-                                        Rectangle:
-                                            pos: self.pos
-                                            size: self.size
-                                    font_size: 30 if len(self.text) == 2 else 20
-                                    text: "IWW"
-
-                            BoxLayout:
-                                size_hint: (None, None)
-                                size: (262, 63)
-                                spacing: 1
-                                canvas:
-                                    Color:
-                                        rgba: (0.7, 0.7, 0.7, 1)
-                                    Rectangle:
-                                        pos: self.pos
-                                        size: self.size
-
-                                BoxLayout:
-                                    size_hint: (None, None)
-                                    size: (60, 63)
-                                    orientation: "vertical"
-                                    canvas:
-                                        Color:
-                                            rgba: (1, 1, 1, 1)
-                                        Rectangle:
-                                            pos: self.pos
-                                            size: self.size
-
-                                    Label:
-                                        size_hint: (None, None)
-                                        size: (60, 31)
-                                        text: "444"
-                                        font_size: 23
-                                        bold: True
-                                        color: (0.9, 0.1, 0.1, 1)
-
-                                    Label:
-                                        size_hint: (None, None)
-                                        size: (60, 32)
-                                        italic: True
-                                        text_size: (self.width, self.height)
-                                        halign: "center"
-                                        valign: "bottom"
-                                        text: "Regions\nW/O Data"
-                                        font_size: 12
-                                        color: (0.33, 0.33, 0.33, 1)
-
-                                BoxLayout:
-                                    size_hint: (None, None)
-                                    size: (90, 63)
-                                    orientation: "vertical"
-                                    canvas:
-                                        Color:
-                                            rgba: (1, 1, 1, 1)
-                                        Rectangle:
-                                            pos: self.pos
-                                            size: self.size
-
-                                    BoxLayout:
-                                        size_hint: (None, None)
-                                        size: (90, 15)
-                                        spacing: 5
-
-                                        Label:
-                                            size_hint: (None, None)
-                                            size: (45, 15)
-                                            text_size: (self.width, self.height)
-                                            halign: "right"
-                                            valign: "middle"
-                                            text: "60-80:"
-                                            font_size: 11
-                                            color: (0.33, 0.33, 0.33, 1)
-
-                                        Label:
-                                            size_hint: (None, None)
-                                            size: (45, 15)
-                                            text_size: (self.width, self.height)
-                                            halign: "left"
-                                            valign: "middle"
-                                            text: "959"
-                                            font_size: 14
-                                            bold: True
-                                            color: (0.1, 0.5, 0.1, 1)
-
-                                    BoxLayout:
-                                        size_hint: (None, None)
-                                        size: (90, 15)
-                                        spacing: 5
-
-                                        Label:
-                                            size_hint: (None, None)
-                                            size: (45, 15)
-                                            text_size: (self.width, self.height)
-                                            halign: "right"
-                                            valign: "middle"
-                                            text: "80-00:"
-                                            font_size: 11
-                                            color: (0.33, 0.33, 0.33, 1)
-
-                                        Label:
-                                            size_hint: (None, None)
-                                            size: (45, 15)
-                                            text_size: (self.width, self.height)
-                                            halign: "left"
-                                            valign: "middle"
-                                            text: "1585"
-                                            font_size: 14
-                                            bold: True
-                                            color: (0.1, 0.5, 0.1, 1)
-
-                                    BoxLayout:
-                                        size_hint: (None, None)
-                                        size: (90, 15)
-                                        spacing: 5
-
-                                        Label:
-                                            size_hint: (None, None)
-                                            size: (45, 15)
-                                            text_size: (self.width, self.height)
-                                            halign: "right"
-                                            valign: "middle"
-                                            text: "00+:"
-                                            font_size: 11
-                                            color: (0.33, 0.33, 0.33, 1)
-
-                                        Label:
-                                            size_hint: (None, None)
-                                            size: (45, 15)
-                                            text_size: (self.width, self.height)
-                                            halign: "left"
-                                            valign: "middle"
-                                            text: "2759"
-                                            font_size: 14
-                                            bold: True
-                                            color: (0.1, 0.5, 0.1, 1)
-
-                                    Label:
-                                        size_hint: (None, None)
-                                        size: (90, 18)
-                                        text_size: (self.width, self.height)
-                                        halign: "center"
-                                        valign: "bottom"
-                                        italic: True
-                                        text: "Total Records"
-                                        font_size: 12
-                                        color: (0.33, 0.33, 0.33, 1)
-
-                                BoxLayout:
-                                    size_hint: (None, None)
-                                    size: (110, 63)
-                                    orientation: "vertical"
-                                    canvas:
-                                        Color:
-                                            rgba: (1, 1, 1, 1)
-                                        Rectangle:
-                                            pos: self.pos
-                                            size: self.size
-
-                                    Label:
-                                        size_hint: (None, None)
-                                        size: (110, 31)
-                                        text: "951.014"
-                                        font_size: 23
-                                        bold: True
-                                        color: (0, 0, 0, 1)
-
-                                    Label:
-                                        size_hint: (None, None)
-                                        size: (110, 32)
-                                        italic: True
-                                        text_size: (self.width, self.height)
-                                        halign: "center"
-                                        valign: "bottom"
-                                        text: "Diachronic\nUnweighted Mean"
-                                        font_size: 12
-                                        color: (0.33, 0.33, 0.33, 1)
 
                 BoxLayout:
                     size_hint_x: None
