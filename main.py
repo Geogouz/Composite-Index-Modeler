@@ -590,6 +590,13 @@ class IndexCreation(MouseScreen):
             italic=True
         ), size_hint=(None, None), size=(350, 180)).open()
 
+    @mainthread
+    def model_toolbox_activator(self, state):
+        if state:
+            self.model_toolbox.opacity = 1
+        else:
+            self.model_toolbox.opacity = 0
+
     def toolbox_switcher(self, button):
         self.toolbox_screenmanager.current = button.goto
         self.btn_view_indicators.disabled = False
@@ -613,6 +620,7 @@ class IndexCreation(MouseScreen):
             self.btn_index_algebra.disabled = False
 
             self.toolbox_screenmanager.current = "intro"
+            self.model_toolbox_activator(False)
 
             self.btn_get_indicators.disabled = True
             self.downloading_state_icon.source = './Sources/loader.gif'
@@ -684,8 +692,8 @@ class IndexCreation(MouseScreen):
 
     def get_indicators(self, *arg):
 
-        # Simple and reversed shortcut for "my_indicators".
-        mi = self.ic_index_selection.selected_indices["my_indicators"]
+        # Shortcut for "my_indicators".
+        mi = dict(self.ic_index_selection.selected_indices["my_indicators"])
 
         # Reset indicator data from current database.
         self.all_indicators_data = {}
@@ -771,13 +779,24 @@ class IndexCreation(MouseScreen):
                 # Convert JSON data into temp python structure.
                 ind_data_py = self.string_it(json.load(ind_data_connection))
 
+                # This list will store all years with data for each short_id (model indicator).
+                year_list = []
+
                 # For each record in the json file..
                 for record in range(len(ind_data_py[1])):
                     country = ind_data_py[1][record]["country"]["value"]
                     year = int(ind_data_py[1][record]["date"])
                     value = ind_data_py[1][record]["value"]
 
-                    self.all_indicators_data[short_id][country].append([year, value])
+                    if value:
+                        self.all_indicators_data[short_id][country].append([year, value])
+                        year_list.append(year)
+
+                # If year list is not an empty list..
+                if year_list:
+                    last_first = [max(year_list), min(year_list)]
+                    self.all_indicators_data["LastFirst_"+short_id] = [min(year_list), max(year_list)]
+
 
                 # Begin statistic calculations.
                 # Track number of countries with no data available for any year.
@@ -825,6 +844,12 @@ class IndexCreation(MouseScreen):
                               indicator]
 
                 self.spawn_indicator_widget(ind_review)
+
+            self.model_toolbox_activator(True)
+
+            tempdb = open("./DB/temp.db", "w")
+            json.dump(self.all_indicators_data, tempdb)
+            tempdb.close()
 
         except Exception as e:
             self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)

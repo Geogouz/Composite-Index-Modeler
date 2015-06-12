@@ -922,6 +922,7 @@
     btn_index_algebra: btn_index_algebra.__self__
 
     toolbox_screenmanager: toolbox_screenmanager.__self__
+    model_toolbox: model_toolbox.__self__
 
     name: 'IndexCreationScreen'
 
@@ -999,7 +1000,8 @@
 
             # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
             BoxLayout:
-                opacity: 0 if not indicator_list.children else 1
+                id: model_toolbox
+                opacity: 0
                 spacing: 5
                 padding: (1, 0, 5, 0)
                 canvas.before:
