@@ -1044,5 +1044,3 @@ class CIMgui(App):
 # Must be called from main.
 if __name__ == "__main__":
     CIMgui().run()
-
-j
