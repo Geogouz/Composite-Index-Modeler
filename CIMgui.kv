@@ -1,6 +1,28 @@
 #: import sm kivy.uix.screenmanager
 
 
+<XLine@BoxLayout>:
+    size_hint_y: None
+    height: 1
+    canvas.after:
+        Color:
+            rgba: (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<YLine@BoxLayout>:
+    size_hint_x: None
+    width: 1
+    canvas.after:
+        Color:
+            rgba: (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
 <RvwWidgetMainLayout@BoxLayout>:
     size_hint: (None, None)
     size: (300, 167)
@@ -198,7 +220,7 @@
 <ShadeLine@BoxLayout>:
     size_hint_y: None
     height: 1
-    canvas:
+    canvas.after:
         Color:
             rgba: (0.28, 0.58, 0.78, 1)
         Rectangle:
@@ -344,6 +366,7 @@
         Home:
         IndexSelection:
             id: index_selection
+            is_update_db: update_db
             is_manager: manager
             is_index_creation: index_creation
         IndexCreation:
@@ -402,6 +425,7 @@
                             root.popup_active = False
 
         Button:
+            id: update_db
             size_hint: (None, None)
             height: 35
             width: 90
@@ -555,15 +579,7 @@
                     IndexStackLayout:
                         id: indices_slider_stack
 
-                BoxLayout:
-                    canvas.before:
-                        Color:
-                            rgba: (0, 0, 0, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                    size_hint_y: None
-                    height: 1
+                XLine:
 
                 BoxLayout:
                     id: index_desc_box
@@ -660,15 +676,7 @@
                         pos: self.pos
                         size: self.size
 
-                BoxLayout:
-                    canvas:
-                        Color:
-                            rgba: (0, 0, 0, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                    size_hint: (None, 1)
-                    width: 1
+                YLine:
 
                 ScreenManager:
                     id: my_indicators_search_sm
@@ -820,15 +828,7 @@
                                     spacing: 10
                                     padding: (5, 10, 5, 10)
 
-                BoxLayout:
-                    canvas:
-                        Color:
-                            rgba: (0, 0, 0, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                    size_hint: (None, 1)
-                    width: 1
+                YLine:
 
 
 # Closed and listening Bar
@@ -917,16 +917,91 @@
     indicator_list: indicator_list.__self__
     downloading_state_icon: downloading_state_icon.__self__
 
+    btn_view_indicators: btn_view_indicators.__self__
+    btn_series_selection: btn_series_selection.__self__
+    btn_index_algebra: btn_index_algebra.__self__
+
+    toolbox_screenmanager: toolbox_screenmanager.__self__
+
     name: 'IndexCreationScreen'
+
     BoxLayout:
+        orientation: "vertical"
+        size_hint_x: None
+        width: root.width-1
+
+        XLine:
 
         BoxLayout:
-            orientation: "vertical"
+            size_hint_y: None
+            height: 100
+            padding: (5, 5, 0, 5)
+            canvas.before:
+                Color:
+                    rgba: (0.22, 0.22, 0.22, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
             BoxLayout:
-                size_hint_y: None
-                height: 100
-                padding: (5, 5, 0, 5)
+                size_hint_x: None
+                width: 130
+                orientation: "vertical"
+
+                ToggleButton:
+                    id: btn_get_indicators
+                    size_hint: (None, None)
+                    width: 130
+                    height: 68
+                    background_normal: './Sources/get_indicators_btn_normal.png'
+                    background_down: './Sources/get_indicators_btn_down.png'
+                    background_disabled_down: './Sources/get_indicators_btn_down.png'
+                    on_state: if self.state == "down": root.dl_manager()
+                    on_disabled: if not self.disabled: root.ic_index_selection.dl_status_icon_setter()
+
+                Label:
+                    canvas.before:
+                        Color:
+                            rgba: (1, 1, 1, 1) if not btn_get_indicators.disabled else (0.96, 0.26, 0.21, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    size_hint: (None, None)
+                    size: (130, 22)
+                    font_size: 13
+                    color: (0.96, 0.26, 0.21, 1) if not btn_get_indicators.disabled else (1, 1, 1, 1)
+                    text: "Get Indicator Data"
+
+            RelativeLayout:
+                size_hint: (None, None)
+
+                Image:
+                    size_hint: (None, None)
+                    size: (41, 90)
+                    source: './Sources/status_right_border.png'
+                    allow_stretch: False
+
+                Image:
+                    id: downloading_state_icon
+                    size_hint: (None, None)
+                    size: (32, 90)
+                    pos: (4, 0)
+                    source: './Sources/status_error.png'
+                    anim_delay: 0.15 if self.source == './Sources/loader.gif' else -1
+                    allow_stretch: False
+
+
+            BoxLayout:
+                size_hint_x: None
+                # 543 = sibling widths
+                width: root.width - 543
+
+            # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
+            BoxLayout:
+                opacity: 0 if not indicator_list.children else 1
+                spacing: 5
+                padding: (1, 0, 5, 0)
                 canvas.before:
                     Color:
                         rgba: (0.22, 0.22, 0.22, 1)
@@ -939,243 +1014,193 @@
                     width: 130
                     orientation: "vertical"
 
-                    ToggleButton:
-                        id: btn_get_indicators
+                    Button:
+                        id: btn_view_indicators
+                        goto: "view_indicators_screen"
                         size_hint: (None, None)
                         width: 130
                         height: 68
-                        background_normal: './Sources/get_indicators_btn_normal.png'
-                        background_down: './Sources/get_indicators_btn_down.png'
-                        background_disabled_down: './Sources/get_indicators_btn_down.png'
-                        on_state: if self.state == "down": root.dl_manager()
-                        on_disabled: if not self.disabled: root.ic_index_selection.dl_status_icon_setter()
+                        background_normal: './Sources/view_indicators_btn_normal.png'
+                        background_down: './Sources/view_indicators_btn_down.png'
+                        background_disabled_down: './Sources/view_indicators_btn_down.png'
+                        background_disabled_normal: './Sources/view_indicators_btn_down.png'
+                        on_press: root.toolbox_switcher(self)
 
                     Label:
                         canvas.before:
                             Color:
-                                rgba: (1, 1, 1, 1) if not btn_get_indicators.disabled else (0.96, 0.26, 0.21, 1)
+                                rgba: (1, 1, 1, 1) if not btn_view_indicators.disabled else (0.96, 0.26, 0.21, 1)
                             Rectangle:
                                 pos: self.pos
                                 size: self.size
 
                         size_hint: (None, None)
-                        size: (130, 22)
+                        height: 22
+                        width: 130
                         font_size: 13
-                        color: (0.96, 0.26, 0.21, 1) if not btn_get_indicators.disabled else (1, 1, 1, 1)
-                        text: "Get Indicator Data"
-
-                RelativeLayout:
-                    size_hint: (None, None)
-
-                    Image:
-                        size_hint: (None, None)
-                        size: (41, 90)
-                        source: './Sources/status_right_border.png'
-                        allow_stretch: False
-
-                    Image:
-                        id: downloading_state_icon
-                        size_hint: (None, None)
-                        size: (32, 90)
-                        pos: (4, 0)
-                        source: './Sources/status_error.png'
-                        anim_delay: 0.15 if self.source == './Sources/loader.gif' else -1
-                        allow_stretch: False
-
+                        color: (0.96, 0.26, 0.21, 1) if not btn_view_indicators.disabled else (1, 1, 1, 1)
+                        text: "View Indicator Data"
 
                 BoxLayout:
                     size_hint_x: None
-                    # 542 = sibling widths
-                    width: root.width - 542
-
-                # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
-                BoxLayout:
-                    spacing: 5
-                    padding: (1, 0, 5, 0)
-                    canvas.before:
-                        Color:
-                            rgba: (0.22, 0.22, 0.22, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-
-                    BoxLayout:
-                        size_hint_x: None
-                        width: 130
-                        orientation: "vertical"
-
-                        ToggleButton:
-                            id: btn_view_indicators
-                            size_hint: (None, None)
-                            width: 130
-                            height: 68
-                            background_normal: './Sources/view_indicators_btn_normal.png'
-                            background_down: './Sources/view_indicators_btn_down.png'
-                            on_press: pass
-
-                        Label:
-                            canvas.before:
-                                Color:
-                                    rgba: (1, 1, 1, 1) if btn_view_indicators.state == "normal" else (0.96, 0.26, 0.21, 1)
-                                Rectangle:
-                                    pos: self.pos
-                                    size: self.size
-
-                            size_hint: (None, None)
-                            height: 22
-                            width: 130
-                            font_size: 13
-                            color: (0.96, 0.26, 0.21, 1) if btn_view_indicators.state == "normal" else (1, 1, 1, 1)
-                            text: "View Indicator Data"
-
-                    BoxLayout:
-                        size_hint_x: None
-                        width: 130
-                        orientation: "vertical"
-
-                        ToggleButton:
-                            id: btn_series_selection
-                            size_hint: (None, None)
-                            width: 130
-                            height: 68
-                            background_normal: './Sources/series_selection_btn_normal.png'
-                            background_down: './Sources/series_selection_btn_down.png'
-                            on_press: pass
-
-                        Label:
-                            canvas.before:
-                                Color:
-                                    rgba: (1, 1, 1, 1) if btn_series_selection.state == "normal" else (0.96, 0.26, 0.21, 1)
-                                Rectangle:
-                                    pos: self.pos
-                                    size: self.size
-
-                            size_hint: (None, None)
-                            height: 22
-                            width: 130
-                            font_size: 13
-                            color: (0.96, 0.26, 0.21, 1) if btn_series_selection.state == "normal" else (1, 1, 1, 1)
-                            text: "Series Selection"
-
-                    BoxLayout:
-                        size_hint_x: None
-                        width: 130
-                        orientation: "vertical"
-
-                        ToggleButton:
-                            id: btn_index_algebra
-                            size_hint: (None, None)
-                            width: 130
-                            height: 68
-                            background_normal: './Sources/index_algebra_btn_normal.png'
-                            background_down: './Sources/index_algebra_btn_down.png'
-                            on_press: pass
-
-                        Label:
-                            canvas.before:
-                                Color:
-                                    rgba: (1, 1, 1, 1) if btn_index_algebra.state == "normal" else (0.96, 0.26, 0.21, 1)
-                                Rectangle:
-                                    pos: self.pos
-                                    size: self.size
-
-                            size_hint: (None, None)
-                            height: 22
-                            width: 130
-                            font_size: 13
-                            color: (0.96, 0.26, 0.21, 1) if btn_index_algebra.state == "normal" else (1, 1, 1, 1)
-                            text: "Index Algebra"
-
-            BoxLayout:
-                size_hint_y: None
-                height: 1
-                canvas:
-                    Color:
-                        rgba: (0, 0, 0, 1)
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-
-            BoxLayout:
-                size_hint_y: None
-                # 102 = above toolbar height
-                height: root.height - 102
-                canvas:
-                    Color:
-                        rgba: (1, 1, 1, 1)
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-
-                BoxLayout:
+                    width: 130
                     orientation: "vertical"
-                    size_hint_x: None
-                    width: 300
-                    canvas:
-                        Color:
-                            rgba: (0.9, 0.9, 0.9, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
 
-                    BoxLayout:
-                        opacity: 1 if not indicator_list.children else 0
-                        orientation: "vertical"
-                        padding: (0, 0, 0, (self.parent.height - 300))
-
-                        Image:
-                            size_hint: (None, None)
-                            height: 128
-                            width: 300
-                            source: './Sources/Select_Indicators_First.png'
-                            allow_stretch: False
-
-                        Label:
-                            size_hint: (None, None)
-                            height: 60
-                            width: 300
-                            bold: True
-                            font_size: 25
-                            color: (1, 1, 1, 1)
-                            text_size: (self.width, self.height)
-                            halign: "center"
-                            text: "Use button above\nto download your data.."
-
-                    ScrollView:
-                        id: topics_slider
+                    Button:
+                        id: btn_series_selection
+                        goto: "series_selection_screen"
                         size_hint: (None, None)
-                        size: (0, 0) if not indicator_list.children else (300, self.parent.height)
-                        do_scroll_x: False
-                        bar_width: 3
-                        bar_margin: 2
-                        bar_inactive_color: (0, 0, 0, 1)
-                        bar_color: (0.96, 0.26, 0.21, 1)
+                        width: 130
+                        height: 68
+                        background_normal: './Sources/series_selection_btn_normal.png'
+                        background_down: './Sources/series_selection_btn_down.png'
+                        background_disabled_down: './Sources/series_selection_btn_down.png'
+                        background_disabled_normal: './Sources/series_selection_btn_down.png'
+                        on_press: root.toolbox_switcher(self)
 
-                        BoxLayout:
-                            id: indicator_list
-                            size_hint: (None, None)
-                            size: (0, 0) if not self.children else (300, 167*len(self.children))
-                            orientation: "vertical"
+                    Label:
+                        canvas.before:
+                            Color:
+                                rgba: (1, 1, 1, 1) if not btn_series_selection.disabled else (0.96, 0.26, 0.21, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+                        size_hint: (None, None)
+                        height: 22
+                        width: 130
+                        font_size: 13
+                        color: (0.96, 0.26, 0.21, 1) if not btn_series_selection.disabled else (1, 1, 1, 1)
+                        text: "Series Selection"
 
                 BoxLayout:
                     size_hint_x: None
-                    width: 1
-                    canvas:
-                        Color:
-                            rgba: (0, 0, 0, 1)
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
+                    width: 130
+                    orientation: "vertical"
+
+                    Button:
+                        id: btn_index_algebra
+                        goto: "index_algebra_screen"
+                        size_hint: (None, None)
+                        width: 130
+                        height: 68
+                        background_normal: './Sources/index_algebra_btn_normal.png'
+                        background_down: './Sources/index_algebra_btn_down.png'
+                        background_disabled_down: './Sources/index_algebra_btn_down.png'
+                        background_disabled_normal: './Sources/index_algebra_btn_down.png'
+                        on_press: root.toolbox_switcher(self)
+
+                    Label:
+                        canvas.before:
+                            Color:
+                                rgba: (1, 1, 1, 1) if not btn_index_algebra.disabled else (0.96, 0.26, 0.21, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+                        size_hint: (None, None)
+                        height: 22
+                        width: 130
+                        font_size: 13
+                        color: (0.96, 0.26, 0.21, 1) if not btn_index_algebra.disabled else (1, 1, 1, 1)
+                        text: "Index Algebra"
+
+        XLine:
 
         BoxLayout:
-            size_hint_x: None
-            width: 1
+            size_hint_y: None
+            # 102 = above toolbar height
+            height: root.height - 102
             canvas:
                 Color:
-                    rgba: (0, 0, 0, 1)
+                    rgba: (1, 1, 1, 1)
                 Rectangle:
                     pos: self.pos
                     size: self.size
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: None
+                width: 300
+                canvas:
+                    Color:
+                        rgba: (0.9, 0.9, 0.9, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                BoxLayout:
+                    opacity: 1 if not indicator_list.children else 0
+                    orientation: "vertical"
+                    padding: (0, 0, 0, (self.parent.height - 300))
+
+                    Image:
+                        size_hint: (None, None)
+                        height: 128
+                        width: 300
+                        source: './Sources/Select_Indicators_First.png'
+                        allow_stretch: False
+
+                    Label:
+                        size_hint: (None, None)
+                        height: 60
+                        width: 300
+                        bold: True
+                        font_size: 23
+                        color: (1, 1, 1, 1)
+                        text_size: (self.width, self.height)
+                        halign: "center"
+                        text: "Use button above\nto download your data.."
+
+                ScrollView:
+                    id: topics_slider
+                    size_hint: (None, None)
+                    size: (0, 0) if not indicator_list.children else (300, self.parent.height)
+                    do_scroll_x: False
+                    bar_width: 3
+                    bar_margin: 2
+                    bar_inactive_color: (0, 0, 0, 1)
+                    bar_color: (0.96, 0.26, 0.21, 1)
+
+                    BoxLayout:
+                        id: indicator_list
+                        size_hint: (None, None)
+                        size: (0, 0) if not self.children else (300, 167*len(self.children))
+                        orientation: "vertical"
+
+            YLine:
+
+            ScreenManager:
+                id: toolbox_screenmanager
+                transition: sm.FadeTransition(duration=0.1, clearcolor=(1,1,1,1))
+
+                Screen:
+                    name: "intro"
+                    canvas.after:
+                        Color:
+                            rgba: (0.8, 0.8, 0.8, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                Screen:
+                    name: "view_indicators_screen"
+                    Label:
+                        text: "First"
+                        color: (0, 0, 0, 1)
+
+                Screen:
+                    name: "series_selection_screen"
+                    Label:
+                        text: "Second"
+                        color: (0, 0, 0, 1)
+
+                Screen:
+                    name: "index_algebra_screen"
+                    Label:
+                        text: "Third"
+                        color: (0, 0, 0, 1)
+
 
 # Screen
 <MapDesigner>:

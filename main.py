@@ -476,6 +476,9 @@ class IndexSelection(MouseScreen):
                 # Topics dictionary should not be loaded again.
                 self.must_build_topics = False
 
+                # Database cannot be updated any more. To update user must restart.
+                self.is_update_db.disabled = True
+
                 # This will build the live Search dictionary.
                 self.search_dic = {}
                 for first_depth_key in self.topics_dic:
@@ -587,10 +590,14 @@ class IndexCreation(MouseScreen):
             italic=True
         ), size_hint=(None, None), size=(350, 180)).open()
 
-    def dl_manager(self):
+    def toolbox_switcher(self, button):
+        self.toolbox_screenmanager.current = button.goto
+        self.btn_view_indicators.disabled = False
+        self.btn_series_selection.disabled = False
+        self.btn_index_algebra.disabled = False
+        button.disabled = True
 
-        # Clear model's indicator list.
-        self.indicator_list.clear_widgets()
+    def dl_manager(self):
 
         # If I have no indicator in my list do nothing but alert.
         if not self.ic_index_selection.selected_indices["my_indicators"]:
@@ -598,6 +605,15 @@ class IndexCreation(MouseScreen):
             self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
 
         else:
+            # Clear model's indicator list.
+            self.indicator_list.clear_widgets()
+
+            self.btn_view_indicators.disabled = False
+            self.btn_series_selection.disabled = False
+            self.btn_index_algebra.disabled = False
+
+            self.toolbox_screenmanager.current = "intro"
+
             self.btn_get_indicators.disabled = True
             self.downloading_state_icon.source = './Sources/loader.gif'
             self.threadonator(self.get_indicators)
@@ -829,8 +845,6 @@ class IndexCreation(MouseScreen):
 
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
-
-
 
 
 class MapDesigner(Screen):
