@@ -1,6 +1,45 @@
 #: import sm kivy.uix.screenmanager
 
 
+<DataViewOdd@Label>:
+    canvas.before:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    color: (0, 0, 0, 1)
+    font_size: 14
+
+
+<DataViewEven@Label>:
+    canvas.before:
+        Color:
+            rgba: (1, 0.95, 0.95, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    color: (0, 0, 0, 1)
+    font_size: 14
+
+
+<DataViewTitle@Label>:
+    canvas.before:
+        Color:
+            rgba: (0.96, 0.26, 0.21, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    text_size: (self.width-20, self.height)
+    shorten: True
+    halign: "right"
+    color: (1, 1, 1, 1)
+    font_size: 13
+    size_hint_x: None
+    width: 200
+    bold: True
+
+
 <XLine@BoxLayout>:
     size_hint_y: None
     height: 1
@@ -924,6 +963,9 @@
     toolbox_screenmanager: toolbox_screenmanager.__self__
     model_toolbox: model_toolbox.__self__
 
+    data_table: data_table.__self__
+    data_table_slider: data_table_slider.__self__ # maybe not needed
+
     name: 'IndexCreationScreen'
 
     BoxLayout:
@@ -1001,7 +1043,7 @@
             # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
             BoxLayout:
                 id: model_toolbox
-                opacity: 0
+                opacity: 1  # TODO set to 0
                 spacing: 5
                 padding: (1, 0, 5, 0)
                 canvas.before:
@@ -1026,7 +1068,9 @@
                         background_down: './Sources/view_indicators_btn_down.png'
                         background_disabled_down: './Sources/view_indicators_btn_down.png'
                         background_disabled_normal: './Sources/view_indicators_btn_down.png'
-                        on_press: root.toolbox_switcher(self)
+                        on_press:
+                            root.toolbox_switcher(self)
+                            root.init_data_viewer()
 
                     Label:
                         canvas.before:
@@ -1187,9 +1231,63 @@
 
                 Screen:
                     name: "view_indicators_screen"
-                    Label:
-                        text: "First"
-                        color: (0, 0, 0, 1)
+
+                    BoxLayout:
+                        padding: (10, 10)
+
+                        BoxLayout:
+                            padding: (1, 1)
+                            canvas.before:
+                                Color:
+                                    rgba: (0, 0, 0, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                            ScrollView:
+                                id: data_table_slider
+                                bar_width: 2
+                                bar_margin: -7
+                                bar_pos_y: "right"
+                                bar_inactive_color: (0, 0, 0, 1)
+                                bar_color: (0.96, 0.26, 0.21, 1)
+
+                                GridLayout:
+                                    id: data_table
+                                    size_hint: (None, None)
+                                    size: (self.minimum_width, self.minimum_height)
+                                    canvas.before:
+                                        Color:
+                                            rgba: (0, 0, 0, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                    col_default_width: 100
+                                    row_default_height: 20
+                                    row_force_default: True
+                                    padding: (1,1)
+                                    spacing: 1
+
+                    BoxLayout:
+                        size_hint: (None, None)
+                        size: data_table_slider.size
+                        canvas.before:
+                            Color:
+                                rgba: (1, 1, 1, 0) if data_table_slider.do_scroll_x else (1, 1, 1, 0.8)
+                            Rectangle:
+                                pos: data_table_slider.pos
+                                size: self.size
+
+                        Label:
+                            size_hint: (None, None)
+                            size: toolbox_screenmanager.size
+                            text_size: (self.width-40, self.height-30)
+                            halign: "right"
+                            valign: "bottom"
+                            text: "LOADING TABLE.."
+                            font_size: 20
+                            bold: True
+                            color: (0, 0, 0, 0) if data_table_slider.do_scroll_x else (0, 0, 0, 1)
 
                 Screen:
                     name: "series_selection_screen"
