@@ -8,8 +8,11 @@
         Rectangle:
             pos: self.pos
             size: self.size
+    markup: True
     color: (0, 0, 0, 1)
     font_size: 14
+    size_hint_x: None
+    width: 100
 
 
 <DataViewEven@Label>:
@@ -19,8 +22,11 @@
         Rectangle:
             pos: self.pos
             size: self.size
+    markup: True
     color: (0, 0, 0, 1)
     font_size: 14
+    size_hint_x: None
+    width: 100
 
 
 <DataViewTitle@Label>:
@@ -34,10 +40,48 @@
     shorten: True
     halign: "right"
     color: (1, 1, 1, 1)
-    font_size: 13
+    font_size: 14
     size_hint_x: None
     width: 200
     bold: True
+
+
+<TopLeftBox@BoxLayout>:
+    size_hint: (None, None)
+    size: (100, 20)
+    canvas.before:
+        Color:
+            rgba: (0.22, 0.22, 0.22, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<HeadBox@BoxLayout>:
+    canvas.before:
+        Color:
+            rgba: (0.96, 0.26, 0.21, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<YearHeader@Label>:
+    size_hint: (None, None)
+    size: (70, 20)
+    text_size: (self.width-10, self.height)
+    halign: "right"
+    color: (1, 1, 1, 1)
+    font_size: 14
+    bold: True
+
+
+<OrderBtn@Button>:
+    size_hint: (None, None)
+    size: (30, 8)
+    border: (0, 0, 0, 0)
+    col: 0
+    rev: True
 
 
 <XLine@BoxLayout>:
@@ -963,8 +1007,9 @@
     toolbox_screenmanager: toolbox_screenmanager.__self__
     model_toolbox: model_toolbox.__self__
 
+    data_table_frame: data_table_frame.__self__
     data_table: data_table.__self__
-    data_table_slider: data_table_slider.__self__ # maybe not needed
+    data_table_slider: data_table_slider.__self__
 
     name: 'IndexCreationScreen'
 
@@ -1070,7 +1115,7 @@
                         background_disabled_normal: './Sources/view_indicators_btn_down.png'
                         on_press:
                             root.toolbox_switcher(self)
-                            root.init_data_viewer()
+                            root.init_data_viewer() # prevent button to be repressed (lock screen)
 
                     Label:
                         canvas.before:
@@ -1236,6 +1281,7 @@
                         padding: (10, 10)
 
                         BoxLayout:
+                            id: data_table_frame
                             padding: (1, 1)
                             canvas.before:
                                 Color:
