@@ -48,7 +48,7 @@
 
 <TopLeftBox@BoxLayout>:
     size_hint: (None, None)
-    size: (100, 20)
+    size: (200, 20)
     canvas.before:
         Color:
             rgba: (0.22, 0.22, 0.22, 1)
@@ -80,8 +80,6 @@
     size_hint: (None, None)
     size: (30, 8)
     border: (0, 0, 0, 0)
-    col: 0
-    rev: True
 
 
 <XLine@BoxLayout>:
@@ -149,6 +147,7 @@
     text_size: (self.width-16, None)
     italic: True
     font_size: 13
+
 
 <RvwWidgetShortID@Label>:
     size_hint: (None, None)
@@ -1009,6 +1008,8 @@
 
     data_table_frame: data_table_frame.__self__
     data_table: data_table.__self__
+    data_table_top: data_table_top.__self__
+    data_table_img: data_table_img.__self__
     data_table_slider: data_table_slider.__self__
 
     name: 'IndexCreationScreen'
@@ -1088,7 +1089,7 @@
             # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
             BoxLayout:
                 id: model_toolbox
-                opacity: 1  # TODO set to 0
+                opacity: 0
                 spacing: 5
                 padding: (1, 0, 5, 0)
                 canvas.before:
@@ -1115,7 +1116,7 @@
                         background_disabled_normal: './Sources/view_indicators_btn_down.png'
                         on_press:
                             root.toolbox_switcher(self)
-                            root.init_data_viewer() # prevent button to be repressed (lock screen)
+                            root.init_data_viewer()
 
                     Label:
                         canvas.before:
@@ -1148,6 +1149,7 @@
                         background_disabled_down: './Sources/series_selection_btn_down.png'
                         background_disabled_normal: './Sources/series_selection_btn_down.png'
                         on_press: root.toolbox_switcher(self)
+                        on_state: if root.drawing_data: self.state = "normal"
 
                     Label:
                         canvas.before:
@@ -1180,6 +1182,7 @@
                         background_disabled_down: './Sources/index_algebra_btn_down.png'
                         background_disabled_normal: './Sources/index_algebra_btn_down.png'
                         on_press: root.toolbox_switcher(self)
+                        on_state: if root.drawing_data: self.state = "normal"
 
                     Label:
                         canvas.before:
@@ -1263,7 +1266,7 @@
 
             ScreenManager:
                 id: toolbox_screenmanager
-                transition: sm.FadeTransition(duration=0.1, clearcolor=(1,1,1,1))
+                transition: sm.FadeTransition(duration=0, clearcolor=(1,1,1,1))
 
                 Screen:
                     name: "intro"
@@ -1273,6 +1276,22 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+
+                    GridLayout:
+                        id: data_table
+                        size_hint: (None, None)
+                        size: (self.minimum_width, self.minimum_height) if self.children else (0, 0)
+                        canvas.before:
+                            Color:
+                                rgba: (0, 0, 0, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                        col_default_width: 100
+                        row_default_height: 20
+                        row_force_default: True
+                        padding: (1,1)
+                        spacing: 1
 
                 Screen:
                     name: "view_indicators_screen"
@@ -1297,43 +1316,83 @@
                                 bar_pos_y: "right"
                                 bar_inactive_color: (0, 0, 0, 1)
                                 bar_color: (0.96, 0.26, 0.21, 1)
+                                canvas.before:
+                                    Color:
+                                        rgba: (1, 1, 1, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
 
-                                GridLayout:
-                                    id: data_table
+                                BoxLayout:
                                     size_hint: (None, None)
-                                    size: (self.minimum_width, self.minimum_height)
-                                    canvas.before:
-                                        Color:
-                                            rgba: (0, 0, 0, 1)
-                                        Rectangle:
-                                            pos: self.pos
-                                            size: self.size
-                                    col_default_width: 100
-                                    row_default_height: 20
-                                    row_force_default: True
-                                    padding: (1,1)
-                                    spacing: 1
+                                    width: data_table_top.width
+                                    height: data_table_top.height + data_table_img.height
+                                    orientation: "vertical"
+
+                                    GridLayout:
+                                        id: data_table_top
+                                        size_hint: (None, None)
+                                        size: (self.minimum_width, self.minimum_height)
+                                        canvas.before:
+                                            Color:
+                                                rgba: (0, 0, 0, 1)
+                                            Rectangle:
+                                                pos: self.pos
+                                                size: self.size
+                                        rows: 1
+                                        col_default_width: 100
+                                        row_default_height: 20
+                                        row_force_default: True
+                                        padding: (1,1)
+                                        spacing: 1
+
+                                    Image:
+                                        id: data_table_img
+                                        size_hint: (None, None)
+                                        size: self.texture_size
+                                        source: "./DB/table.png"
+                                        allow_stretch: False
 
                     BoxLayout:
-                        size_hint: (None, None)
-                        size: data_table_slider.size
+                        opacity: 1 if root.drawing_data else 0
+                        orientation: "vertical"
                         canvas.before:
                             Color:
-                                rgba: (1, 1, 1, 0) if data_table_slider.do_scroll_x else (1, 1, 1, 0.8)
+                                rgba: (1, 1, 1, 1)
                             Rectangle:
-                                pos: data_table_slider.pos
+                                pos: self.pos
                                 size: self.size
 
-                        Label:
+                        BoxLayout:
+
+                        BoxLayout:
                             size_hint: (None, None)
-                            size: toolbox_screenmanager.size
-                            text_size: (self.width-40, self.height-30)
-                            halign: "right"
-                            valign: "bottom"
-                            text: "LOADING TABLE.."
-                            font_size: 20
-                            bold: True
-                            color: (0, 0, 0, 0) if data_table_slider.do_scroll_x else (0, 0, 0, 1)
+                            height: 2
+                            width: int((float(toolbox_screenmanager.width)/float(100))*float(root.loading_percentage))
+                            canvas.before:
+                                Color:
+                                    rgba: (0.96, 0.26, 0.21, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                        AnchorLayout:
+                            anchor_x:'center'
+                            anchor_y:'top'
+
+                            Label:
+                                size_hint: (None, None)
+                                size: self.texture_size
+                                text: str(root.loading_percentage) + "%"
+                                font_size: 22
+                                color: (0.96, 0.26, 0.21, 1)
+                                bold: True
+
+                            Label:
+                                text_size: (self.width-40, self.height-30)
+                                text: "CREATING TABLE\nPlease Wait.."
+                                font_size: 17
+                                color: (0.22, 0.22, 0.22, 1)
 
                 Screen:
                     name: "series_selection_screen"
