@@ -927,8 +927,34 @@ class IndexCreation(MouseScreen):
                     else:
                         self.data_view_now[-1].append("")
 
-            self.data_table.cols = len(rng)+1
+            self.screen_load_toolbox.add_widget(Factory.TempDataTable(cols=len(rng)+1))
 
+            self.data_queue = list(self.data_view_now)
+
+            # Schedule table building.
+            Clock.schedule_interval(self.build_data_table, 0)
+
+    def sort_data_manager(self, *args):
+        # If table is currently being loaded, do nothing.
+        if not self.drawing_data:
+            # Set drawing data state.
+            self.drawing_data = True
+
+            # Check if button is in the descending list.
+            rev = args[0] in self.descending_order_buttons
+
+            # Check index of the button to know which column will sort.
+            if rev:
+                column = self.descending_order_buttons.index(args[0]) + 1
+            else:
+                column = self.acceding_order_buttons.index(args[0]) + 1
+
+            temp_sorted = []
+
+            for row in sorted(self.data_view_now, key=operator.itemgetter(column), reverse=rev):
+                temp_sorted.append(row)
+
+            self.data_view_now = temp_sorted
             self.data_queue = list(self.data_view_now)
 
             # Schedule table building.
@@ -942,7 +968,7 @@ class IndexCreation(MouseScreen):
             first_build = self.data_queue == self.data_view_now
 
             # Set chunks number for each schedule.
-            chunks = 20
+            chunks = 10
             queue = self.data_queue[:chunks]
             self.data_queue = self.data_queue[chunks:]
 
@@ -986,7 +1012,7 @@ class IndexCreation(MouseScreen):
                 for i, cell in enumerate(country_row, start=1):
                     # Identify Region names.
                     if cell == country_row[0]:
-                        self.data_table.add_widget(Factory.DataViewTitle(text=str(cell)))
+                        self.screen_load_toolbox.children[0].add_widget(Factory.DataViewTitle(text=str(cell)))
 
                     else:
                         if isinstance(cell, float):
@@ -1001,17 +1027,18 @@ class IndexCreation(MouseScreen):
 
                         # Use different color styles for Odd/Even columns.
                         if i % 2:
-                            self.data_table.add_widget(Factory.DataViewEven(text=str(val)))
+                            self.screen_load_toolbox.children[0].add_widget(Factory.DataViewEven(text=str(val)))
                         else:
-                            self.data_table.add_widget(Factory.DataViewOdd(text=str(val)))
+                            self.screen_load_toolbox.children[0].add_widget(Factory.DataViewOdd(text=str(val)))
 
         else:
             # End table drawing reschedules.
             Clock.unschedule(self.build_data_table)
 
             # Take a screen shot to use that inside the slider.
-            self.data_table.export_to_png("./DB/table.png")
+            self.screen_load_toolbox.children[0].export_to_png("./DB/table.png")
 
+            # Reload img table source.
             try:
                 self.data_table_img._coreimage.remove_from_cache()
 
@@ -1023,10 +1050,20 @@ class IndexCreation(MouseScreen):
                 self.data_table_img.source = ''
                 self.data_table_img.source = new_img
 
-            self.data_table.clear_widgets()  # Todo must schedule that ..
+            # If we have already added a temp table data widget, remove the older one.
+            if len(self.screen_load_toolbox.children) > 1:
+                self.screen_load_toolbox.remove_widget(self.screen_load_toolbox.children[1])
 
-            # Schedule memory cleanup. Use 30 seconds not to miss garbage collection.
-            Clock.schedule_once(self.clear_memory, 30)
+            # Schedule last step of data table creation (widget removal).
+            Clock.schedule_interval(self.wdg_removal, 0)
+
+    def wdg_removal(self, *args):
+        if self.screen_load_toolbox.children[0].children:
+            for wdg in self.screen_load_toolbox.children[0].children[:1000]:
+                self.screen_load_toolbox.children[0].remove_widget(wdg)
+        else:
+            # Schedule memory cleanup.
+            gc.collect()
 
             # Table created and loaded.
             self.drawing_data = False
@@ -1034,35 +1071,9 @@ class IndexCreation(MouseScreen):
             # Reset bar for next time.
             self.loading_percentage = 0
 
-    @staticmethod
-    def clear_memory(self):
-        gc.collect()
+            # End reschedules.
+            Clock.unschedule(self.wdg_removal)
 
-    def sort_data_manager(self, *args):
-        # If table is currently being loaded, do nothing.
-        if not self.drawing_data:
-            # Set drawing data state.
-            self.drawing_data = True
-
-            # Check if button is in the descending list.
-            rev = args[0] in self.descending_order_buttons
-
-            # Check index of the button to know which column will sort.
-            if rev:
-                column = self.descending_order_buttons.index(args[0]) + 1
-            else:
-                column = self.acceding_order_buttons.index(args[0]) + 1
-
-            temp_sorted = []
-
-            for row in sorted(self.data_view_now, key=operator.itemgetter(column), reverse=rev):
-                temp_sorted.append(row)
-
-            self.data_view_now = temp_sorted
-            self.data_queue = list(self.data_view_now)
-
-            # Schedule table building.
-            Clock.schedule_interval(self.build_data_table, 0)
 
 class MapDesigner(Screen):
 

@@ -1,5 +1,19 @@
 #: import sm kivy.uix.screenmanager
 
+<TempDataTable@GridLayout>:
+    size_hint: (None, None)
+    size: (self.minimum_width, self.minimum_height) if self.children else (0, 0)
+    canvas.before:
+        Color:
+            rgba: (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    col_default_width: 100
+    row_default_height: 20
+    row_force_default: True
+    padding: (1,1)
+    spacing: 1
 
 <DataViewOdd@Label>:
     canvas.before:
@@ -1006,11 +1020,11 @@
     toolbox_screenmanager: toolbox_screenmanager.__self__
     model_toolbox: model_toolbox.__self__
 
+    screen_load_toolbox: screen_load_toolbox.__self__
     data_table_frame: data_table_frame.__self__
-    data_table: data_table.__self__
+    data_table_slider: data_table_slider.__self__
     data_table_top: data_table_top.__self__
     data_table_img: data_table_img.__self__
-    data_table_slider: data_table_slider.__self__
 
     name: 'IndexCreationScreen'
 
@@ -1269,6 +1283,7 @@
                 transition: sm.FadeTransition(duration=0, clearcolor=(1,1,1,1))
 
                 Screen:
+                    id: screen_load_toolbox
                     name: "intro"
                     canvas.after:
                         Color:
@@ -1276,22 +1291,6 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
-
-                    GridLayout:
-                        id: data_table
-                        size_hint: (None, None)
-                        size: (self.minimum_width, self.minimum_height) if self.children else (0, 0)
-                        canvas.before:
-                            Color:
-                                rgba: (0, 0, 0, 1)
-                            Rectangle:
-                                pos: self.pos
-                                size: self.size
-                        col_default_width: 100
-                        row_default_height: 20
-                        row_force_default: True
-                        padding: (1,1)
-                        spacing: 1
 
                 Screen:
                     name: "view_indicators_screen"
