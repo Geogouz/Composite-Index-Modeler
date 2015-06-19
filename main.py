@@ -11,6 +11,7 @@ import urllib2
 import json
 import operator
 import gc
+import os
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
@@ -1049,6 +1050,11 @@ class IndexCreation(MouseScreen):
                 new_img = self.data_table_img.source
                 self.data_table_img.source = ''
                 self.data_table_img.source = new_img
+
+            try:
+                os.remove("./DB/table.png")
+            except OSError:
+                pass
 
             # If we have already added a temp table data widget, remove the older one.
             if len(self.screen_load_toolbox.children) > 1:
