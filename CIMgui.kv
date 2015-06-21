@@ -1,5 +1,6 @@
 #: import sm kivy.uix.screenmanager
 
+
 <TempDataTable@GridLayout>:
     size_hint: (None, None)
     size: (self.minimum_width, self.minimum_height) if self.children else (0, 0)
@@ -14,6 +15,7 @@
     row_force_default: True
     padding: (1,1)
     spacing: 1
+
 
 <DataViewOdd@Label>:
     canvas.before:
@@ -59,16 +61,6 @@
     width: 200
     bold: True
 
-
-<TopLeftBox@BoxLayout>:
-    size_hint: (None, None)
-    size: (200, 20)
-    canvas.before:
-        Color:
-            rgba: (0.22, 0.22, 0.22, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
 
 
 <HeadBox@BoxLayout>:
@@ -450,13 +442,13 @@
 
 # BoxLayout
 <MainWindow>:
-    core_build_progress_bar: core_build_progress_bar.__self__
-    coredb_state: coredb_state.__self__
-    index_selection: index_selection.__self__
+    core_build_progress_bar: core_build_progress_bar
+    coredb_state: coredb_state
+    index_selection: index_selection
 
     orientation: "horizontal"
 
-    CIMScreenManager:
+    CIMScreenManager: # todo while updating prevent changing screens
         transition: sm.SwapTransition()
         id: manager
         Home:
@@ -596,27 +588,27 @@
 
 # Screen
 <IndexSelection>:
-    topics_slider: topics_slider.__self__
-    indices_slider: indices_slider.__self__
-    topics_slider_box: topics_slider_box.__self__
-    indices_slider_stack: indices_slider_stack.__self__
-    index_desc_slider: index_desc_slider.__self__
+    topics_slider: topics_slider
+    indices_slider: indices_slider
+    topics_slider_box: topics_slider_box
+    indices_slider_stack: indices_slider_stack
+    index_desc_slider: index_desc_slider
 
-    toggle_index_desc_container: toggle_index_desc_container.__self__
-    toggle_index_desc_icon: toggle_index_desc_icon.__self__
-    toggle_index_desc_label: toggle_index_desc_label.__self__
+    toggle_index_desc_container: toggle_index_desc_container
+    toggle_index_desc_icon: toggle_index_desc_icon
+    toggle_index_desc_label: toggle_index_desc_label
 
-    add_index_container: add_index_container.__self__
-    add_index_icon: add_index_icon.__self__
-    add_index_label: add_index_label.__self__
+    add_index_container: add_index_container
+    add_index_icon: add_index_icon
+    add_index_label: add_index_label
 
-    my_indicators_search_sm: my_indicators_search_sm.__self__
-    my_indicators_slider: my_indicators_slider.__self__
-    my_indicators_container: my_indicators_container.__self__
-    search_results_slider: search_results_slider.__self__
-    search_results_container: search_results_container.__self__
+    my_indicators_search_sm: my_indicators_search_sm
+    my_indicators_slider: my_indicators_slider
+    my_indicators_container: my_indicators_container
+    search_results_slider: search_results_slider
+    search_results_container: search_results_container
 
-    search_area: search_area.__self__
+    search_area: search_area
 
     name: 'IndexSelectionScreen'
     BoxLayout:
@@ -1009,22 +1001,22 @@
 
 # Screen
 <IndexCreation>:
-    btn_get_indicators: btn_get_indicators.__self__
-    indicator_list: indicator_list.__self__
-    downloading_state_icon: downloading_state_icon.__self__
+    btn_get_indicators: btn_get_indicators
+    indicator_list: indicator_list
+    downloading_state_icon: downloading_state_icon
 
-    btn_view_indicators: btn_view_indicators.__self__
-    btn_series_selection: btn_series_selection.__self__
-    btn_index_algebra: btn_index_algebra.__self__
+    btn_view_indicators: btn_view_indicators
+    btn_series_selection: btn_series_selection
+    btn_index_algebra: btn_index_algebra
 
-    toolbox_screenmanager: toolbox_screenmanager.__self__
-    model_toolbox: model_toolbox.__self__
+    toolbox_screenmanager: toolbox_screenmanager
+    model_toolbox: model_toolbox
 
-    screen_load_toolbox: screen_load_toolbox.__self__
-    data_table_frame: data_table_frame.__self__
-    data_table_slider: data_table_slider.__self__
-    data_table_top: data_table_top.__self__
-    data_table_img: data_table_img.__self__
+    screen_load_toolbox: screen_load_toolbox
+    data_table_frame: data_table_frame
+    data_table_top_slider: data_table_top_slider
+    data_table_top: data_table_top
+    data_table_img: data_table_img
 
     name: 'IndexCreationScreen'
 
@@ -1300,6 +1292,7 @@
 
                         BoxLayout:
                             id: data_table_frame
+                            orientation: "vertical"
                             padding: (1, 1)
                             canvas.before:
                                 Color:
@@ -1307,6 +1300,39 @@
                                 Rectangle:
                                     pos: self.pos
                                     size: self.size
+
+                            ScrollView:
+                                id: data_table_top_slider
+                                size_hint_y: None
+                                height: data_table_top.height
+                                bar_width: 2
+                                bar_inactive_color: (0, 0, 0, 1)
+                                bar_color: (0.96, 0.26, 0.21, 1)
+                                do_scroll: (False, False)
+                                scroll_x: data_table_slider.scroll_x
+                                canvas.before:
+                                    Color:
+                                        rgba: (1, 1, 1, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+
+                                GridLayout:
+                                    id: data_table_top
+                                    size_hint: (None, None)
+                                    size: (self.minimum_width, self.minimum_height)
+                                    canvas.before:
+                                        Color:
+                                            rgba: (0, 0, 0, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+                                    rows: 1
+                                    col_default_width: 100
+                                    row_default_height: 20
+                                    row_force_default: True
+                                    padding: (1,1)
+                                    spacing: 1
 
                             ScrollView:
                                 id: data_table_slider
@@ -1322,35 +1348,12 @@
                                         pos: self.pos
                                         size: self.size
 
-                                BoxLayout:
+                                Image:
+                                    id: data_table_img
                                     size_hint: (None, None)
-                                    width: data_table_top.width
-                                    height: data_table_top.height + data_table_img.height
-                                    orientation: "vertical"
-
-                                    GridLayout:
-                                        id: data_table_top
-                                        size_hint: (None, None)
-                                        size: (self.minimum_width, self.minimum_height)
-                                        canvas.before:
-                                            Color:
-                                                rgba: (0, 0, 0, 1)
-                                            Rectangle:
-                                                pos: self.pos
-                                                size: self.size
-                                        rows: 1
-                                        col_default_width: 100
-                                        row_default_height: 20
-                                        row_force_default: True
-                                        padding: (1,1)
-                                        spacing: 1
-
-                                    Image:
-                                        id: data_table_img
-                                        size_hint: (None, None)
-                                        size: self.texture_size
-                                        source: "./DB/table.png"
-                                        allow_stretch: False
+                                    size: self.texture_size
+                                    source: "./DB/table.png"
+                                    allow_stretch: False
 
                     BoxLayout:
                         opacity: 1 if root.drawing_data else 0

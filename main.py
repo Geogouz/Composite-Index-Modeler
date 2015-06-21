@@ -12,6 +12,7 @@ import json
 import operator
 import gc
 import os
+from functools import partial
 
 from kivy.config import Config
 Config.set("kivy", "exit_on_escape", False)
@@ -34,6 +35,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.popup import Popup
 from kivy.clock import Clock, mainthread
+from kivy.uix.dropdown import DropDown
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -558,6 +560,8 @@ class IndexCreation(MouseScreen):
     # List to show which indicator review is currently loaded.
     sorted_indicators = ListProperty()
 
+    dropdown_id = ObjectProperty()
+
     all_indicators_data = DictProperty({})
     country_list = ListProperty()
     drawing_data = BooleanProperty(False)
@@ -567,6 +571,7 @@ class IndexCreation(MouseScreen):
         # make sure we aren't overriding any important functionality
         super(IndexCreation, self).__init__(**kwargs)
 
+        self.id_conn = {}
         self.year_row = []
         self.data_view_now = []
         self.data_queue = None
@@ -576,8 +581,8 @@ class IndexCreation(MouseScreen):
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     @staticmethod
-    def threadonator(*arg):
-        threading.Thread(target=arg[0], args=(arg,)).start()
+    def threadonator(*args):
+        threading.Thread(target=args[0], args=(args,)).start()
 
     # Recursively convert Unicode objects to strings objects.
     def string_it(self, obj):
@@ -602,13 +607,13 @@ class IndexCreation(MouseScreen):
     # Function that will run every time mouse is moved.
     def on_mouse_pos(self, *args):
         for button in self.acceding_order_buttons:
-            if button.collide_point(*self.data_table_slider.to_local(args[1][0]-301, args[1][1])):
+            if button.collide_point(*self.data_table_top_slider.to_local(args[1][0]-301, args[1][1])):
                 button.background_normal = './Sources/acceding_down.png'
             else:
                 button.background_normal = './Sources/acceding_normal.png'
 
         for button in self.descending_order_buttons:
-            if button.collide_point(*self.data_table_slider.to_local(args[1][0]-301, args[1][1])):
+            if button.collide_point(*self.data_table_top_slider.to_local(args[1][0]-301, args[1][1])):
                 button.background_normal = './Sources/descending_down.png'
             else:
                 button.background_normal = './Sources/descending_normal.png'
@@ -722,7 +727,7 @@ class IndexCreation(MouseScreen):
         # Finally, add new widget inside model's indicator list.
         self.indicator_list.add_widget(rvw_widget_main_layout)
 
-    def get_indicators(self, *arg):
+    def get_indicators(self, *args):
         # Shortcut for "my_indicators".
         mi = dict(self.ic_index_selection.selected_indices["my_indicators"])
 
@@ -742,8 +747,8 @@ class IndexCreation(MouseScreen):
         # Number of my indicators.
         items = len(self.sorted_indicators)
 
-        # Prepare dictionary to link model's ID's to WorldBank's ID's.
-        id_conn = {}
+        # Prepare dictionary to link model's ID's to Indicator names.
+        self.id_conn = {}
 
         # Characters to use for ID creation
         abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -756,7 +761,7 @@ class IndexCreation(MouseScreen):
             short_id = "I"+i
 
             # Update ID link dictionary.
-            id_conn[self.sorted_indicators[items_created]] = short_id
+            self.id_conn[self.sorted_indicators[items_created]] = short_id
 
             # Prepare the basic structure for each indicator.
             self.all_indicators_data[short_id] = {}
@@ -776,7 +781,7 @@ class IndexCreation(MouseScreen):
                     short_id = "I"+i+j
 
                     # Update ID link dictionary.
-                    id_conn[self.sorted_indicators[items_created+26]] = short_id
+                    self.id_conn[self.sorted_indicators[items_created+26]] = short_id
 
                     # Prepare the basic structure for each indicator.
                     self.all_indicators_data[short_id] = {}
@@ -801,7 +806,7 @@ class IndexCreation(MouseScreen):
         try:
             for indicator in self.sorted_indicators:
 
-                short_id = id_conn[indicator]
+                short_id = self.id_conn[indicator]
                 indicator_address = start_url + countries + indicators + mi[indicator] + "/" + end_url
 
                 # Define World Bank connection (JSON data).
@@ -896,16 +901,22 @@ class IndexCreation(MouseScreen):
 
             # Something really unexpected just happened.
             except Exception as e:
-                print "def get_indicators(self, *arg):", type(e), e.__doc__, e.message
+                print "def get_indicators(self, *args):", type(e), e.__doc__, e.message
 
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
 
-    def init_data_viewer(self, sh_id="IA"):
+    def init_data_viewer(self, sh_id="IA", *args):
+        # If args have passed, we are calling this from ID List and we should draw data again.
+        if args:
+            self.must_draw_data = True
+
         if self.must_draw_data:
 
             self.drawing_data = True
             self.must_draw_data = False
+
+            self.all_indicators_data["table_desc"] = sh_id
 
             # Set year range.
             rng = range(int(self.all_indicators_data["LastFirst_"+sh_id][0]),
@@ -969,7 +980,7 @@ class IndexCreation(MouseScreen):
             first_build = self.data_queue == self.data_view_now
 
             # Set chunks number for each schedule.
-            chunks = 10
+            chunks = 30
             queue = self.data_queue[:chunks]
             self.data_queue = self.data_queue[chunks:]
 
@@ -985,7 +996,30 @@ class IndexCreation(MouseScreen):
                 for header in self.year_row:
                     # Check if this is the 0.0 cell.
                     if header == "top_left_cell":
-                        self.data_table_top.add_widget(Factory.TopLeftBox())
+                        self.dropdown_id = DropDown(auto_width=False, width=200)
+
+                        for index in self.sorted_indicators:
+                            btn = Button(text=self.id_conn[index],
+                                         size_hint_y=None,
+                                         height=50,
+                                         background_normal='./Sources/option_id_normal.png',
+                                         background_down='./Sources/option_id_normal.png',
+                                         on_press=self.dropdown_id.dismiss)
+                            btn.bind(on_release=partial(self.init_data_viewer, btn.text))
+                            self.dropdown_id.add_widget(btn)
+
+                        mainbutton = Button(text=self.all_indicators_data["table_desc"],
+                                            size_hint=(None, None),
+                                            size=(200, 20),
+                                            background_normal='./Sources/selected_id_normal.png',
+                                            background_down='./Sources/selected_id_down.png')
+
+                        mainbutton.bind(on_release=self.dropdown_id.open)
+                        mainbutton.bind(on_release=lambda x: setattr(
+                            x, "background_normal", './Sources/selected_id_down.png'))
+
+                        self.data_table_top.add_widget(mainbutton)
+
                     else:
                         head_box = Factory.HeadBox(orientation="horizontal", size_hint=(None, None), size=(100, 20))
                         left_title = Factory.YearHeader(text=str(header))
@@ -1099,8 +1133,8 @@ class MainWindow(BoxLayout):
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     @staticmethod
-    def threadonator(*arg):
-        threading.Thread(target=arg[0], args=(arg,)).start()
+    def threadonator(*args):
+        threading.Thread(target=args[0], args=(args,)).start()
 
     @mainthread
     def popuper(self, message):
@@ -1112,7 +1146,7 @@ class MainWindow(BoxLayout):
         ), size_hint=(None, None), size=(350, 180)).open()
 
     # Loading bar
-    def update_progress(self, *arg):
+    def update_progress(self, *args):
         anim_bar = Factory.AnimWidget()
         # Some time to render.
         time.sleep(1)
@@ -1126,7 +1160,7 @@ class MainWindow(BoxLayout):
         self.core_build_progress_bar.remove_widget(anim_bar)
 
     # This method builds core's index database with indicators and countries.
-    def core_build(self, *arg):
+    def core_build(self, *args):
         # A process just started running (in a new thread).
         self.processing = True
         self.threadonator(self.update_progress)
@@ -1228,12 +1262,12 @@ class MainWindow(BoxLayout):
 
             # Something really unexpected just happened.
             except Exception as e:
-                print "def core_build(self, *arg):", type(e), e.__doc__, e.message
+                print "def core_build(self, *args):", type(e), e.__doc__, e.message
 
         self.processing = False
 
     # This method checks for last core's index database update.
-    def check(self, *arg):
+    def check(self, *args):
         # For as long as the popup window is shown.
         while self.popup_active and (not CIMgui.app_closed):
 
@@ -1256,7 +1290,7 @@ class MainWindow(BoxLayout):
 
             # Something really unexpected just happened.
             except Exception as e:
-                print "def check(self, *arg):", type(e), e.__doc__, e.message
+                print "def check(self, *args):", type(e), e.__doc__, e.message
 
             time.sleep(2)
 
