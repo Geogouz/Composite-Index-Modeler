@@ -564,6 +564,7 @@ class IndexCreation(MouseScreen):
 
     all_indicators_data = DictProperty({})
     country_list = ListProperty()
+    country_dict = DictProperty({})
     drawing_data = BooleanProperty(False)
     loading_percentage = NumericProperty(0)
 
@@ -734,8 +735,9 @@ class IndexCreation(MouseScreen):
         # Reset indicator data from current database.
         self.all_indicators_data = {}
 
-        # CleanUP country list.
+        # CleanUP country list and dict.
         self.country_list = []
+        self.country_dict = {}
 
         # Reset connection list.
         connections = []
@@ -796,10 +798,11 @@ class IndexCreation(MouseScreen):
         for i in range(1, self.ic_index_selection.coredb_py[1][0]["countries_num"]+1):
             country = self.ic_index_selection.coredb_py[1][i][1]
             self.country_list.append(country)
-
+            self.country_dict[country] = [self.ic_index_selection.coredb_py[1][i][0],
+                                          self.ic_index_selection.coredb_py[1][i][2]]
             for key in self.all_indicators_data:
                 self.all_indicators_data[key][country] = {}
-
+        print self.country_dict
         # Sort country list.
         self.country_list.sort()
 
