@@ -1,6 +1,126 @@
 #: import sm kivy.uix.screenmanager
 
 
+<CountryScroll@ScrollView>:
+    bar_width: 2
+    bar_pos_x: "top"
+    bar_margin: 5
+    do_scroll_y: False
+    bar_inactive_color: (0, 0, 0, 1)
+    bar_color: (0.96, 0.26, 0.21, 1)
+
+
+<CountryStack@StackLayout>:
+    size_hint: (None, 1)
+    width: self.minimum_width
+    padding: (0, 10)
+    orientation: "tb-lr"
+    spacing: (20,0)
+
+
+<CountryBtnImage@Image>:
+    size_hint: (None, None)
+    size: (37, 50)
+    source: './Sources/left_country_wdg.png'
+    allow_stretch: False
+
+
+<CountryMidFrame@BoxLayout>:
+    orientation: "vertical"
+    size_hint: (None, None)
+    size: (113, 50)
+    canvas:
+        Rectangle:
+            source: './Sources/center_country_wdg.png'
+            pos: self.pos
+            size: self.size
+
+
+<CountryName@Label>:
+    size_hint: (None, None)
+    size: (113,30)
+    text_size: (self.width, self.height)
+    halign: "left"
+    font_size: 14
+    shorten: True
+
+
+<CountryCode@Label>:
+    size_hint: (None, None)
+    size: (113,20)
+    text_size: (self.width, self.height)
+    halign: "left"
+    valign: "top"
+    font_size: 10
+    bold: True
+    color: (0.96, 0.26, 0.21, 1)
+
+
+<CountrySelectToggle@ToggleButton>:
+    size_hint: (None, None)
+    size: (50, 50)
+    background_normal: './Sources/right_country_wdg_nonchecked.png'
+    normal: './Sources/right_country_wdg_nonchecked.png'
+    background_down: './Sources/right_country_wdg_checked.png'
+
+
+<CountrySelectNone@Button>:
+    size_hint: (None, None)
+    size: (50, 50)
+    background_normal: './Sources/no_country_checked_normal.png'
+    normal: './Sources/no_country_checked_normal.png'
+    background_down: './Sources/no_country_checked_down.png'
+
+
+<CountrySelectAll@Button>:
+    size_hint: (None, None)
+    size: (50, 50)
+    background_normal: './Sources/all_country_checked_normal.png'
+    normal: './Sources/all_country_checked_normal.png'
+    background_down: './Sources/all_country_checked_down.png'
+
+
+<CountryMultiSelect@BoxLayout>:
+    orientation: "vertical"
+    size_hint: (None, None)
+    size: (100, 50)
+    canvas.before:
+        Rectangle:
+            source: './Sources/country_select_all.png'
+            pos: self.pos
+            size: self.size
+
+    Label:
+        text: "Select ALL"
+        font_size: 14
+        italic: True
+        color: (0,0,0,1)
+        text_size: (self.width, self.height)
+        halign: "center"
+        valign: "bottom"
+
+    Label:
+        text: "Deselect ALL"
+        font_size: 14
+        italic: True
+        color: (0,0,0,1)
+        text_size: (self.width, self.height)
+        halign: "center"
+        valign: "top"
+
+
+<CountryBtn@Button>:
+    italic: True
+    size_hint: (None, None)
+    size: (250, 40)
+    color: (0,0,0,1)
+    disabled_color: (1,1,1,1)
+    background_normal: './Sources/region_groups_normal.png'
+    background_down: './Sources/region_groups_down.png'
+    background_disabled_normal: './Sources/region_groups_down.png'
+    background_disabled_down: './Sources/region_groups_down.png'
+
+
 <TempDataTable@GridLayout>:
     size_hint: (None, None)
     size: (self.minimum_width, self.minimum_height) if self.children else (0, 0)
@@ -60,7 +180,6 @@
     size_hint_x: None
     width: 200
     bold: True
-
 
 
 <HeadBox@BoxLayout>:
@@ -428,7 +547,6 @@
     background_active: './Sources/search_background_active_empty.png' if not bool(self.text) else './Sources/search_background_active.png'
 
 
-# Animation
 <AnimWidget@Widget>:
     canvas:
         Color:
@@ -440,7 +558,6 @@
     size: (100, 2)
 
 
-# BoxLayout
 <MainWindow>:
     core_build_progress_bar: core_build_progress_bar
     coredb_state: coredb_state
@@ -566,7 +683,6 @@
             on_release: manager.current = 'MapDesignerScreen'
 
 
-# Screen
 <Home>:
 
     name: 'Home'
@@ -586,7 +702,6 @@
             color: (0, 0, 0, 1)
 
 
-# Screen
 <IndexSelection>:
     topics_slider: topics_slider
     indices_slider: indices_slider
@@ -802,7 +917,6 @@
                                 AnchorLayout:
                                     anchor_x: "left"
 
-                                    # TextInput
                                     SearchArea:
                                         id: search_area
                                         on_text: if len(self.text) > 2: root.search_results(self.text)
@@ -836,7 +950,6 @@
                                     spacing: 10
                                     padding: (5, 10, 5, 10)
 
-                            # BoxLayout
                             MyIndicesBar:
                                 mib_my_indicators_search_sm: my_indicators_search_sm
 
@@ -999,7 +1112,6 @@
         allow_stretch: False
 
 
-# Screen
 <IndexCreation>:
     btn_get_indicators: btn_get_indicators
     indicator_list: indicator_list
@@ -1017,6 +1129,8 @@
     data_table_top_slider: data_table_top_slider
     data_table_top: data_table_top
     data_table_img: data_table_img
+
+    country_selection_sm: country_selection_sm
 
     name: 'IndexCreationScreen'
 
@@ -1095,7 +1209,7 @@
             # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
             BoxLayout:
                 id: model_toolbox
-                opacity: 1 #todo
+                opacity: 1 # todo replace
                 spacing: 5
                 padding: (1, 0, 5, 0)
                 canvas.before:
@@ -1408,7 +1522,7 @@
                             size_hint_y: None
                             height: 81
                             bar_width: 2
-                            bar_margin: -4
+                            bar_margin: -5
                             do_scroll_y: False
                             bar_inactive_color: (0, 0, 0, 1)
                             bar_color: (0.96, 0.26, 0.21, 1)
@@ -1416,198 +1530,112 @@
                             BoxLayout:
                                 size_hint: (None, None)
                                 # Child widths
-                                size: (1003, 81)
+                                size: (1013, 81)
                                 orientation: "vertical"
+                                padding: (5,0)
                                 spacing: 1
 
                                 BoxLayout:
                                     spacing: 1
 
-                                    Button:
+                                    CountryBtn:
                                         text: "Sub-Saharan Africa"
                                         group: "SSF"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "SSF"
 
-                                    Button:
+                                    CountryBtn:
                                         text: "Middle East & North Africa"
                                         group: "MEA"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "MEA"
 
-                                    Button:
+                                    CountryBtn:
                                         text: "East Asia & Pacific"
                                         group: "EAS"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "EAS"
 
-                                    Button:
+                                    CountryBtn:
                                         text: "South Asia"
                                         group: "SAS"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "SAS"
 
                                 BoxLayout:
                                     spacing: 1
 
-                                    Button:
+                                    CountryBtn:
                                         text: "Europe & Central Asia"
                                         group: "ECS"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "ECS"
 
-                                    Button:
+                                    CountryBtn:
                                         text: "North America"
                                         group: "NAC"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "NAC"
 
-                                    Button:
+                                    CountryBtn:
                                         text: "Latin America & Caribbean"
                                         group: "LCN"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "LCN"
 
-                                    Button:
+                                    CountryBtn:
                                         text: "Aggregates"
                                         group: "NA"
-                                        italic: True
-                                        size_hint: (None, None)
-                                        size: (250, 40)
-                                        color: (0,0,0,1)
-                                        disabled_color: (1,1,1,1)
-                                        background_normal: './Sources/region_groups_normal.png'
-                                        background_down: './Sources/region_groups_down.png'
-                                        background_disabled_normal: './Sources/region_groups_down.png'
-                                        background_disabled_down: './Sources/region_groups_down.png'
                                         disabled: True if country_selection_sm.current == self.group else False
                                         on_press: country_selection_sm.current = "NA"
 
-                        BoxLayout:
-                            padding: 2
+                        ScreenManager:
+                            id: country_selection_sm
+                            transition: sm.FadeTransition(duration=0, clearcolor=(1,1,1,1))
+                            canvas.before:
+                                Color:
+                                    rgba: (0.9, 0.9, 0.9, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
 
-                            BoxLayout:
-                                orientation: "vertical"
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "SSF"
 
-                                ScreenManager:
-                                    id: country_selection_sm
-                                    transition: sm.FadeTransition(duration=0, clearcolor=(1,1,1,1))
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "MEA"
 
-                                    Screen:
-                                        name: "SSF"
-                                        Label:
-                                            text: "1"
-                                            color: (0, 0, 0, 1)
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "EAS"
 
-                                    Screen:
-                                        name: "MEA"
-                                        Label:
-                                            text: "2"
-                                            color: (0, 0, 0, 1)
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "SAS"
 
-                                    Screen:
-                                        name: "EAS"
-                                        Label:
-                                            text: "3"
-                                            color: (0, 0, 0, 1)
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "ECS"
 
-                                    Screen:
-                                        name: "SAS"
-                                        Label:
-                                            text: "4"
-                                            color: (0, 0, 0, 1)
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "NAC"
 
-                                    Screen:
-                                        name: "ECS"
-                                        Label:
-                                            text: "5"
-                                            color: (0, 0, 0, 1)
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "LCN"
 
-                                    Screen:
-                                        name: "NAC"
-                                        Label:
-                                            text: "6"
-                                            color: (0, 0, 0, 1)
-
-                                    Screen:
-                                        name: "LCN"
-                                        Label:
-                                            text: "7"
-                                            color: (0, 0, 0, 1)
-
-                                    Screen:
-                                        name: "NA"
-                                        Label:
-                                            text: "8"
-                                            color: (0, 0, 0, 1)
+                            Screen:
+                                on_pre_enter: root.init_country_viewer(self.name)
+                                name: "NA"
 
                         BoxLayout:
                             size_hint_y: None
-                            height: 100
-                            padding: 2
+                            height: 80 + (toolbox_screenmanager.height - 221)% 50
+
+                            padding: 1
                             canvas.before:
                                 Color:
                                     rgba: (0.22, 0.22, 0.22, 1)
@@ -1623,7 +1651,6 @@
                                         pos: self.pos
                                         size: self.size
 
-
                 Screen:
                     name: "index_algebra_screen"
                     Label:
@@ -1631,7 +1658,6 @@
                         color: (0, 0, 0, 1)
 
 
-# Screen
 <MapDesigner>:
     name: 'MapDesignerScreen'
 
