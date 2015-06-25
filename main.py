@@ -67,6 +67,12 @@ class BtnRmv(Button):
     index = StringProperty("")
 
 
+class CountrySelectAll(Button):
+
+    region = ObjectProperty()
+    normal = StringProperty("")
+
+
 class MyIndicesBar(BoxLayout):
 
     # Link to ScreenManager
@@ -1153,7 +1159,7 @@ class IndexCreation(MouseScreen):
                     mid_frame.add_widget(country_name)
                     mid_frame.add_widget(country_id)
 
-                    country_frame = BoxLayout(size_hint=(None, None), size=(200, 50))
+                    country_frame = Factory.CountryFrame()
                     country_frame.add_widget(Factory.CountryBtnImage())
                     country_frame.add_widget(mid_frame)
                     btn = Factory.CountrySelectToggle()
@@ -1164,9 +1170,19 @@ class IndexCreation(MouseScreen):
                     self.loaded_regions[args[0]].append(btn)
 
             country_multi_select_frame = BoxLayout(size_hint=(None, None), size=(200, 50))
-            country_select_none = Factory.CountrySelectNone()
+            country_select_none = Factory.CountrySelectAll(background_normal='./Sources/no_country_checked_normal.png',
+                                                           normal='./Sources/no_country_checked_normal.png',
+                                                           background_down='./Sources/no_country_checked_down.png',
+                                                           region=args[0],
+                                                           on_release=self.all_selection)
+
             country_multi_select = Factory.CountryMultiSelect()
-            country_select_all = Factory.CountrySelectAll()
+
+            country_select_all = Factory.CountrySelectAll(background_normal='./Sources/all_country_checked_normal.png',
+                                                          normal='./Sources/all_country_checked_normal.png',
+                                                          background_down='./Sources/all_country_checked_down.png',
+                                                          region=args[0],
+                                                          on_release=self.all_selection)
 
             country_multi_select_frame.add_widget(country_select_none)
             country_multi_select_frame.add_widget(country_multi_select)
@@ -1177,6 +1193,15 @@ class IndexCreation(MouseScreen):
             # Add select all/none buttons in buttons dictionary.
             self.loaded_regions[args[0]].append(country_select_none)
             self.loaded_regions[args[0]].append(country_select_all)
+
+    def all_selection(self, *args):
+        #
+        if args[0].normal == "./Sources/all_country_checked_normal.png":
+            for button in self.loaded_regions[args[0].region][:-2]:
+                button.state = "down"
+        else:
+            for button in self.loaded_regions[args[0].region]:
+                button.state = "normal"
 
 class MapDesigner(Screen):
 

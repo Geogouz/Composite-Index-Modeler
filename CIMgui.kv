@@ -18,6 +18,17 @@
     spacing: (20,0)
 
 
+<CountryFrame@BoxLayout>:
+    size_hint: (None, None)
+    size: (200, 50)
+    canvas.before:
+        Color:
+            rgba: (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
 <CountryBtnImage@Image>:
     size_hint: (None, None)
     size: (37, 50)
@@ -58,26 +69,15 @@
 
 <CountrySelectToggle@ToggleButton>:
     size_hint: (None, None)
-    size: (50, 50)
+    size: (50, 45)
     background_normal: './Sources/right_country_wdg_nonchecked.png'
     normal: './Sources/right_country_wdg_nonchecked.png'
     background_down: './Sources/right_country_wdg_checked.png'
 
 
-<CountrySelectNone@Button>:
+<CountrySelectAll>:
     size_hint: (None, None)
     size: (50, 50)
-    background_normal: './Sources/no_country_checked_normal.png'
-    normal: './Sources/no_country_checked_normal.png'
-    background_down: './Sources/no_country_checked_down.png'
-
-
-<CountrySelectAll@Button>:
-    size_hint: (None, None)
-    size: (50, 50)
-    background_normal: './Sources/all_country_checked_normal.png'
-    normal: './Sources/all_country_checked_normal.png'
-    background_down: './Sources/all_country_checked_down.png'
 
 
 <CountryMultiSelect@BoxLayout>:
