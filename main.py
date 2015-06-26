@@ -1239,7 +1239,7 @@ class IndexCreation(MouseScreen):
         # Will iter each year in our database. We use min max below because min_y, max_y could change in future.
         for y in range(min(min_y, first_y), max(max_y, last_y)):
 
-            if y in range (first_y, last_y + 1):
+            if y in range(first_y, last_y + 1):
                 year_btn = Factory.YearSelector(text=str(y), background_normal='./Sources/btn_years_normal.png')
             else:
                 year_btn = Factory.YearSelector(text=str(y), background_normal='./Sources/btn_empty_years_normal.png')
@@ -1250,9 +1250,9 @@ class IndexCreation(MouseScreen):
             self.loaded_years.append(year_btn)
 
         # Create and Add mass selections button.
-        year_multi_select_frame = BoxLayout(size_hint=(None, None), size=(75,25))
+        year_multi_select_frame = BoxLayout(size_hint=(None, None), size=(75, 25))
         year_select_none = SelectAll(size_hint=(None, None),
-                                     size=(25,25),
+                                     size=(25, 25),
                                      normal='./Sources/deselect_all_years_normal.png',
                                      background_normal='./Sources/deselect_all_years_normal.png',
                                      background_down='./Sources/deselect_all_years_down.png',
@@ -1261,7 +1261,7 @@ class IndexCreation(MouseScreen):
         btn_label = Factory.AllYearsLabel()
 
         year_select_all = SelectAll(size_hint=(None, None),
-                                    size=(25,25),
+                                    size=(25, 25),
                                     normal='./Sources/select_all_years_normal.png',
                                     background_normal='./Sources/select_all_years_normal.png',
                                     background_down='./Sources/select_all_years_down.png',
@@ -1285,6 +1285,7 @@ class IndexCreation(MouseScreen):
         else:
             for button in self.loaded_years[:-2]:
                 button.state = "normal"
+
 
 class MapDesigner(Screen):
 
