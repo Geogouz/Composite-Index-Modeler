@@ -95,11 +95,6 @@
     background_down: './Sources/right_country_wdg_checked.png'
 
 
-<CountrySelectAll>:
-    size_hint: (None, None)
-    size: (50, 50)
-
-
 <CountryMultiSelect@BoxLayout>:
     orientation: "vertical"
     size_hint: (None, None)
@@ -1230,7 +1225,7 @@
             # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
             BoxLayout:
                 id: model_toolbox
-                opacity: 1 # todo replace
+                opacity: 0
                 spacing: 5
                 padding: (1, 0, 5, 0)
                 canvas.before:
@@ -1289,7 +1284,9 @@
                         background_down: './Sources/series_selection_btn_down.png'
                         background_disabled_down: './Sources/series_selection_btn_down.png'
                         background_disabled_normal: './Sources/series_selection_btn_down.png'
-                        on_press: root.toolbox_switcher(self)
+                        on_press:
+                            root.toolbox_switcher(self)
+                            root.init_country_viewer("SSF")
                         on_state: if root.drawing_data: self.state = "normal"
 
                     Label:

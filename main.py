@@ -67,7 +67,7 @@ class BtnRmv(Button):
     index = StringProperty("")
 
 
-class CountrySelectAll(Button):
+class SelectAll(Button):
 
     region = ObjectProperty()
     normal = StringProperty("")
@@ -570,8 +570,7 @@ class IndexCreation(MouseScreen):
 
     all_indicators_data = DictProperty({})
     country_list = ListProperty()
-    #country_dict = DictProperty({}) # todo replace
-    country_dict = DictProperty({'Canada': ['CAN', 'NAC'], 'Sao Tome and Principe': ['STP', 'SSF'], 'Turkmenistan': ['TKM', 'ECS'], 'Lao PDR': ['LAO', 'EAS'], 'Arab World': ['ARB', 'NA'], 'Latin America & Caribbean (all income levels)': ['LCN', 'NA'], 'Cambodia': ['KHM', 'EAS'], 'Ethiopia': ['ETH', 'SSF'], 'Aruba': ['ABW', 'LCN'], 'Swaziland': ['SWZ', 'SSF'], 'South Asia': ['SAS', 'NA'], 'Argentina': ['ARG', 'LCN'], 'Bolivia': ['BOL', 'LCN'], 'Bahamas, The': ['BHS', 'LCN'], 'Burkina Faso': ['BFA', 'SSF'], 'OECD members': ['OED', 'NA'], 'Bahrain': ['BHR', 'MEA'], 'Saudi Arabia': ['SAU', 'MEA'], 'Rwanda': ['RWA', 'SSF'], 'Sub-Saharan Africa (IFC classification)': ['CAA', 'NA'], 'Togo': ['TGO', 'SSF'], 'Thailand': ['THA', 'EAS'], 'Japan': ['JPN', 'EAS'], 'Channel Islands': ['CHI', 'ECS'], 'American Samoa': ['ASM', 'EAS'], 'Northern Mariana Islands': ['MNP', 'EAS'], 'Slovenia': ['SVN', 'ECS'], 'Guatemala': ['GTM', 'LCN'], 'Bosnia and Herzegovina': ['BIH', 'ECS'], 'Kuwait': ['KWT', 'MEA'], 'Russian Federation': ['RUS', 'ECS'], 'Jordan': ['JOR', 'MEA'], 'St. Lucia': ['LCA', 'LCN'], 'Congo, Rep.': ['COG', 'SSF'], 'North Africa': ['NAF', 'NA'], 'Dominica': ['DMA', 'LCN'], 'Liberia': ['LBR', 'SSF'], 'Maldives': ['MDV', 'SAS'], 'East Asia & Pacific (all income levels)': ['EAS', 'NA'], 'Southern Cone': ['SCE', 'NA'], 'Lithuania': ['LTU', 'ECS'], 'Tanzania': ['TZA', 'SSF'], 'Vietnam': ['VNM', 'EAS'], 'Cabo Verde': ['CPV', 'SSF'], 'Greenland': ['GRL', 'ECS'], 'Gabon': ['GAB', 'SSF'], 'Monaco': ['MCO', 'ECS'], 'New Zealand': ['NZL', 'EAS'], 'European Union': ['EUU', 'NA'], 'Jamaica': ['JAM', 'LCN'], 'Albania': ['ALB', 'ECS'], 'Samoa': ['WSM', 'EAS'], 'Slovak Republic': ['SVK', 'ECS'], 'United Arab Emirates': ['ARE', 'MEA'], 'Guam': ['GUM', 'EAS'], 'Uruguay': ['URY', 'LCN'], 'India': ['IND', 'SAS'], 'Azerbaijan': ['AZE', 'ECS'], 'Lesotho': ['LSO', 'SSF'], 'Kenya': ['KEN', 'SSF'], 'Latin America and the Caribbean (IFC classification)': ['CLA', 'NA'], 'Upper middle income': ['UMC', 'NA'], 'Tajikistan': ['TJK', 'ECS'], 'Pacific island small states': ['PSS', 'NA'], 'Turkey': ['TUR', 'ECS'], 'Afghanistan': ['AFG', 'SAS'], 'Venezuela, RB': ['VEN', 'LCN'], 'Bangladesh': ['BGD', 'SAS'], 'Mauritania': ['MRT', 'SSF'], 'Solomon Islands': ['SLB', 'EAS'], 'Hong Kong SAR, China': ['HKG', 'EAS'], 'San Marino': ['SMR', 'ECS'], 'Mongolia': ['MNG', 'EAS'], 'France': ['FRA', 'ECS'], 'Syrian Arab Republic': ['SYR', 'MEA'], 'Bermuda': ['BMU', 'NAC'], 'Namibia': ['NAM', 'SSF'], 'Somalia': ['SOM', 'SSF'], 'Peru': ['PER', 'LCN'], 'Vanuatu': ['VUT', 'EAS'], 'Nigeria': ['NGA', 'SSF'], 'South Asia (IFC classification)': ['CSA', 'NA'], 'Norway': ['NOR', 'ECS'], "Cote d'Ivoire": ['CIV', 'SSF'], 'Europe & Central Asia (developing only)': ['ECA', 'NA'], 'Benin': ['BEN', 'SSF'], 'Other small states': ['OSS', 'NA'], 'Cuba': ['CUB', 'LCN'], 'Cameroon': ['CMR', 'SSF'], 'Montenegro': ['MNE', 'ECS'], 'Low & middle income': ['LMY', 'NA'], 'Middle East (developing only)': ['MDE', 'NA'], 'China': ['CHN', 'EAS'], 'Sub-Saharan Africa (developing only)': ['SSA', 'NA'], 'Armenia': ['ARM', 'ECS'], 'Small states': ['SST', 'NA'], 'Timor-Leste': ['TLS', 'EAS'], 'Dominican Republic': ['DOM', 'LCN'], 'Sub-Saharan Africa excluding South Africa': ['SXZ', 'NA'], 'Low income': ['LIC', 'NA'], 'Ukraine': ['UKR', 'ECS'], 'Ghana': ['GHA', 'SSF'], 'Tonga': ['TON', 'EAS'], 'Finland': ['FIN', 'ECS'], 'Latin America & Caribbean (developing only)': ['LAC', 'NA'], 'High income': ['HIC', 'NA'], 'Libya': ['LBY', 'MEA'], 'Korea, Rep.': ['KOR', 'EAS'], 'Cayman Islands': ['CYM', 'LCN'], 'Central African Republic': ['CAF', 'SSF'], 'Europe & Central Asia (all income levels)': ['ECS', 'NA'], 'Mauritius': ['MUS', 'SSF'], 'Liechtenstein': ['LIE', 'ECS'], 'Belarus': ['BLR', 'ECS'], 'Mali': ['MLI', 'SSF'], 'Micronesia, Fed. Sts.': ['FSM', 'EAS'], 'Korea, Dem. Rep.': ['PRK', 'EAS'], 'Sub-Saharan Africa excluding South Africa and Nigeria': ['XZN', 'NA'], 'Bulgaria': ['BGR', 'ECS'], 'North America': ['NAC', 'NA'], 'Romania': ['ROU', 'ECS'], 'Angola': ['AGO', 'SSF'], 'Central Europe and the Baltics': ['CEB', 'NA'], 'Egypt, Arab Rep.': ['EGY', 'MEA'], 'Trinidad and Tobago': ['TTO', 'LCN'], 'St. Vincent and the Grenadines': ['VCT', 'LCN'], 'Cyprus': ['CYP', 'ECS'], 'Caribbean small states': ['CSS', 'NA'], 'Brunei Darussalam': ['BRN', 'EAS'], 'Qatar': ['QAT', 'MEA'], 'Middle income': ['MIC', 'NA'], 'Austria': ['AUT', 'ECS'], 'High income: OECD': ['OEC', 'NA'], 'Mozambique': ['MOZ', 'SSF'], 'Uganda': ['UGA', 'SSF'], 'Kyrgyz Republic': ['KGZ', 'ECS'], 'Hungary': ['HUN', 'ECS'], 'Niger': ['NER', 'SSF'], 'United States': ['USA', 'NAC'], 'Brazil': ['BRA', 'LCN'], 'World': ['WLD', 'NA'], 'Middle East & North Africa (all income levels)': ['MEA', 'NA'], 'Guinea': ['GIN', 'SSF'], 'Panama': ['PAN', 'LCN'], 'Costa Rica': ['CRI', 'LCN'], 'Luxembourg': ['LUX', 'ECS'], 'Andorra': ['AND', 'ECS'], 'Chad': ['TCD', 'SSF'], 'Euro area': ['EMU', 'NA'], 'Ireland': ['IRL', 'ECS'], 'Pakistan': ['PAK', 'SAS'], 'Palau': ['PLW', 'EAS'], 'Faeroe Islands': ['FRO', 'ECS'], 'Lower middle income': ['LMC', 'NA'], 'Ecuador': ['ECU', 'LCN'], 'Czech Republic': ['CZE', 'ECS'], 'Australia': ['AUS', 'EAS'], 'Algeria': ['DZA', 'MEA'], 'East Asia and the Pacific (IFC classification)': ['CEA', 'NA'], 'El Salvador': ['SLV', 'LCN'], 'Tuvalu': ['TUV', 'EAS'], 'St. Kitts and Nevis': ['KNA', 'LCN'], 'Marshall Islands': ['MHL', 'EAS'], 'Chile': ['CHL', 'LCN'], 'Puerto Rico': ['PRI', 'LCN'], 'Belgium': ['BEL', 'ECS'], 'Europe and Central Asia (IFC classification)': ['CEU', 'NA'], 'Haiti': ['HTI', 'LCN'], 'Belize': ['BLZ', 'LCN'], 'Fragile and conflict affected situations': ['FCS', 'NA'], 'Sierra Leone': ['SLE', 'SSF'], 'Georgia': ['GEO', 'ECS'], 'East Asia & Pacific (developing only)': ['EAP', 'NA'], 'Denmark': ['DNK', 'ECS'], 'Philippines': ['PHL', 'EAS'], 'Moldova': ['MDA', 'ECS'], 'Macedonia, FYR': ['MKD', 'ECS'], 'Morocco': ['MAR', 'MEA'], 'Croatia': ['HRV', 'ECS'], 'French Polynesia': ['PYF', 'EAS'], 'Guinea-Bissau': ['GNB', 'SSF'], 'Kiribati': ['KIR', 'EAS'], 'Switzerland': ['CHE', 'ECS'], 'Grenada': ['GRD', 'LCN'], 'Middle East and North Africa (IFC classification)': ['CME', 'NA'], 'Yemen, Rep.': ['YEM', 'MEA'], 'Isle of Man': ['IMN', 'ECS'], 'Portugal': ['PRT', 'ECS'], 'Estonia': ['EST', 'ECS'], 'Kosovo': ['KSV', 'ECS'], 'Sweden': ['SWE', 'ECS'], 'Mexico': ['MEX', 'LCN'], 'Africa': ['AFR', 'NA'], 'South Africa': ['ZAF', 'SSF'], 'Uzbekistan': ['UZB', 'ECS'], 'Tunisia': ['TUN', 'MEA'], 'Djibouti': ['DJI', 'MEA'], 'West Bank and Gaza': ['PSE', 'MEA'], 'Antigua and Barbuda': ['ATG', 'LCN'], 'Spain': ['ESP', 'ECS'], 'Colombia': ['COL', 'LCN'], 'Burundi': ['BDI', 'SSF'], 'Least developed countries: UN classification': ['LDC', 'NA'], 'Fiji': ['FJI', 'EAS'], 'Barbados': ['BRB', 'LCN'], 'Seychelles': ['SYC', 'SSF'], 'Madagascar': ['MDG', 'SSF'], 'Italy': ['ITA', 'ECS'], 'Curacao': ['CUW', 'LCN'], 'Bhutan': ['BTN', 'SAS'], 'Sudan': ['SDN', 'SSF'], 'Latin America and the Caribbean': ['LCR', 'NA'], 'Nepal': ['NPL', 'SAS'], 'Singapore': ['SGP', 'EAS'], 'Malta': ['MLT', 'MEA'], 'Netherlands': ['NLD', 'ECS'], 'Macao SAR, China': ['MAC', 'EAS'], 'Andean Region': ['ANR', 'NA'], 'Middle East & North Africa (developing only)': ['MNA', 'NA'], 'Turks and Caicos Islands': ['TCA', 'LCN'], 'St. Martin (French part)': ['MAF', 'LCN'], 'Iran, Islamic Rep.': ['IRN', 'MEA'], 'Israel': ['ISR', 'MEA'], 'Indonesia': ['IDN', 'EAS'], 'Malaysia': ['MYS', 'EAS'], 'Iceland': ['ISL', 'ECS'], 'Zambia': ['ZMB', 'SSF'], 'Sub-Saharan Africa (all income levels)': ['SSF', 'NA'], 'Senegal': ['SEN', 'SSF'], 'Papua New Guinea': ['PNG', 'EAS'], 'Malawi': ['MWI', 'SSF'], 'Suriname': ['SUR', 'LCN'], 'Zimbabwe': ['ZWE', 'SSF'], 'Germany': ['DEU', 'ECS'], 'Oman': ['OMN', 'MEA'], 'Kazakhstan': ['KAZ', 'ECS'], 'Poland': ['POL', 'ECS'], 'Sint Maarten (Dutch part)': ['SXM', 'LCN'], 'Eritrea': ['ERI', 'SSF'], 'Virgin Islands (U.S.)': ['VIR', 'LCN'], 'Iraq': ['IRQ', 'MEA'], 'New Caledonia': ['NCL', 'EAS'], 'Paraguay': ['PRY', 'LCN'], 'Not classified': ['INX', 'NA'], 'Latvia': ['LVA', 'ECS'], 'South Sudan': ['SSD', 'SSF'], 'Guyana': ['GUY', 'LCN'], 'Honduras': ['HND', 'LCN'], 'Myanmar': ['MMR', 'EAS'], 'Equatorial Guinea': ['GNQ', 'SSF'], 'Central America': ['MCA', 'NA'], 'Nicaragua': ['NIC', 'LCN'], 'Congo, Dem. Rep.': ['COD', 'SSF'], 'Serbia': ['SRB', 'ECS'], 'Botswana': ['BWA', 'SSF'], 'United Kingdom': ['GBR', 'ECS'], 'Gambia, The': ['GMB', 'SSF'], 'High income: nonOECD': ['NOC', 'NA'], 'Greece': ['GRC', 'ECS'], 'Sri Lanka': ['LKA', 'SAS'], 'Lebanon': ['LBN', 'MEA'], 'Comoros': ['COM', 'SSF'], 'Heavily indebted poor countries (HIPC)': ['HPC', 'NA']})
+    country_dict = DictProperty({})
     drawing_data = BooleanProperty(False)
     loading_percentage = NumericProperty(0)
 
@@ -587,6 +586,7 @@ class IndexCreation(MouseScreen):
         self.descending_order_buttons = []
         self.must_draw_data = True
         self.loaded_regions = {}
+        self.loaded_years = []
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     @staticmethod
@@ -616,17 +616,18 @@ class IndexCreation(MouseScreen):
     # Function that will run every time mouse is moved.
     def on_mouse_pos(self, *args):
 
-        for button in self.acceding_order_buttons:
-            if button.collide_point(*button.to_widget(*args[1])):
-                button.background_normal = './Sources/acceding_down.png'
-            else:
-                button.background_normal = './Sources/acceding_normal.png'
+        if self.toolbox_screenmanager.current == "view_indicators_screen":
+            for button in self.acceding_order_buttons:
+                if button.collide_point(*button.to_widget(*args[1])):
+                    button.background_normal = './Sources/acceding_down.png'
+                else:
+                    button.background_normal = './Sources/acceding_normal.png'
 
-        for button in self.descending_order_buttons:
-            if button.collide_point(*button.to_widget(*args[1])):
-                button.background_normal = './Sources/descending_down.png'
-            else:
-                button.background_normal = './Sources/descending_normal.png'
+            for button in self.descending_order_buttons:
+                if button.collide_point(*button.to_widget(*args[1])):
+                    button.background_normal = './Sources/descending_down.png'
+                else:
+                    button.background_normal = './Sources/descending_normal.png'
 
         if self.toolbox_screenmanager.current == "series_selection_screen"\
                 and self.country_selection_sm.current in self.loaded_regions:
@@ -635,6 +636,13 @@ class IndexCreation(MouseScreen):
                     button.background_normal = button.background_down
                 else:
                     button.background_normal = button.normal
+
+            if len(self.loaded_years) > 1:
+                for button in self.loaded_years[-2:]:
+                    if button.collide_point(*button.to_widget(*args[1])):
+                        button.background_normal = button.background_down
+                    else:
+                        button.background_normal = button.normal
 
     @mainthread
     def model_toolbox_activator(self, state):
@@ -1169,23 +1177,27 @@ class IndexCreation(MouseScreen):
                     country_frame.add_widget(btn)
                     country_stack.add_widget(country_frame)
 
-                    # Add current button in buttons dictionary.
+                    # Add current button in region buttons list.
                     self.loaded_regions[args[0]].append(btn)
 
             country_multi_select_frame = BoxLayout(size_hint=(None, None), size=(200, 50))
-            country_select_none = Factory.CountrySelectAll(background_normal='./Sources/no_country_checked_normal.png',
-                                                           normal='./Sources/no_country_checked_normal.png',
-                                                           background_down='./Sources/no_country_checked_down.png',
-                                                           region=args[0],
-                                                           on_release=self.all_selection_countries)
+            country_select_none = SelectAll(size_hint=(None, None),
+                                            size=(50, 50),
+                                            normal='./Sources/no_country_checked_normal.png',
+                                            background_normal='./Sources/no_country_checked_normal.png',
+                                            background_down='./Sources/no_country_checked_down.png',
+                                            region=args[0],
+                                            on_release=self.all_selection_countries)
 
             country_multi_select = Factory.CountryMultiSelect()
 
-            country_select_all = Factory.CountrySelectAll(background_normal='./Sources/all_country_checked_normal.png',
-                                                          normal='./Sources/all_country_checked_normal.png',
-                                                          background_down='./Sources/all_country_checked_down.png',
-                                                          region=args[0],
-                                                          on_release=self.all_selection_countries)
+            country_select_all = SelectAll(size_hint=(None, None),
+                                           size=(50, 50),
+                                           normal='./Sources/all_country_checked_normal.png',
+                                           background_normal='./Sources/all_country_checked_normal.png',
+                                           background_down='./Sources/all_country_checked_down.png',
+                                           region=args[0],
+                                           on_release=self.all_selection_countries)
 
             country_multi_select_frame.add_widget(country_select_none)
             country_multi_select_frame.add_widget(country_multi_select)
@@ -1193,7 +1205,7 @@ class IndexCreation(MouseScreen):
 
             country_stack.add_widget(country_multi_select_frame)
 
-            # Add select all/none buttons in buttons dictionary.
+            # Add select all/none buttons in region buttons list.
             self.loaded_regions[args[0]].append(country_select_none)
             self.loaded_regions[args[0]].append(country_select_all)
 
@@ -1203,19 +1215,26 @@ class IndexCreation(MouseScreen):
             for button in self.loaded_regions[args[0].region][:-2]:
                 button.state = "down"
         else:
-            for button in self.loaded_regions[args[0].region]:
+            for button in self.loaded_regions[args[0].region][:-2]:
                 button.state = "normal"
 
     @mainthread
-    # This method will run the first time series_selection_screen initiates.
+    # This method will run each time series_selection_screen initiates for first time after data reload.
     def generate_year_buttons(self):
         # Clear all previously created year_buttons.
         self.years_stack.clear_widgets()
 
+        self.loaded_years = []
+
         min_y, max_y = 1950, 2015
         d = [item for k, v in self.all_indicators_data.items() if 'LastFirst_' in k for item in v]
-        first_y = min(*d)
-        last_y = max(*d)
+
+        # Check if there is at least one year with data.
+        if d:
+            first_y, last_y = min(*d), max(*d)
+        # If not, we will make first and last year be out of range, so that all years will be transparent.
+        else:
+            first_y, last_y = max_y+1, min_y-1
 
         # Will iter each year in our database. We use min max below because min_y, max_y could change in future.
         for y in range(min(min_y, first_y), max(max_y, last_y)):
@@ -1227,28 +1246,45 @@ class IndexCreation(MouseScreen):
 
             self.years_stack.add_widget(year_btn)
 
+            # Also add current button in year buttons list.
+            self.loaded_years.append(year_btn)
+
         # Create and Add mass selections button.
-        all_select_frame = BoxLayout(size_hint=(None, None), size=(75,25))
+        year_multi_select_frame = BoxLayout(size_hint=(None, None), size=(75,25))
+        year_select_none = SelectAll(size_hint=(None, None),
+                                     size=(25,25),
+                                     normal='./Sources/deselect_all_years_normal.png',
+                                     background_normal='./Sources/deselect_all_years_normal.png',
+                                     background_down='./Sources/deselect_all_years_down.png',
+                                     on_release=self.all_selection_years)
+
         btn_label = Factory.AllYearsLabel()
-        btn_left = Button(size_hint=(None, None),
-                          size=(25,25),
-                          background_normal='./Sources/deselect_all_years_normal.png',
-                          background_down='./Sources/deselect_all_years_down.png',
-                          on_release=self.all_selection_years)
-        btn_right = Button(size_hint=(None, None),
-                           size=(25,25),
-                           background_normal='./Sources/select_all_years_normal.png',
-                           background_down='./Sources/select_all_years_down.png',
-                           on_release=self.all_selection_years)
 
-        all_select_frame.add_widget(btn_left)
-        all_select_frame.add_widget(btn_label)
-        all_select_frame.add_widget(btn_right)
+        year_select_all = SelectAll(size_hint=(None, None),
+                                    size=(25,25),
+                                    normal='./Sources/select_all_years_normal.png',
+                                    background_normal='./Sources/select_all_years_normal.png',
+                                    background_down='./Sources/select_all_years_down.png',
+                                    on_release=self.all_selection_years)
 
-        self.years_stack.add_widget(all_select_frame)
+        year_multi_select_frame.add_widget(year_select_none)
+        year_multi_select_frame.add_widget(btn_label)
+        year_multi_select_frame.add_widget(year_select_all)
+
+        self.years_stack.add_widget(year_multi_select_frame)
+
+        # Add select all/none buttons in year buttons list.
+        self.loaded_years.append(year_select_none)
+        self.loaded_years.append(year_select_all)
 
     def all_selection_years(self, *args):
-        print "hi"
+        # Manage year button state.
+        if args[0].normal == './Sources/select_all_years_normal.png':
+            for button in self.loaded_years[:-2]:
+                button.state = "down"
+        else:
+            for button in self.loaded_years[:-2]:
+                button.state = "normal"
 
 class MapDesigner(Screen):
 
