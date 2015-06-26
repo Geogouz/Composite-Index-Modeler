@@ -922,6 +922,9 @@ class IndexCreation(MouseScreen):
             except Exception as e:
                 print "def get_indicators(self, *args):", type(e), e.__doc__, e.message
 
+        # Every time data are reloaded, we must regenerate available shown years in series_selection_screen.
+        self.generate_year_buttons()
+
         self.btn_get_indicators.disabled = False
         self.btn_get_indicators.state = "normal"
 
@@ -1174,7 +1177,7 @@ class IndexCreation(MouseScreen):
                                                            normal='./Sources/no_country_checked_normal.png',
                                                            background_down='./Sources/no_country_checked_down.png',
                                                            region=args[0],
-                                                           on_release=self.all_selection)
+                                                           on_release=self.all_selection_countries)
 
             country_multi_select = Factory.CountryMultiSelect()
 
@@ -1182,7 +1185,7 @@ class IndexCreation(MouseScreen):
                                                           normal='./Sources/all_country_checked_normal.png',
                                                           background_down='./Sources/all_country_checked_down.png',
                                                           region=args[0],
-                                                          on_release=self.all_selection)
+                                                          on_release=self.all_selection_countries)
 
             country_multi_select_frame.add_widget(country_select_none)
             country_multi_select_frame.add_widget(country_multi_select)
@@ -1194,14 +1197,58 @@ class IndexCreation(MouseScreen):
             self.loaded_regions[args[0]].append(country_select_none)
             self.loaded_regions[args[0]].append(country_select_all)
 
-    def all_selection(self, *args):
-        #
+    def all_selection_countries(self, *args):
+        # Manage country button state.
         if args[0].normal == "./Sources/all_country_checked_normal.png":
             for button in self.loaded_regions[args[0].region][:-2]:
                 button.state = "down"
         else:
             for button in self.loaded_regions[args[0].region]:
                 button.state = "normal"
+
+    @mainthread
+    # This method will run the first time series_selection_screen initiates.
+    def generate_year_buttons(self):
+        # Clear all previously created year_buttons.
+        self.years_stack.clear_widgets()
+
+        min_y, max_y = 1950, 2015
+        d = [item for k, v in self.all_indicators_data.items() if 'LastFirst_' in k for item in v]
+        first_y = min(*d)
+        last_y = max(*d)
+
+        # Will iter each year in our database. We use min max below because min_y, max_y could change in future.
+        for y in range(min(min_y, first_y), max(max_y, last_y)):
+
+            if y in range (first_y, last_y + 1):
+                year_btn = Factory.YearSelector(text=str(y), background_normal='./Sources/btn_years_normal.png')
+            else:
+                year_btn = Factory.YearSelector(text=str(y), background_normal='./Sources/btn_empty_years_normal.png')
+
+            self.years_stack.add_widget(year_btn)
+
+        # Create and Add mass selections button.
+        all_select_frame = BoxLayout(size_hint=(None, None), size=(75,25))
+        btn_label = Factory.AllYearsLabel()
+        btn_left = Button(size_hint=(None, None),
+                          size=(25,25),
+                          background_normal='./Sources/deselect_all_years_normal.png',
+                          background_down='./Sources/deselect_all_years_down.png',
+                          on_release=self.all_selection_years)
+        btn_right = Button(size_hint=(None, None),
+                           size=(25,25),
+                           background_normal='./Sources/select_all_years_normal.png',
+                           background_down='./Sources/select_all_years_down.png',
+                           on_release=self.all_selection_years)
+
+        all_select_frame.add_widget(btn_left)
+        all_select_frame.add_widget(btn_label)
+        all_select_frame.add_widget(btn_right)
+
+        self.years_stack.add_widget(all_select_frame)
+
+    def all_selection_years(self, *args):
+        print "hi"
 
 class MapDesigner(Screen):
 

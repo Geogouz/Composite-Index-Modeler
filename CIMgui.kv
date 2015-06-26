@@ -1,5 +1,25 @@
 #: import sm kivy.uix.screenmanager
 
+<AllYearsLabel@Label>:
+    text: "ALL"
+    size_hint: (None, None)
+    size: (25, 25)
+    font_size: 11
+    color: (0,0,0,1)
+    canvas.before:
+        Rectangle:
+            source: './Sources/select_all_years_label.png'
+            pos: self.pos
+            size: self.size
+
+
+<YearSelector@ToggleButton>:
+    size_hint: (None, None)
+    size: (75, 25)
+    font_size: 12
+    bold: True
+    background_down: './Sources/btn_years_down.png'
+
 
 <CountryScroll@ScrollView>:
     bar_width: 2
@@ -112,7 +132,8 @@
 <CountryBtn@Button>:
     italic: True
     size_hint: (None, None)
-    size: (250, 40)
+    size: (200, 30)
+    font_size: 13
     color: (0,0,0,1)
     disabled_color: (1,1,1,1)
     background_normal: './Sources/region_groups_normal.png'
@@ -684,7 +705,6 @@
 
 
 <Home>:
-
     name: 'Home'
     BoxLayout:
         size_hint: (None, None)
@@ -1131,6 +1151,7 @@
     data_table_img: data_table_img
 
     country_selection_sm: country_selection_sm
+    years_stack: years_stack
 
     name: 'IndexCreationScreen'
 
@@ -1516,78 +1537,105 @@
                     BoxLayout:
                         orientation: "vertical"
                         padding: 10
-                        spacing: 10
 
-                        ScrollView:
+                        BoxLayout:
                             size_hint_y: None
-                            height: 81
-                            bar_width: 2
-                            bar_margin: -5
-                            do_scroll_y: False
-                            bar_inactive_color: (0, 0, 0, 1)
-                            bar_color: (0.96, 0.26, 0.21, 1)
+                            height: 61
+
+                            ScrollView:
+                                id: country_slider
+                                size_hint_y: None
+                                height: 61
+                                bar_width: 2
+                                bar_margin: -5
+                                do_scroll_y: False
+                                bar_inactive_color: (0, 0, 0, 1)
+                                bar_color: (0.96, 0.26, 0.21, 1)
+
+                                BoxLayout:
+                                    size_hint: (None, None)
+                                    # Child widths
+                                    size: (813, 61)
+                                    orientation: "vertical"
+                                    padding: (5,0)
+                                    spacing: 1
+
+                                    BoxLayout:
+                                        spacing: 1
+
+                                        CountryBtn:
+                                            text: "Sub-Saharan Africa"
+                                            group: "SSF"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "SSF"
+
+                                        CountryBtn:
+                                            text: "Middle East & North Africa"
+                                            group: "MEA"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "MEA"
+
+                                        CountryBtn:
+                                            text: "East Asia & Pacific"
+                                            group: "EAS"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "EAS"
+
+                                        CountryBtn:
+                                            text: "South Asia"
+                                            group: "SAS"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "SAS"
+
+                                    BoxLayout:
+                                        spacing: 1
+
+                                        CountryBtn:
+                                            text: "Europe & Central Asia"
+                                            group: "ECS"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "ECS"
+
+                                        CountryBtn:
+                                            text: "North America"
+                                            group: "NAC"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "NAC"
+
+                                        CountryBtn:
+                                            text: "Latin America & Caribbean"
+                                            group: "LCN"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "LCN"
+
+                                        CountryBtn:
+                                            text: "Aggregates"
+                                            group: "NA"
+                                            disabled: True if country_selection_sm.current == self.group else False
+                                            on_press: country_selection_sm.current = "NA"
 
                             BoxLayout:
-                                size_hint: (None, None)
-                                # Child widths
-                                size: (1013, 81)
-                                orientation: "vertical"
-                                padding: (5,0)
-                                spacing: 1
+                                size_hint_x: None
+                                width: 3
+                                canvas.before:
+                                    Color:
+                                        rgba: (0, 0, 0, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
 
-                                BoxLayout:
-                                    spacing: 1
+                            Label:
+                                size_hint_x: None
+                                width: 100
+                                font_size: 15
+                                text_size: (self.width-10, self.height-5)
+                                halign: "left"
+                                text: "REGIONS\nSELECTION"
+                                color: (0,0,0,1)
 
-                                    CountryBtn:
-                                        text: "Sub-Saharan Africa"
-                                        group: "SSF"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "SSF"
-
-                                    CountryBtn:
-                                        text: "Middle East & North Africa"
-                                        group: "MEA"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "MEA"
-
-                                    CountryBtn:
-                                        text: "East Asia & Pacific"
-                                        group: "EAS"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "EAS"
-
-                                    CountryBtn:
-                                        text: "South Asia"
-                                        group: "SAS"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "SAS"
-
-                                BoxLayout:
-                                    spacing: 1
-
-                                    CountryBtn:
-                                        text: "Europe & Central Asia"
-                                        group: "ECS"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "ECS"
-
-                                    CountryBtn:
-                                        text: "North America"
-                                        group: "NAC"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "NAC"
-
-                                    CountryBtn:
-                                        text: "Latin America & Caribbean"
-                                        group: "LCN"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "LCN"
-
-                                    CountryBtn:
-                                        text: "Aggregates"
-                                        group: "NA"
-                                        disabled: True if country_selection_sm.current == self.group else False
-                                        on_press: country_selection_sm.current = "NA"
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 5
 
                         ScreenManager:
                             id: country_selection_sm
@@ -1633,23 +1681,67 @@
 
                         BoxLayout:
                             size_hint_y: None
-                            height: 80 + (toolbox_screenmanager.height - 221)% 50
+                            height: 30
 
-                            padding: 1
-                            canvas.before:
-                                Color:
-                                    rgba: (0.22, 0.22, 0.22, 1)
-                                Rectangle:
-                                    pos: self.pos
-                                    size: self.size
+                        BoxLayout:
+                            size_hint_y: None
+                            height: year_scroll.height
 
                             BoxLayout:
+                                id: year_scroll
+                                size_hint: (None, None)
+                                height: 120 + (toolbox_screenmanager.height - 6)% 50
+                                width: years_stack.width + 2
+                                padding: 1
                                 canvas.before:
                                     Color:
-                                        rgba: (1, 1, 1, 1)
+                                        rgba: (0.22, 0.22, 0.22, 1)
                                     Rectangle:
                                         pos: self.pos
                                         size: self.size
+
+                                ScrollView:
+                                    bar_width: 2
+                                    bar_margin: -6
+                                    bar_inactive_color: (0, 0, 0, 1)
+                                    bar_color: (0.96, 0.26, 0.21, 1)
+                                    canvas.before:
+                                        Color:
+                                            rgba: (1, 1, 1, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+
+                                    GridLayout:
+                                        id: years_stack
+                                        cols: 10
+                                        size_hint: (None, None)
+                                        size: (self.minimum_width, self.minimum_height)
+                                        padding: 10
+                                        spacing: 5, 2
+
+                            BoxLayout:
+                                padding: (10, 0, 0, 0)
+
+                                BoxLayout:
+                                    size_hint_x: None
+                                    width: 3
+                                    canvas.before:
+                                        Color:
+                                            rgba: (0, 0, 0, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
+
+                                Label:
+                                    size_hint_x: None
+                                    width: 100
+                                    font_size: 15
+                                    text_size: (self.width-10, self.height-5)
+                                    halign: "left"
+                                    valign: "middle"
+                                    text: "YEARS\nSELECTION"
+                                    color: (0,0,0,1)
 
                 Screen:
                     name: "index_algebra_screen"
