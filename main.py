@@ -27,7 +27,8 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.animation import Animation
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty, ListProperty, NumericProperty
+from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty,\
+    ListProperty, NumericProperty
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -186,7 +187,7 @@ class IndexSelection(MouseScreen):
     def dl_status_icon_setter(self):
         # If there is no active Indicator data download..
         if not self.is_index_creation.btn_get_indicators.disabled:
-            # Compare my_indicators to sorted_indicators so we know if we must re-download model data.
+            # Compare my_indicators to sorted_indicators so we know if we must re-download data.
             my_in = self.selected_indices["my_indicators"].keys()
             my_in.sort()
 
@@ -258,7 +259,8 @@ class IndexSelection(MouseScreen):
     def on_my_indicators(self):
         # If user has selected an Index..
         if not self.selected_indices["feat_index"] is None and \
-                not (self.selected_indices["feat_index"].text in self.selected_indices["my_indicators"]):
+                not (self.selected_indices["feat_index"].text in self.selected_indices[
+                    "my_indicators"]):
             # Add Index to my_indicators.
             self.selected_indices["my_indicators"][self.selected_indices["feat_index"].text] = \
                 self.selected_indices["feat_index"].code
@@ -270,10 +272,14 @@ class IndexSelection(MouseScreen):
             my_index_box = Factory.MyIndexBox()
 
             # Create btn_rmv_anchor to hold btn_rmv.
-            btn_rmv_anchor = AnchorLayout(size_hint_y=None, height=25, anchor_x="right", padding=[0, 0, 10, 0])
+            btn_rmv_anchor = AnchorLayout(size_hint_y=None,
+                                          height=25,
+                                          anchor_x="right",
+                                          padding=[0, 0, 10, 0])
 
             # Create a removing index btn.
-            btn_rmv = Factory.BtnRmv(index=self.selected_indices["feat_index"].text, on_release=self.rmv_my_indicators)
+            btn_rmv = Factory.BtnRmv(index=self.selected_indices["feat_index"].text,
+                                     on_release=self.rmv_my_indicators)
 
             # Add btn_rmv in btn_rmv_anchor.
             btn_rmv_anchor.add_widget(btn_rmv)
@@ -388,10 +394,14 @@ class IndexSelection(MouseScreen):
                     while located != -1:
                         located = index.lower().find(keyword.lower())
                         if located != -1:
-                            occurrences.append(index.partition(index[located:located+len(keyword)])[0])
+
+                            occurrences.append(
+                                index.partition(index[located:located+len(keyword)])[0])
                             occurrences.append("[color=ff0078][b]")
-                            occurrences.append(index.partition(index[located:located+len(keyword)])[1])
+                            occurrences.append(
+                                index.partition(index[located:located+len(keyword)])[1])
                             occurrences.append("[/b][/color]")
+
                             index = index.partition(index[located:located+len(keyword)])[2]
                         else:
                             occurrences.append(index)
@@ -465,7 +475,8 @@ class IndexSelection(MouseScreen):
 
                         # Build each separate dictionary with topic's indices.
                         indices_dic = {}
-                        for index in range(1, int(self.coredb_py[2][topic_numbers][0]["indicators_num"])+1):
+                        for index in range(
+                                1, int(self.coredb_py[2][topic_numbers][0]["indicators_num"])+1):
                             indices_dic[self.coredb_py[2][topic_numbers][index][1]] = \
                                 [self.coredb_py[2][topic_numbers][index][0],
                                  self.coredb_py[2][topic_numbers][index][2]]
@@ -547,7 +558,7 @@ class IndexSelection(MouseScreen):
                 # Place the button in the stacklayout.
                 self.indices_slider_stack.add_widget(btn)
 
-                # Add the button's ID and object button itself in the global "shown_ind_btns" dictionary.
+                # Add the button's ID and object button itself in the global "shown_ind_btns" dict.
                 IndexSelection.shown_ind_btns[index_btn_id] = btn
 
             # Set proper btn backgrounds based on my_indicators.
@@ -666,7 +677,8 @@ class IndexCreation(MouseScreen):
             # If I have no indicator in my list do nothing but alert.
             if not self.ic_index_selection.selected_indices["my_indicators"]:
                 self.btn_get_indicators.state = "normal"
-                self.popuper('"My Indicators" list should not be empty.\nGo to Indicator Selection.')
+                self.popuper(
+                    '"My Indicators" list should not be empty.\nGo to Indicator Selection.')
 
             else:
                 # Clear model's indicator list.
@@ -695,13 +707,17 @@ class IndexCreation(MouseScreen):
     def spawn_indicator_widget(self, *args):
         # Creation and placement of each widget part.
         rvw_widget_main_layout = Factory.RvwWidgetMainLayout()
-        rvw_widget_head_layout = BoxLayout(orientation="horizontal", size_hint=(None, None), size=(262, 70))
+        rvw_widget_head_layout = BoxLayout(orientation="horizontal",
+                                           size_hint=(None, None),
+                                           size=(262, 70))
         rvw_widget_scroll = Factory.RvwWidgetScroll()
         rvw_widget_title = Factory.RvwWidgetTitle(text=str(args[0][6]))
         rvw_widget_short_id = Factory.RvwWidgetShortID(text=str(args[0][5]))
         rvw_widget_foot_layout = Factory.RvwWidgetFootLayout()
         rvw_widget_calc1 = Factory.RvwWidgetCalc(width=60)
-        rvw_widget_calc1_data = Factory.RvwWidgetCalcData(size=(60, 31), text=str(args[0][0]), color=(0.9, 0.1, 0.1, 1))
+        rvw_widget_calc1_data = Factory.RvwWidgetCalcData(size=(60, 31),
+                                                          text=str(args[0][0]),
+                                                          color=(0.9, 0.1, 0.1, 1))
         rvw_widget_calc1_desc = Factory.RvwWidgetCalcDesc(size=(60, 32), text="Regions\nW/O Data")
         rvw_widget_calc2 = Factory.RvwWidgetCalc(width=90)
         rvw_widget_calc2_sum1 = BoxLayout(size_hint=(None, None), size=(90, 15), spacing=5)
@@ -715,8 +731,11 @@ class IndexCreation(MouseScreen):
         rvw_widget_calc2_sum3_data = Factory.RvwWidgetCalc2Data(text=str(args[0][4]))
         rvw_widget_calc2_desc = Factory.RvwWidgetCalcDesc(size=(90, 18), text="Total Records")
         rvw_widget_calc3 = Factory.RvwWidgetCalc(width=110)
-        rvw_widget_calc3_data = Factory.RvwWidgetCalcData(size=(110, 31), text=args[0][1], color=(0, 0, 0, 1))
-        rvw_widget_calc3_desc = Factory.RvwWidgetCalcDesc(size=(110, 32), text="Diachronic\nUnweighted Mean")
+        rvw_widget_calc3_data = Factory.RvwWidgetCalcData(size=(110, 31),
+                                                          text=args[0][1],
+                                                          color=(0, 0, 0, 1))
+        rvw_widget_calc3_desc = Factory.RvwWidgetCalcDesc(size=(110, 32),
+                                                          text="Diachronic\nUnweighted Mean")
 
         rvw_widget_scroll.add_widget(rvw_widget_title)
 
@@ -782,7 +801,7 @@ class IndexCreation(MouseScreen):
         # This var will show ID creation sequence.
         items_created = 0
 
-        # Create short ID's, store that link to a dict and prepare each generic structure. (UPTO 26)
+        # Create short ID's, store link to a dict and prepare each structure. (UPTO 26)
         for i in abc:
 
             short_id = "I"+i
@@ -800,7 +819,7 @@ class IndexCreation(MouseScreen):
         # Prepare new ID creation sequence.
         items_created = 0
 
-        # Continue creating short ID's, store that link to a dict and prepare each generic structure. (UPTO 676)
+        # Continue creating short ID's, store link to a dict and prepare each structure. (UPTO 676)
         if items-26 > 0:
             for i in abc:
                 for j in abc:
@@ -835,7 +854,7 @@ class IndexCreation(MouseScreen):
             for indicator in self.sorted_indicators:
 
                 short_id = self.id_conn[indicator]
-                indicator_address = start_url + countries + indicators + mi[indicator] + "/" + end_url
+                indicator_address = start_url+countries+indicators+mi[indicator]+"/"+end_url
 
                 # Define World Bank connection (JSON data).
                 ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
@@ -861,7 +880,8 @@ class IndexCreation(MouseScreen):
 
                 # If year list is not an empty list..
                 if year_list:
-                    self.all_indicators_data["LastFirst_"+short_id] = [min(year_list), max(year_list)]
+                    self.all_indicators_data["LastFirst_"+short_id] = [min(year_list),
+                                                                       max(year_list)]
 
                 # Begin statistic calculations.
                 # Track number of countries with no data available for any year.
@@ -930,7 +950,7 @@ class IndexCreation(MouseScreen):
             except Exception as e:
                 print "def get_indicators(self, *args):", type(e), e.__doc__, e.message
 
-        # Every time data are reloaded, we must regenerate available shown years in series_selection_screen.
+        # On every data reload, we also recalculate available years in series_selection_screen.
         self.generate_year_buttons()
 
         self.btn_get_indicators.disabled = False
@@ -965,7 +985,8 @@ class IndexCreation(MouseScreen):
                 self.data_view_now.append([region])
                 for year in rng:
                     if year in self.all_indicators_data[sh_id][region]:
-                        self.data_view_now[-1].append(float(self.all_indicators_data[sh_id][region][year]))
+                        self.data_view_now[-1].append(
+                            float(self.all_indicators_data[sh_id][region][year]))
                     else:
                         self.data_view_now[-1].append("")
 
@@ -1051,15 +1072,22 @@ class IndexCreation(MouseScreen):
                         self.data_table_top.add_widget(mainbutton)
 
                     else:
-                        head_box = Factory.HeadBox(orientation="horizontal", size_hint=(None, None), size=(100, 20))
+                        head_box = Factory.HeadBox(orientation="horizontal",
+                                                   size_hint=(None, None),
+                                                   size=(100, 20))
                         left_title = Factory.YearHeader(text=str(header))
-                        right_box = BoxLayout(orientation="vertical", spacing=4, size_hint=(None, None), size=(30, 20))
-                        acceding_btn = Factory.OrderBtn(background_normal='./Sources/acceding_normal.png',
-                                                        background_down='./Sources/acceding_down.png',
-                                                        on_release=self.sort_data_manager)
-                        descending_btn = Factory.OrderBtn(background_normal='./Sources/descending_normal.png',
-                                                          background_down='./Sources/descending_down.png',
-                                                          on_release=self.sort_data_manager)
+                        right_box = BoxLayout(orientation="vertical",
+                                              spacing=4,
+                                              size_hint=(None, None),
+                                              size=(30, 20))
+                        acceding_btn = Factory.OrderBtn(
+                            background_normal='./Sources/acceding_normal.png',
+                            background_down='./Sources/acceding_down.png',
+                            on_release=self.sort_data_manager)
+                        descending_btn = Factory.OrderBtn(
+                            background_normal='./Sources/descending_normal.png',
+                            background_down='./Sources/descending_down.png',
+                            on_release=self.sort_data_manager)
 
                         # Place buttons in a list. Will use that for hover checks.
                         self.acceding_order_buttons.append(acceding_btn)
@@ -1077,7 +1105,8 @@ class IndexCreation(MouseScreen):
                 for i, cell in enumerate(country_row, start=1):
                     # Identify Region names.
                     if cell == country_row[0]:
-                        self.screen_load_toolbox.children[0].add_widget(Factory.DataViewTitle(text=str(cell)))
+                        self.screen_load_toolbox.children[0].add_widget(
+                            Factory.DataViewTitle(text=str(cell)))
 
                     else:
                         if isinstance(cell, float):
@@ -1092,9 +1121,11 @@ class IndexCreation(MouseScreen):
 
                         # Use different color styles for Odd/Even columns.
                         if i % 2:
-                            self.screen_load_toolbox.children[0].add_widget(Factory.DataViewEven(text=str(val)))
+                            self.screen_load_toolbox.children[0].add_widget(
+                                Factory.DataViewEven(text=str(val)))
                         else:
-                            self.screen_load_toolbox.children[0].add_widget(Factory.DataViewOdd(text=str(val)))
+                            self.screen_load_toolbox.children[0].add_widget(
+                                Factory.DataViewOdd(text=str(val)))
 
         else:
             # End table drawing reschedules.
@@ -1150,7 +1181,7 @@ class IndexCreation(MouseScreen):
             pass
 
         else:
-            # Add current screen in loaded_regions dict and prepare it's value (list) to hold buttons objects.
+            # Add current screen in loaded_regions dict and prepare new list to hold buttons.
             self.loaded_regions[args[0]] = []
 
             # Create and place a widget module for each Country.
@@ -1181,23 +1212,25 @@ class IndexCreation(MouseScreen):
                     self.loaded_regions[args[0]].append(btn)
 
             country_multi_select_frame = BoxLayout(size_hint=(None, None), size=(200, 50))
-            country_select_none = SelectAll(size_hint=(None, None),
-                                            size=(50, 50),
-                                            normal='./Sources/no_country_checked_normal.png',
-                                            background_normal='./Sources/no_country_checked_normal.png',
-                                            background_down='./Sources/no_country_checked_down.png',
-                                            region=args[0],
-                                            on_release=self.all_selection_countries)
+            country_select_none = SelectAll(
+                size_hint=(None, None),
+                size=(50, 50),
+                normal='./Sources/no_country_checked_normal.png',
+                background_normal='./Sources/no_country_checked_normal.png',
+                background_down='./Sources/no_country_checked_down.png',
+                region=args[0],
+                on_release=self.all_selection_countries)
 
             country_multi_select = Factory.CountryMultiSelect()
 
-            country_select_all = SelectAll(size_hint=(None, None),
-                                           size=(50, 50),
-                                           normal='./Sources/all_country_checked_normal.png',
-                                           background_normal='./Sources/all_country_checked_normal.png',
-                                           background_down='./Sources/all_country_checked_down.png',
-                                           region=args[0],
-                                           on_release=self.all_selection_countries)
+            country_select_all = SelectAll(
+                size_hint=(None, None),
+                size=(50, 50),
+                normal='./Sources/all_country_checked_normal.png',
+                background_normal='./Sources/all_country_checked_normal.png',
+                background_down='./Sources/all_country_checked_down.png',
+                region=args[0],
+                on_release=self.all_selection_countries)
 
             country_multi_select_frame.add_widget(country_select_none)
             country_multi_select_frame.add_widget(country_multi_select)
@@ -1219,7 +1252,7 @@ class IndexCreation(MouseScreen):
                 button.state = "normal"
 
     @mainthread
-    # This method will run each time series_selection_screen initiates for first time after data reload.
+    # This will run each time series_selection_screen initiates for first time after data reload.
     def generate_year_buttons(self):
         # Clear all previously created year_buttons.
         self.years_stack.clear_widgets()
@@ -1232,17 +1265,21 @@ class IndexCreation(MouseScreen):
         # Check if there is at least one year with data.
         if d:
             first_y, last_y = min(*d), max(*d)
-        # If not, we will make first and last year be out of range, so that all years will be transparent.
+        # If not, we will make first and last year be out of range, so that all years will be grey.
         else:
             first_y, last_y = max_y+1, min_y-1
 
-        # Will iter each year in our database. We use min max below because min_y, max_y could change in future.
+        # Will iter each year in database. In future min_y, max_y could change so we use min max.
         for y in range(min(min_y, first_y), max(max_y, last_y)):
 
             if y in range(first_y, last_y + 1):
-                year_btn = Factory.YearSelector(text=str(y), background_normal='./Sources/btn_years_normal.png')
+                year_btn = Factory.YearSelector(
+                    text=str(y),
+                    background_normal='./Sources/btn_years_normal.png')
             else:
-                year_btn = Factory.YearSelector(text=str(y), background_normal='./Sources/btn_empty_years_normal.png')
+                year_btn = Factory.YearSelector(
+                    text=str(y),
+                    background_normal='./Sources/btn_empty_years_normal.png')
 
             self.years_stack.add_widget(year_btn)
 
@@ -1286,6 +1323,20 @@ class IndexCreation(MouseScreen):
             for button in self.loaded_years[:-2]:
                 button.state = "normal"
 
+    # Index Algebra calculations.
+    def backward(self, formula):
+        if formula:
+            self.input.text = formula[:-1]
+
+    def exec_formula(self, formula):
+        if not formula:
+            return
+
+        try:
+            self.input.text = str(eval(formula))
+        except Exception:
+            self.input.text = 'error'
+
 
 class MapDesigner(Screen):
 
@@ -1299,7 +1350,7 @@ class CIMMenu(BoxLayout):
 
 class MainWindow(BoxLayout):
 
-    # Prepare kivy properties that show if a process or a popup are currently running. Set to False on app's init.
+    # Prepare kivy properties that show if a process or a popup are currently running.
     processing = BooleanProperty(False)
     popup_active = BooleanProperty(False)
 
@@ -1396,10 +1447,10 @@ class MainWindow(BoxLayout):
                     # Check if indicator has been added to same parent topic again before.
                     if int(wdi_py[1][indicator]["topics"][parent_topic]["id"]) not in used_topics:
                         used_topics.append(int(wdi_py[1][indicator]["topics"][parent_topic]["id"]))
-                        topics_zip[int(wdi_py[1][indicator]["topics"][parent_topic]["id"])].append([
-                            (wdi_py[1][indicator]["id"]),
-                            (wdi_py[1][indicator]["name"]),
-                            (wdi_py[1][indicator]["sourceNote"])])
+                        topics_zip[int(wdi_py[1][indicator]["topics"][parent_topic]["id"])].append(
+                            [(wdi_py[1][indicator]["id"]),
+                             (wdi_py[1][indicator]["name"]),
+                             (wdi_py[1][indicator]["sourceNote"])])
 
             for topic in range(len(topics_zip)-1):
                 topics_zip[topic+1][0]["indicators_num"] = len(topics_zip[topic+1])-1
@@ -1445,7 +1496,8 @@ class MainWindow(BoxLayout):
 
             # If there is any process running, wait until finish.
             while self.processing:
-                self.coredb_state.text = "Updating indicator database!\nDuration depends on your Internet speed.."
+                self.coredb_state.text =\
+                    "Updating indicator database!\nDuration depends on your Internet speed.."
                 time.sleep(1)
 
             # Try to open the json DB file.
