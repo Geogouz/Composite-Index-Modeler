@@ -1416,7 +1416,7 @@ class IndexCreation(MouseScreen):
         i = f.index(selection)
 
         if selection.text == "(" or selection.text == ")":
-            # Default elected parenthesis is not a reversed one.
+            # By default selected parenthesis is not a reversed one.
             reverse = False
             # Ref p_text to current parenthesis.
             p_text = selection.text
@@ -1454,6 +1454,39 @@ class IndexCreation(MouseScreen):
 
     def validate_parentheses(self):
         print "checked parentheses for errors"
+
+        # Define parentheses only list.
+        pl = []
+        # Define valid parentheses list.
+        vl = []
+
+        for i in self.my_formula.children[::-1]:
+            if i.text == "(" or i.text == ")":
+                pl.append(i)
+
+        for o in pl:
+            p, rev_p = 0, 0
+            if o.text == "(":
+                for c in pl[pl.index(o):]:
+                    if c.text == ")":
+                        rev_p += +1
+                    else:
+                        p += +1
+                    if p == rev_p:
+                        vl.append(o)
+                        vl.append(c)
+                        break
+
+        for par in pl:
+            if par in vl:
+                par.bold = True
+                par.italic = False
+                par.color = (0, 0, 0, 1)
+            else:
+                par.bold = False
+                par.italic = True
+                par.color = (0.5, 0.5, 0.5, 1)
+
 
     # Index Algebra calculations.
     def backward(self):
