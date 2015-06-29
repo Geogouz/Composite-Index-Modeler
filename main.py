@@ -1453,8 +1453,6 @@ class IndexCreation(MouseScreen):
                     break
 
     def validate_parentheses(self):
-        print "checked parentheses for errors"
-
         # Define parentheses only list.
         pl = []
         # Define valid parentheses list.
@@ -1487,7 +1485,6 @@ class IndexCreation(MouseScreen):
                 par.italic = True
                 par.color = (0.5, 0.5, 0.5, 1)
 
-
     # Index Algebra calculations.
     def backward(self):
         if self.my_formula.children:
@@ -1508,16 +1505,6 @@ class IndexCreation(MouseScreen):
             self.input.text = str(eval(formula))
         except Exception:
             self.input.text = 'error'
-
-    def on_formula_items(self, *args):
-        pass
-        #print args[1]
-        #for item in self.my_formula.children:
-            #if item.text == "(" or item.text == ")":
-                #print item.text
-                #opened = [i.text for i in self.my_formula.children].count("(")
-                #closed = [i.text for i in self.my_formula.children].count(")")
-                #print opened, closed
 
 
 class MapDesigner(Screen):
