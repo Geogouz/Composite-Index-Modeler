@@ -584,7 +584,7 @@ class IndexCreation(MouseScreen):
     country_dict = DictProperty({})
     drawing_data = BooleanProperty(False)
     loading_percentage = NumericProperty(0)
-    formula_items = DictProperty({"last_item": None})
+    formula_items = DictProperty({"last_item": None, "p_group": []})
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -627,12 +627,6 @@ class IndexCreation(MouseScreen):
 
     # Function that will run every time mouse is moved.
     def on_mouse_pos(self, *args):
-        #if self.my_formula.children:
-            #print ""
-            #print "len(self.my_formula.children) - 1", len(self.my_formula.children) - 1 != self.my_formula.children.index(self.formula_items["last_item"])
-            #print 'self.formula_items["last_item"]', self.formula_items["last_item"]
-            #print 'self.my_formula.children.index(self.formula_items["last_item"])', self.my_formula.children.index(self.formula_items["last_item"])
-
         if self.toolbox_screenmanager.current == "view_indicators_screen":
             for button in self.acceding_order_buttons:
                 if button.collide_point(*button.to_widget(*args[1])):
@@ -1350,6 +1344,8 @@ class IndexCreation(MouseScreen):
 
         self.formula_items["last_item"] = item
 
+        self.parenthesis_handler(item)
+
     # Calculator's button manager.
     def calc_btn_pressed(self, calc_btn):
         self.input.text += calc_btn.text
@@ -1394,6 +1390,9 @@ class IndexCreation(MouseScreen):
         # Creation of new space item.
         self.formula_spacer(index)
 
+        # Locate possible parentheses errors.
+        self.validate_parentheses()
+
     # Creation of empty space.
     def formula_spacer(self, index):
         # Creation of new space item.
@@ -1405,6 +1404,56 @@ class IndexCreation(MouseScreen):
 
         # Set this to be the active item.
         self.formula_insertion_point(new_space_item)
+
+    # Find parenthesis closure point.
+    def parenthesis_handler(self, selection):
+        # Change states of previously selected parentheses, back to normal.
+        for p in self.formula_items["p_group"]:
+            p.color = (0, 0, 0, 1)
+        self.formula_items["p_group"] = []
+
+        f = self.my_formula.children
+        i = f.index(selection)
+
+        if selection.text == "(" or selection.text == ")":
+            # Default elected parenthesis is not a reversed one.
+            reverse = False
+            # Ref p_text to current parenthesis.
+            p_text = selection.text
+
+            # Ref rev_p_text to the reverse parenthesis.
+            if p_text == "(":
+                rev_p_text = ")"
+            else:
+                rev_p_text = "("
+                # Selected parenthesis is a reversed one.
+                reverse = True
+
+            p, rev_p = 0, 0
+            # Iter upwards or downwards depending the parenthesis direction.
+            for item in f[i:] if reverse else f[i::-1]:
+                if item.text == p_text:
+                    p += 1
+                elif item.text == rev_p_text:
+                    rev_p += +1
+                if p > 0 and p == rev_p:
+                    self.formula_items["p_group"] = [selection, item]
+                    for p in self.formula_items["p_group"]:
+                        p.color = (0.96, 0.26, 0.21, 1)
+                    break
+        else:
+            p, rev_p = 0, 0
+            for item in f[i:]:
+                if item.text == "(":
+                    p += 1
+                elif item.text == ")":
+                    rev_p += 1
+                if p > rev_p:
+                    self.parenthesis_handler(item)
+                    break
+
+    def validate_parentheses(self):
+        print "checked parentheses for errors"
 
     # Index Algebra calculations.
     def backward(self):
@@ -1428,7 +1477,14 @@ class IndexCreation(MouseScreen):
             self.input.text = 'error'
 
     def on_formula_items(self, *args):
-        print args[1]
+        pass
+        #print args[1]
+        #for item in self.my_formula.children:
+            #if item.text == "(" or item.text == ")":
+                #print item.text
+                #opened = [i.text for i in self.my_formula.children].count("(")
+                #closed = [i.text for i in self.my_formula.children].count(")")
+                #print opened, closed
 
 
 class MapDesigner(Screen):
