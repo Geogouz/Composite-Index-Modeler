@@ -584,6 +584,7 @@ class IndexCreation(MouseScreen):
     country_dict = DictProperty({})
     drawing_data = BooleanProperty(False)
     loading_percentage = NumericProperty(0)
+    formula_items = DictProperty({"last_item": None})
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
@@ -626,6 +627,11 @@ class IndexCreation(MouseScreen):
 
     # Function that will run every time mouse is moved.
     def on_mouse_pos(self, *args):
+        #if self.my_formula.children:
+            #print ""
+            #print "len(self.my_formula.children) - 1", len(self.my_formula.children) - 1 != self.my_formula.children.index(self.formula_items["last_item"])
+            #print 'self.formula_items["last_item"]', self.formula_items["last_item"]
+            #print 'self.my_formula.children.index(self.formula_items["last_item"])', self.my_formula.children.index(self.formula_items["last_item"])
 
         if self.toolbox_screenmanager.current == "view_indicators_screen":
             for button in self.acceding_order_buttons:
@@ -1323,10 +1329,94 @@ class IndexCreation(MouseScreen):
             for button in self.loaded_years[:-2]:
                 button.state = "normal"
 
+    # Check if string is number.
+    @staticmethod
+    def is_number(s):
+        try:
+            if s[-1] in "0123456789.":
+                return True
+        except IndexError:
+            return False
+
+    # Manage insertion point.
+    def formula_insertion_point(self, item):
+        if self.formula_items["last_item"]:
+            self.formula_items["last_item"].background_normal = './Sources/formula_item_normal.png'
+
+        if item.text:
+            item.background_normal = './Sources/formula_item_down.png'
+        else:
+            item.background_normal = './Sources/formula_empty_item_down.png'
+
+        self.formula_items["last_item"] = item
+
+    # Calculator's button manager.
+    def calc_btn_pressed(self, calc_btn):
+        self.input.text += calc_btn.text
+
+        # Ref my_formula children list.
+        fc = self.my_formula.children
+
+        # Ref Last Item index.
+        li = fc.index(self.formula_items["last_item"])
+
+        # If a number was pressed (being not first item in formula and leading an other number):
+        if (calc_btn.text in "0123456789.") and (len(fc)-1 != li):
+
+            # If current item is a number.
+            if self.is_number(fc[li].text):
+                # Update current number item.
+                fc[li].text += calc_btn.text
+                return None
+
+            # If previous item is a number.
+            elif self.is_number(fc[li+1].text):
+                # Update previous number item.
+                fc[li + 1].text += calc_btn.text
+                return None
+
+        # If current item is a blank space.
+        if self.formula_items["last_item"].text == "":
+            # Place item 1 spot right.
+            index = fc.index(self.formula_items["last_item"])
+        else:
+            # Place item 2 spots right.
+            index = fc.index(self.formula_items["last_item"])-1
+
+        # Creation of new calc item.
+        new_calc_item = Factory.Calc_Formula_Item(
+            text=calc_btn.text,
+            on_press=self.formula_insertion_point)
+
+        # Insert formula item.
+        self.my_formula.add_widget(new_calc_item, index)
+
+        # Creation of new space item.
+        self.formula_spacer(index)
+
+    # Creation of empty space.
+    def formula_spacer(self, index):
+        # Creation of new space item.
+        new_space_item = Factory.Calc_Formula_Item(text="",
+                                                   on_press=self.formula_insertion_point)
+
+        # Insert formula space.
+        self.my_formula.add_widget(new_space_item, index)
+
+        # Set this to be the active item.
+        self.formula_insertion_point(new_space_item)
+
     # Index Algebra calculations.
-    def backward(self, formula):
-        if formula:
-            self.input.text = formula[:-1]
+    def backward(self):
+        if self.my_formula.children:
+            self.my_formula.children.remove(self.my_formula.children[0])
+
+    def clear_formula(self):
+        # Clear formula.
+        self.my_formula.clear_widgets()
+
+        # Creation of new space item.
+        self.formula_spacer(0)
 
     def exec_formula(self, formula):
         if not formula:
@@ -1336,6 +1426,9 @@ class IndexCreation(MouseScreen):
             self.input.text = str(eval(formula))
         except Exception:
             self.input.text = 'error'
+
+    def on_formula_items(self, *args):
+        print args[1]
 
 
 class MapDesigner(Screen):
