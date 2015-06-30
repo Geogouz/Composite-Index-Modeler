@@ -1332,8 +1332,8 @@ class IndexCreation(MouseScreen):
         except IndexError:
             return False
 
-    # Manage insertion point.
-    def formula_insertion_point(self, item):
+    # Every time an item is selected.
+    def formula_selected_item(self, item):
         if self.formula_items["last_item"]:
             self.formula_items["last_item"].background_normal = './Sources/formula_item_normal.png'
 
@@ -1353,36 +1353,52 @@ class IndexCreation(MouseScreen):
         # Ref my_formula children list.
         fc = self.my_formula.children
 
+        # Ref Last Item.
+        li = self.formula_items["last_item"]
+
         # Ref Last Item index.
-        li = fc.index(self.formula_items["last_item"])
+        ili = fc.index(li)
 
-        # If a number was pressed (being not first item in formula and leading an other number):
-        if (calc_btn.text in "0123456789.") and (len(fc)-1 != li):
-
-            # If current item is a number.
-            if self.is_number(fc[li].text):
-                # Update current number item.
-                fc[li].text += calc_btn.text
+        # If a number was pressed.
+        if calc_btn.text in "0123456789.":
+            # And this number is not the first item of the formula.
+            if len(fc)-1 != ili:
+                # If current selection is a number.
+                if self.is_number(li.text):
+                    # If item above has no comma or pressed button is not a comma.
+                    if not ("." in li.text) or ("." != calc_btn.text):
+                        # Move "selection" of last_item right to the next item (an empty item).
+                        self.formula_selected_item(fc[ili-1])
+                        # Ref last item index again because we changed that above.
+                        ili = fc.index(self.formula_items["last_item"])
+                    # Item above contains a comma and button pressed is a comma too.
+                    else:
+                        # Do not add it.
+                        return None
+                # If previous item from current selection is a number.
+                if self.is_number(fc[ili+1].text):
+                    # If item above has no comma or pressed button is not a comma.
+                    if not ("." in fc[ili+1].text) or ("." != calc_btn.text):
+                        # Update previous number item.
+                        fc[ili+1].text += calc_btn.text
+                    # After we either updated previous item or decided not to, do nothing else.
+                    return None
+            # If this number (which is the first item of the formula) is a comma..
+            elif calc_btn.text == ".":
+                # Do not add it.
                 return None
 
-            # If previous item is a number.
-            elif self.is_number(fc[li+1].text):
-                # Update previous number item.
-                fc[li + 1].text += calc_btn.text
-                return None
-
-        # If current item is a blank space.
-        if self.formula_items["last_item"].text == "":
+        # If last item is a blank space.
+        if li.text == "":
             # Place item 1 spot right.
-            index = fc.index(self.formula_items["last_item"])
+            index = fc.index(li)
         else:
             # Place item 2 spots right.
-            index = fc.index(self.formula_items["last_item"])-1
+            index = fc.index(li)-1
 
         # Creation of new calc item.
-        new_calc_item = Factory.Calc_Formula_Item(
-            text=calc_btn.text,
-            on_press=self.formula_insertion_point)
+        new_calc_item = Factory.Calc_Formula_Item(text=calc_btn.text,
+                                                  on_press=self.formula_selected_item)
 
         # Insert formula item.
         self.my_formula.add_widget(new_calc_item, index)
@@ -1397,13 +1413,13 @@ class IndexCreation(MouseScreen):
     def formula_spacer(self, index):
         # Creation of new space item.
         new_space_item = Factory.Calc_Formula_Item(text="",
-                                                   on_press=self.formula_insertion_point)
+                                                   on_press=self.formula_selected_item)
 
         # Insert formula space.
         self.my_formula.add_widget(new_space_item, index)
 
         # Set this to be the active item.
-        self.formula_insertion_point(new_space_item)
+        self.formula_selected_item(new_space_item)
 
     # Find parenthesis closure point.
     def parenthesis_handler(self, selection):
