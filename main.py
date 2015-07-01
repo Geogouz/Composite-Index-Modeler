@@ -1350,6 +1350,8 @@ class IndexCreation(MouseScreen):
     def calc_btn_pressed(self, calc_btn):
         self.input.text += calc_btn.text
 
+        t = calc_btn.text
+
         # Ref my_formula children list.
         fc = self.my_formula.children
 
@@ -1360,33 +1362,35 @@ class IndexCreation(MouseScreen):
         ili = fc.index(li)
 
         # If a number was pressed.
-        if calc_btn.text in "0123456789.":
+        if t in "0123456789.":
             # And this number is not the first item of the formula.
             if len(fc)-1 != ili:
                 # If current selection is a number.
                 if self.is_number(li.text):
-                    # If item above has no comma or pressed button is not a comma.
-                    if not ("." in li.text) or ("." != calc_btn.text):
+                    # If item above contains no "." or pressed button is not ".".
+                    if not ("." in li.text) or ("." != t):
                         # Move "selection" of last_item right to the next item (an empty item).
                         self.formula_selected_item(fc[ili-1])
                         # Ref last item index again because we changed that above.
                         ili = fc.index(self.formula_items["last_item"])
-                    # Item above contains a comma and button pressed is a comma too.
+                    # Item above contains "." and button pressed is "." too.
                     else:
                         # Do not add it.
                         return None
+
                 # If previous item from current selection is a number.
                 if self.is_number(fc[ili+1].text):
-                    # If item above has no comma or pressed button is not a comma.
-                    if not ("." in fc[ili+1].text) or ("." != calc_btn.text):
+                    # If item above contains no "." or pressed button is not "." .
+                    if not ("." in fc[ili+1].text) or ("." != t):
                         # Update previous number item.
-                        fc[ili+1].text += calc_btn.text
+                        fc[ili+1].text += t
                     # After we either updated previous item or decided not to, do nothing else.
                     return None
-            # If this number (which is the first item of the formula) is a comma..
-            elif calc_btn.text == ".":
-                # Do not add it.
-                return None
+
+        # If this number is "." or "0".
+        if t == "." or t == "0":
+            # Change number into "0."
+            t = "0."
 
         # If last item is a blank space.
         if li.text == "":
@@ -1397,7 +1401,7 @@ class IndexCreation(MouseScreen):
             index = fc.index(li)-1
 
         # Creation of new calc item.
-        new_calc_item = Factory.Calc_Formula_Item(text=calc_btn.text,
+        new_calc_item = Factory.Calc_Formula_Item(text=t,
                                                   on_press=self.formula_selected_item)
 
         # Insert formula item.
