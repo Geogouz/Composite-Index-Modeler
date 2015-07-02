@@ -17,24 +17,18 @@
     size_hint: (None, None)
     size: (60, 35)
     background_normal: './Sources/func_calc_btn_normal.png'
-    background_down: './Sources/exec_calc_btn_normal.png'
-    color: (0.3, 0.3, 0.3, 1)
+    normal: './Sources/func_calc_btn_normal.png'
+    background_down: './Sources/func_calc_btn_down.png'
+    color: (0.3, 0.3, 0.3, 1) if self.state == 'normal' else (0, 0, 0, 1)
 
 
 <Calc_Arith_Btn@Button>:
     size_hint: (None, None)
     size: (60, 35)
     background_normal: './Sources/arith_calc_btn_normal.png'
-    background_down: './Sources/exec_calc_btn_normal.png'
-    color: (0.3, 0.3, 0.3, 1)
-
-
-<Calc_Exec_Btn@Button>:
-    size_hint: (None, None)
-    size: (60, 35)
-    background_normal: './Sources/exec_calc_btn_normal.png'
-    background_down: './Sources/exec_calc_btn_normal.png'
-    color: (0.3, 0.3, 0.3, 1)
+    normal: './Sources/arith_calc_btn_normal.png'
+    background_down: './Sources/arith_calc_btn_down.png'
+    color: (0.3, 0.3, 0.3, 1) if self.state == 'normal' else (0, 0, 0, 1)
 
 
 <AllYearsLabel@Label>:
@@ -1187,6 +1181,7 @@
 
     input: input # todo temp probably
     my_formula: my_formula
+    calculator: calculator
 
     name: 'IndexCreationScreen'
 
@@ -1824,6 +1819,7 @@
                             font_size: 20
 
                         GridLayout:
+                            id: calculator
                             size_hint: (None, None)
                             size: (305, 245)
                             rows: 5
@@ -1845,12 +1841,20 @@
                                 text: ')'
                                 on_press: root.calc_btn_pressed(self)
 
-                            Calc_Func_Btn:
-                                text: '%'
-                                on_press: root.calc_btn_pressed(self)
+                            Button:
+                                text: '<'
+                                color: (0, 0, 0, 0)
+                                background_normal: './Sources/c_calc_btn_normal.png'
+                                normal: './Sources/c_calc_btn_normal.png'
+                                background_down: './Sources/c_calc_btn_down.png'
+                                on_press: root.calc_backspace_pressed()
 
-                            Calc_Func_Btn:
-                                text: 'CE'
+                            Button:
+                                text: 'C'
+                                color: (0, 0, 0, 0)
+                                background_normal: './Sources/call_calc_btn_normal.png'
+                                normal: './Sources/call_calc_btn_normal.png'
+                                background_down: './Sources/call_calc_btn_down.png'
                                 on_press: root.clear_formula()
 
                             Calc_Arith_Btn:
@@ -1909,8 +1913,14 @@
                                 text: '.'
                                 on_press: root.calc_btn_pressed(self)
 
-                            Calc_Exec_Btn:
-                                text: '='
+                            Button:
+                                text: 'EXEC'
+                                size_hint: (None, None)
+                                size: (60, 35)
+                                background_normal: './Sources/exec_calc_btn_normal.png'
+                                normal: './Sources/exec_calc_btn_normal.png'
+                                background_down: './Sources/exec_calc_btn_down.png'
+                                color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
                                 on_press: root.exec_formula(input.text)
 
                             Calc_Func_Btn:

@@ -655,6 +655,13 @@ class IndexCreation(MouseScreen):
                     else:
                         button.background_normal = button.normal
 
+        if self.toolbox_screenmanager.current == "index_algebra_screen":
+            for button in self.calculator.children:
+                if button.collide_point(*button.to_widget(*args[1])):
+                    button.background_normal = button.background_down
+                else:
+                    button.background_normal = button.normal
+
     @mainthread
     def model_toolbox_activator(self, state):
         if state:
@@ -1506,9 +1513,34 @@ class IndexCreation(MouseScreen):
                 par.color = (0.5, 0.5, 0.5, 1)
 
     # Index Algebra calculations.
-    def backward(self):
-        if self.my_formula.children:
-            self.my_formula.children.remove(self.my_formula.children[0])
+    def calc_backspace_pressed(self):
+        # Ref my_formula children list.
+        fc = self.my_formula.children
+
+        # Ref Last Item.
+        li = self.formula_items["last_item"]
+
+        # Ref Last Item index.
+        ili = fc.index(li)
+
+        # If selected item is not the first item of the formula.
+        if len(fc)-1 != ili:
+
+            try:
+                # Try to select the item 2 slots to the left.
+                self.formula_selected_item(fc[ili+2])
+            except IndexError:
+                # Selected item is the 2nd in the list. Select first item.
+                self.formula_selected_item(fc[ili+1])
+
+            # Redefine ili because last_item was changed.
+            ili = fc.index(self.formula_items["last_item"])
+
+            self.my_formula.remove_widget(fc[ili-1])
+
+            # If not first item in the formula.
+            if fc.index(self.formula_items["last_item"]) != 0:
+                self.my_formula.remove_widget(fc[ili-2])
 
     def clear_formula(self):
         # Clear formula.
