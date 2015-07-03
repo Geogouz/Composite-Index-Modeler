@@ -578,6 +578,8 @@ class IndexCreation(MouseScreen):
     sorted_indicators = ListProperty()
 
     dropdown_id = ObjectProperty()
+    dropdown_c = ObjectProperty()
+    dropdown_y = ObjectProperty()
 
     all_indicators_data = DictProperty({})
     country_list = ListProperty()
@@ -599,6 +601,7 @@ class IndexCreation(MouseScreen):
         self.must_draw_data = True
         self.loaded_regions = {}
         self.loaded_years = []
+        self.cy_iteration = {"c": [], "y": []}
 
     # This method can generate new threads, so that main thread (GUI) won't get frozen.
     @staticmethod
@@ -662,6 +665,11 @@ class IndexCreation(MouseScreen):
                 else:
                     button.background_normal = button.normal
 
+            if self.ind_calc_btn.collide_point(*self.ind_calc_btn.to_widget(*args[1])):
+                self.ind_calc_btn.background_normal = self.ind_calc_btn.background_down
+            else:
+                self.ind_calc_btn.background_normal = self.ind_calc_btn.normal
+
     @mainthread
     def model_toolbox_activator(self, state):
         if state:
@@ -690,6 +698,9 @@ class IndexCreation(MouseScreen):
             else:
                 # Clear model's indicator list.
                 self.indicator_list.clear_widgets()
+
+                # Clear current formula in case there is one.
+                self.my_formula.clear_widgets()
 
                 self.btn_view_indicators.disabled = False
                 self.btn_series_selection.disabled = False
@@ -1052,7 +1063,7 @@ class IndexCreation(MouseScreen):
                 self.data_table_top.clear_widgets()
 
                 for header in self.year_row:
-                    # Check if this is the 0.0 cell.
+                    # Check if this is the 0.0 cell to build the dropdown.
                     if header == "top_left_cell":
                         self.dropdown_id = DropDown(auto_width=False, width=200)
 
@@ -1211,7 +1222,7 @@ class IndexCreation(MouseScreen):
                     country_frame = Factory.CountryFrame()
                     country_frame.add_widget(Factory.CountryBtnImage())
                     country_frame.add_widget(mid_frame)
-                    btn = Factory.CountrySelectToggle()
+                    btn = Factory.CountrySelectToggle(text=val[0])
                     country_frame.add_widget(btn)
                     country_stack.add_widget(country_frame)
 
@@ -1329,6 +1340,83 @@ class IndexCreation(MouseScreen):
         else:
             for button in self.loaded_years[:-2]:
                 button.state = "normal"
+
+    # Prepare a combined and filtered dict, with user's country/year selection.
+    def init_cy_iteration(self):
+        c = sorted([i.text for j in self.loaded_regions.values() for i in j if i.state == "down"])
+        y = sorted([j.text for j in self.loaded_years if j.state == "down"])
+
+        # Set the default values.
+        c.insert(0, "Country")
+        y.insert(0, "Year")
+
+        self.cy_iteration["c"] = c
+        self.cy_iteration["y"] = y
+
+        self.cy_iteration = {'y': ['1950', '1951', '1952', '1953', '1954', '1955', '1956', '1957', '1958', '1959', '1960', '1961', '1962', '1963', '1964', '1965', '1966', '1967', '1968', '1969', '1970', '1971', '1972', '1973', '1974', '1975', '1976', '1977', '1978', '1979', '1980', '1981', '1982', '1983', '1984', '1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'], 'c': ['ABW', 'AFG', 'AFR', 'AGO', 'ALB', 'AND', 'ANR', 'ARB', 'ARE', 'ARG', 'ARM', 'ASM', 'ATG', 'AUS', 'AUT', 'AZE', 'BDI', 'BEL', 'BEN', 'BFA', 'BGD', 'BGR', 'BHR', 'BHS', 'BIH', 'BLR', 'BLZ', 'BMU', 'BOL', 'BRA', 'BRB', 'BRN', 'BTN', 'BWA', 'CAA', 'CAF', 'CAN', 'CEA', 'CEB', 'CEU', 'CHE', 'CHI', 'CHL', 'CHN', 'CIV', 'CLA', 'CME', 'CMR', 'COD', 'COG', 'COL', 'COM', 'CPV', 'CRI', 'CSA', 'CSS', 'CUB', 'CUW', 'CYM', 'CYP', 'CZE', 'DEU', 'DJI', 'DMA', 'DNK', 'DOM', 'DZA', 'EAP', 'EAS', 'ECA', 'ECS', 'ECU', 'EGY', 'EMU', 'ERI', 'ESP', 'EST', 'ETH', 'EUU', 'FCS', 'FIN', 'FJI', 'FRA', 'FRO', 'FSM', 'GAB', 'GBR', 'GEO', 'GHA', 'GIN', 'GMB', 'GNB', 'GNQ', 'GRC', 'GRD', 'GRL', 'GTM', 'GUM', 'GUY', 'HIC', 'HKG', 'HND', 'HPC', 'HRV', 'HTI', 'HUN', 'IDN', 'IMN', 'IND', 'INX', 'IRL', 'IRN', 'IRQ', 'ISL', 'ISR', 'ITA', 'JAM', 'JOR', 'JPN', 'KAZ', 'KEN', 'KGZ', 'KHM', 'KIR', 'KNA', 'KOR', 'KSV', 'KWT', 'LAC', 'LAO', 'LBN', 'LBR', 'LBY', 'LCA', 'LCN', 'LCR', 'LDC', 'LIC', 'LIE', 'LKA', 'LMC', 'LMY', 'LSO', 'LTU', 'LUX', 'LVA', 'MAC', 'MAF', 'MAR', 'MCA', 'MCO', 'MDA', 'MDE', 'MDG', 'MDV', 'MEA', 'MEX', 'MHL', 'MIC', 'MKD', 'MLI', 'MLT', 'MMR', 'MNA', 'MNE', 'MNG', 'MNP', 'MOZ', 'MRT', 'MUS', 'MWI', 'MYS', 'NAC', 'NAF', 'NAM', 'NCL', 'NER', 'NGA', 'NIC', 'NLD', 'NOC', 'NOR', 'NPL', 'NZL', 'OEC', 'OED', 'OMN', 'OSS', 'PAK', 'PAN', 'PER', 'PHL', 'PLW', 'PNG', 'POL', 'PRI', 'PRK', 'PRT', 'PRY', 'PSE', 'PSS', 'PYF', 'QAT', 'ROU', 'RUS', 'RWA', 'SAS', 'SAU', 'SCE', 'SDN', 'SEN', 'SGP', 'SLB', 'SLE', 'SLV', 'SMR', 'SOM', 'SRB', 'SSA', 'SSD', 'SSF', 'SST', 'STP', 'SUR', 'SVK', 'SVN', 'SWE', 'SWZ', 'SXM', 'SXZ', 'SYC', 'SYR', 'TCA', 'TCD', 'TGO', 'THA', 'TJK', 'TKM', 'TLS', 'TON', 'TTO', 'TUN', 'TUR', 'TUV', 'TZA', 'UGA', 'UKR', 'UMC', 'URY', 'USA', 'UZB', 'VCT', 'VEN', 'VIR', 'VNM', 'VUT', 'WLD', 'WSM', 'XZN', 'YEM', 'ZAF', 'ZMB', 'ZWE']}
+
+    def init_indicator_var_cy(self):
+        # Create country drop list.
+        self.dropdown_c = DropDown(auto_width=False, width=100)
+
+        for c in self.cy_iteration["c"]:
+            btn = Button(text=c,
+                         size_hint_y=None,
+                         height=25,
+                         background_normal='./Sources/cy_droplist_normal.png',
+                         background_down='./Sources/cy_droplist_normal.png',
+                         on_press=self.dropdown_c.dismiss)
+            #btn.bind(on_release=partial(self.init_data_viewer, btn.text))
+            btn.bind(on_release=lambda btn: self.dropdown_c.select(btn.text))
+            self.dropdown_c.add_widget(btn)
+
+        mainbutton_c = Button(text="[color=ff0080]Country[/color]",
+                              markup=True,
+                              size_hint=(None, None),
+                              size=(100, 30),
+                              background_normal='./Sources/selected_cy_normal.png',
+                              background_down='./Sources/selected_cy_down.png')
+
+        mainbutton_c.bind(on_release=self.dropdown_c.open)
+        mainbutton_c.bind(on_release=lambda x: setattr(
+            x, "background_normal", './Sources/selected_cy_down.png'))
+
+        self.cy_table.add_widget(mainbutton_c)
+        self.dropdown_c.bind(on_select=lambda instance, x: setattr(
+            mainbutton_c, 'text', "[color=ff0080]"+x+"[/color]"))
+        self.dropdown_c.bind(on_select=lambda instance, x: setattr(
+            mainbutton_c, "background_normal", './Sources/selected_cy_normal.png'))
+
+        # Create year drop list.
+        self.dropdown_y = DropDown(auto_width=False, width=100)
+
+        for y in self.cy_iteration["y"]:
+            btn = Button(text=y,
+                         size_hint_y=None,
+                         height=25,
+                         background_normal='./Sources/cy_droplist_normal.png',
+                         background_down='./Sources/cy_droplist_normal.png',
+                         on_press=self.dropdown_y.dismiss)
+            #btn.bind(on_release=partial(self.init_data_viewer, btn.text))
+            btn.bind(on_release=lambda btn: self.dropdown_y.select(btn.text))
+            self.dropdown_y.add_widget(btn)
+
+        mainbutton_y = Button(text="[color=0d88d2]Year[/color]",
+                              markup=True,
+                              size_hint=(None, None),
+                              size=(100, 30),
+                              background_normal='./Sources/selected_cy_normal.png',
+                              background_down='./Sources/selected_cy_down.png')
+
+        mainbutton_y.bind(on_release=self.dropdown_y.open)
+        mainbutton_y.bind(on_release=lambda x: setattr(
+            x, "background_normal", './Sources/selected_cy_down.png'))
+
+        self.cy_table.add_widget(mainbutton_y)
+        self.dropdown_y.bind(on_select=lambda instance, x: setattr(
+            mainbutton_y, 'text', "[color=0d88d2]"+x+"[/color]"))
+        self.dropdown_y.bind(on_select=lambda instance, x: setattr(
+            mainbutton_y, "background_normal", './Sources/selected_cy_normal.png'))
 
     # Check if string is number.
     @staticmethod
