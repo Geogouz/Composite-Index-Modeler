@@ -622,9 +622,12 @@ class IndexCreation(MouseScreen):
             return obj
 
     @mainthread
-    def popuper(self, message):
-        Popup(title='Warning:', content=Label(
+    def popuper(self, message, title):
+        Popup(title=title, content=Label(
             text=message,
+            text_size=(340, 180),
+            #halign="left",
+            valign="middle",
             font_size=15,
             halign="center",
             italic=True
@@ -695,7 +698,8 @@ class IndexCreation(MouseScreen):
             if not self.ic_index_selection.selected_indices["my_indicators"]:
                 self.btn_get_indicators.state = "normal"
                 self.popuper(
-                    '"My Indicators" list should not be empty.\nGo to Indicator Selection.')
+                    '"My Indicators" list should not be empty.\nGo to Indicator Selection.',
+                    'Warning:')
 
             else:
                 # Clear model's indicator list.
@@ -955,7 +959,8 @@ class IndexCreation(MouseScreen):
             tempdb.close()
 
         except Exception as e:
-            self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message)
+            self.popuper("Could not prepare Indicators.\nPlease try again.\n\n"+e.message,
+                         'Warning:')
 
             # Flush sorted_indicators to alert that download did not end with success.
             self.sorted_indicators = []
@@ -1461,10 +1466,7 @@ class IndexCreation(MouseScreen):
         self.parenthesis_handler(item)
 
     # Calculator's button manager.
-    def calc_btn_pressed(self, calc_btn):
-        # Ref text of passed object.
-        t = calc_btn.text
-
+    def calc_btn_pressed(self, t):
         # Ref my_formula children list.
         fc = self.my_formula.children
 
@@ -1514,7 +1516,12 @@ class IndexCreation(MouseScreen):
             index = fc.index(li)-1
 
         # Check if this is an index variable and create the new calc item.
-        if calc_btn.text[0:6] == "[color":
+        if t[0:6] == "[color":
+            new_calc_item = Factory.Calc_Formula_Item(text=t,
+                                                      markup=True,
+                                                      on_press=self.formula_selected_item)
+        elif t[0:10] == "<function>":
+            t = "[color=f44336][i][font=timesi]"+t[10:]+"[/font][/i][/color]"
             new_calc_item = Factory.Calc_Formula_Item(text=t,
                                                       markup=True,
                                                       on_press=self.formula_selected_item)
@@ -1697,8 +1704,8 @@ class MainWindow(BoxLayout):
         threading.Thread(target=args[0], args=(args,)).start()
 
     @mainthread
-    def popuper(self, message):
-        Popup(title='Warning:', content=Label(
+    def popuper(self, message, title):
+        Popup(title=title, content=Label(
             text=message,
             font_size=15,
             halign="center",
@@ -1807,7 +1814,7 @@ class MainWindow(BoxLayout):
             file_coredb.close()
 
         except Exception as e:
-            self.popuper("Could not update Coredb.\nPlease try again.\n\n"+e.message)
+            self.popuper("Could not update Coredb.\nPlease try again.\n\n"+e.message, 'Warning:')
 
         # Close URL json files.
         finally:
