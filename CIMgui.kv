@@ -1,6 +1,32 @@
 #: import sm kivy.uix.screenmanager
 
 
+<FunctionBtn@Button>:
+    size_hint_y: None
+    height: 40
+    markup: True
+    font_size: 13
+    background_normal: './Sources/math_function_normal.png'
+    background_down: './Sources/formula_item_down.png'
+    text_size: (self.width-10, self.height)
+    halign: "left"
+    valign: "middle"
+
+<FunctionTypeLabel@Label>:
+    size_hint_y: None
+    height: 20
+    color: (1,1,1,1)
+    bold: True
+    italic: True
+    font_size: 13
+    canvas.before:
+        Color:
+            rgba: (0.2, 0.2, 0.2, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
 <IRY_OptionBtn@Button>:
     size_hint_y: None
     height: 25
@@ -1804,16 +1830,8 @@
                         orientation: 'vertical'
                         padding: 20
                         spacing: 10
-                        canvas.before:
-                            Color:
-                                rgba: (1, 0, 0, 0) # todo
-                            Rectangle:
-                                pos: self.pos
-                                size: self.size
 
                         ScrollView:
-                            size_hint_y: None
-                            height: 200
                             do_scroll_x: False
                             bar_width: 5
                             bar_inactive_color: (1, 1, 1, 1)
@@ -1850,117 +1868,102 @@
                                     pos: self.pos
                                     size: self.size
 
-                            ScrollView:
+                            BoxLayout:
+                                orientation: "vertical"
                                 size_hint: (None, None)
-                                size: (110, 250)
-                                bar_pos_y: "left"
-                                bar_width: 2
-                                bar_margin: -3
-                                bar_inactive_color: (0, 0, 0, 1)
-                                bar_color: (0.96, 0.26, 0.21, 1)
+                                size: (132, 250)
 
                                 BoxLayout:
-                                    spacing: 2
                                     orientation: "vertical"
-                                    size_hint_y: None
-                                    height: (len(self.children) * 40) + (self.spacing * len(self.children) )
+                                    size_hint: (None, None)
+                                    size: (132, 55)
+                                    padding: (0,0,0,3)
 
-                                    Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Round Up[/b][/color]\n[color=2b2b2b][size=11][i]ceil(x)[/i][/size][/color]"
-                                        code: "ceil"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
+                                    Label:
+                                        font_size: 17
+                                        bold: True
+                                        text_size: (self.width-10, self.height-5)
                                         halign: "left"
                                         valign: "middle"
-                                        on_release: print root.iry_iteration
+                                        text: "Function Tools"
+                                        color: (0,0,0,1)
 
                                     Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Round Down[/b][/color]\n[color=2b2b2b][size=11][i]floor(x)[/i][/size][/color]"
-                                        code: "floor"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
-                                        halign: "left"
-                                        valign: "middle"
+                                        size_hint: (None, None)
+                                        size: (25, 25)
+                                        text_size: (self.width, self.height+30)
+                                        halign: "center"
+                                        valign: "top"
+                                        background_normal: './Sources/extra_calc_btn_normal.png'
+                                        background_down: './Sources/extra_calc_btn_down.png'
+                                        color: (0.2, 0.2, 0.2, 1)
+                                        font_size: 30
+                                        text: ','
+                                        on_press: root.calc_btn_pressed(self)
 
-                                    Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Truncate[/b][/color]\n[color=2b2b2b][size=11][i]trunc(x)[/i][/size][/color]"
-                                        code: "trunc"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
-                                        halign: "left"
-                                        valign: "middle"
+                                BoxLayout:
+                                    size_hint: (None, None)
+                                    size: (132, 195)
+                                    padding: (1, 1)
+                                    canvas.before:
+                                        Color:
+                                            rgba: (0.8, 0.8, 0.8, 1)
+                                        Rectangle:
+                                            pos: self.pos
+                                            size: self.size
 
-                                    Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Absolute Value[/b][/color]\n[color=2b2b2b][size=11][i]fabs(x)[/i][/size][/color]"
-                                        code: "fabs"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
-                                        halign: "left"
-                                        valign: "middle"
+                                    ScrollView:
+                                        size_hint: (None, None)
+                                        size: (130, 193)
+                                        bar_pos_y: "left"
+                                        bar_width: 2
+                                        bar_margin: -5
+                                        bar_inactive_color: (0, 0, 0, 1)
+                                        bar_color: (0.96, 0.26, 0.21, 1)
 
-                                    Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Logarithm[/b][/color]\n[color=2b2b2b][size=11][i]log(x, base)[/i][/size][/color]"
-                                        code: "log"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
-                                        halign: "left"
-                                        valign: "middle"
+                                        GridLayout:
+                                            cols: 1
+                                            spacing: 1
+                                            orientation: "vertical"
+                                            size_hint_y: None
+                                            height: self.minimum_height
+                                            FunctionTypeLabel:
+                                                text: "Math"
 
-                                    Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Exponentiation[/b][/color]\n[color=2b2b2b][size=11][i]pow(x, y)[/i][/size][/color]"
-                                        code: "pow"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
-                                        halign: "left"
-                                        valign: "middle"
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Absolute Value[/b][/color]\n[color=2b2b2b][size=11][i]fabs(x)[/i][/size][/color]"
 
-                                    Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Factorial[/b][/color]\n[color=2b2b2b][size=11][i]factorial(x)[/i][/size][/color]"
-                                        code: "factorial"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
-                                        halign: "left"
-                                        valign: "middle"
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Logarithm[/b][/color]\n[color=2b2b2b][size=11][i]log(x, base)[/i][/size][/color]"
 
-                                    Button:
-                                        size_hint_y: None
-                                        height: 40
-                                        markup: True
-                                        text: "[color=000000][b]Square Root[/b][/color]\n[color=2b2b2b][size=11][i]sqrt(x)[/i][/size][/color]"
-                                        code: "sqrt"
-                                        font_size: 13
-                                        background_normal: './Sources/math_function_normal.png'
-                                        text_size: (self.width-10, self.height)
-                                        halign: "left"
-                                        valign: "middle"
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Exponentiation[/b][/color]\n[color=2b2b2b][size=11][i]pow(x, y)[/i][/size][/color]"
+
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Factorial[/b][/color]\n[color=2b2b2b][size=11][i]factorial(x)[/i][/size][/color]"
+
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Square Root[/b][/color]\n[color=2b2b2b][size=11][i]sqrt(x)[/i][/size][/color]"
+
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Round Up[/b][/color]\n[color=2b2b2b][size=11][i]ceil(x)[/i][/size][/color]"
+
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Round Down[/b][/color]\n[color=2b2b2b][size=11][i]floor(x)[/i][/size][/color]"
+
+                                            FunctionBtn:
+                                                text: "[color=000000][b]Truncate[/b][/color]\n[color=2b2b2b][size=11][i]trunc(x)[/i][/size][/color]"
+
+                            BoxLayout:
+                                size_hint_x: None
+                                width: 5
+                                canvas.before:
+                                    Color:
+                                        rgba: (0.95, 0.95, 0.95, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+
 
                             BoxLayout:
                                 orientation: "vertical"
@@ -2032,7 +2035,7 @@
                                                     size: (160, 60)
                                                     color: (0, 0, 0, 1)
                                                     text: "[color=000000][b]"+self.indicator+"[/b][/color][sub][color=ff0080]"+self.region+"[/color][color=0d88d2]"+self.year+"[/color][/sub]"
-                                                    indicator: "IWW"
+                                                    indicator: "IA"
                                                     region: "[Region]"
                                                     year: "[Year]"
                                                     font_size: 26
@@ -2053,16 +2056,22 @@
 
                                                     Button:
                                                         text: "Add Var."
-                                                        bold: True
+                                                        italic: True
                                                         font_size: 13
+                                                        color: (0.1,0.1,0.1,1)
+                                                        background_normal: './Sources/math_function_normal.png'
+                                                        background_down: './Sources/region_groups_normal.png'
                                                         on_release:
                                                             root.calc_btn_pressed(iry_preview)
                                                             indicator_var_builder.dismiss()
 
                                                     Button:
                                                         text: "Cancel"
-                                                        bold: True
+                                                        italic: True
                                                         font_size: 13
+                                                        color: (0.1,0.1,0.1,1)
+                                                        background_normal: './Sources/math_function_normal.png'
+                                                        background_down: './Sources/region_groups_normal.png'
                                                         on_release: indicator_var_builder.dismiss()
 
                                     Button:
