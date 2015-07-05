@@ -1,14 +1,6 @@
 #: import sm kivy.uix.screenmanager
 #: import math math
 
-<FormulaHintBox@BoxLayout>:
-    canvas.before:
-        Color:
-            rgba: (0.96, 0.96, 0.96, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
 
 <FormulaHintItem@BoxLayout>:
     size_hint_x: None
@@ -22,12 +14,19 @@
 
 
 <FormulaHintLabel@Label>:
+    size_hint_y: None
     markup: True
     italic: True
     font_size: 13
-    text_size: (self.width-20, self.height)
+    text_size: (self.width-20, self.height-10)
     halign: "left"
     valign: "top"
+    canvas.before:
+        Color:
+            rgba: (0.96, 0.96, 0.96, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 
 <FunctionBtnBox@BoxLayout>:
@@ -1949,7 +1948,7 @@
                         BoxLayout:
                             size_hint_y: None
                             height: 270
-                            spacing: 100
+                            spacing: 120
 
                             BoxLayout:
                                 size_hint: (None, None)
@@ -2312,16 +2311,13 @@
                                             text: '+'
                                             on_press: root.calc_btn_pressed(self.text)
 
-                            BoxLayout:
-                                orientation: "vertical"
-                                padding: (15, 0, 15, 0)
-                                spacing: 5
-                                canvas.before:
-                                    Color:
-                                        rgba: (1, 1, 1, 1)
-                                    Rectangle:
-                                        pos: self.pos
-                                        size: self.size
+                            GridLayout:
+                                cols: 2
+                                spacing: (0, 4)
+
+                                BoxLayout:
+                                    size_hint_x: None
+                                    width: 3
 
                                 Label:
                                     size_hint_y: None
@@ -2330,30 +2326,29 @@
                                     bold: True
                                     text_size: (self.width-10, self.height-5)
                                     halign: "left"
-                                    valign: "middle"
+                                    valign: "bottom"
                                     text: "Hint.."
                                     color: (0.3, 0.3, 0.3, 1)
 
-                                FormulaHintBox:
-                                    FormulaHintItem:
-                                    FormulaHintLabel:
-                                        text: '[color=666666][b]Iterations:[/b] This formula will be calculated for each selected Region and Year in "Series Selection". (Num of Iterations = Regions x Years)[/color]'
+                                FormulaHintItem:
+                                FormulaHintLabel:
+                                    text: '[color=f54236][b]Iterations:[/b][/color] [color=666666]This formula will be calculated for each selected Region and Year in "Series Selection". (Num of Iterations = Regions x Years)[/color]'
+                                    height: 65
 
-                                FormulaHintBox:
-                                    FormulaHintItem:
-                                    FormulaHintLabel:
-                                        text: "[color=666666][b]Math functions:[/b] All math functions should return a number. If a function handles more than one parameters, use comma to separate them.[/color]"
+                                FormulaHintItem:
+                                FormulaHintLabel:
+                                    text: "[color=f54236][b]Functions:[/b][/color] [color=666666]All functions must return a number. If a function takes more than one parameters, use comma to separate them.[/color]"
+                                    height: 65
 
-                                FormulaHintBox:
-                                    FormulaHintItem:
-                                    FormulaHintLabel:
-                                        text: '[color=666666][b]Calculation:[/b] Calculated results will be stored in csv format. (Location: "my_index.csv" inside app folder)[/color]'
+                                FormulaHintItem:
+                                FormulaHintLabel:
+                                    text: '[color=f54236][b]Calculation:[/b][/color] [color=666666]Calculated results will be stored in csv format. (Location: "my_index.csv" in App folder)[/color]'
+                                    height: 50
 
-                                FormulaHintBox:
-                                    FormulaHintItem:
-                                    FormulaHintLabel:
-                                        text: '[color=666666][b]Validation:[/b] Check log file for possible syntax errors, or missing indicator values. (Location: "my_index.log" inside app folder)[/color]'
-                                        #on_touch_up: print self.height, self.texture_size
+                                FormulaHintItem:
+                                FormulaHintLabel:
+                                    text: '[color=f54236][b]Validation:[/b][/color] [color=666666]Check log file for any syntax errors, or missing indicator values. (Location: "my_index.log" in App folder)[/color]'
+                                    height: 50
 
 <MapDesigner>:
     name: 'MapDesignerScreen'
