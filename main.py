@@ -626,7 +626,6 @@ class IndexCreation(MouseScreen):
         Popup(title=title, content=Label(
             text=message,
             text_size=(340, 180),
-            #halign="left",
             valign="middle",
             font_size=15,
             halign="center",

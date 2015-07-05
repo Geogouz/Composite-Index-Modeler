@@ -1,6 +1,34 @@
 #: import sm kivy.uix.screenmanager
 #: import math math
 
+<FormulaHintBox@BoxLayout>:
+    canvas.before:
+        Color:
+            rgba: (0.96, 0.96, 0.96, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<FormulaHintItem@BoxLayout>:
+    size_hint_x: None
+    width: 3
+    canvas.before:
+        Color:
+            rgba: (0.96, 0.26, 0.21, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+<FormulaHintLabel@Label>:
+    markup: True
+    italic: True
+    font_size: 13
+    text_size: (self.width-20, self.height)
+    halign: "left"
+    valign: "top"
+
 
 <FunctionBtnBox@BoxLayout>:
     size_hint_y: None
@@ -1853,7 +1881,34 @@
                     BoxLayout:
                         orientation: 'vertical'
                         padding: 20
-                        spacing: 10
+
+                        Label:
+                            size_hint_y: None
+                            text_size: (self.width-100, self.height)
+                            halign: "right"
+                            valign: "bottom"
+                            height: 30
+                            font_size: 18
+                            text: ">> Index Composer >>"
+                            color: (0.1, 0.1, 0.1, 1)
+
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 5
+
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 1
+                            canvas.before:
+                                Color:
+                                    rgba: (0.8, 0.8, 0.8, 1)
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 1
 
                         ScrollView:
                             do_scroll_x: False
@@ -1863,7 +1918,7 @@
                             bar_margin: 1
                             canvas.before:
                                 Color:
-                                    rgba: (1, 1, 0, 0) # todo
+                                    rgba: (0.95, 0.95, 0.95, 1)
                                 Rectangle:
                                     pos: self.pos
                                     size: self.size
@@ -1872,392 +1927,433 @@
                                 id: my_formula
                                 size_hint_y: None
                                 height: self.minimum_height
-                                canvas.before:
-                                    Color:
-                                        rgba: (0, 1, 0, 0) # todo
-                                    Rectangle:
-                                        pos: self.pos
-                                        size: self.size
 
                         BoxLayout:
-                            size_hint: (None, None)
-                            size: (422, 270)
-                            padding: (10, 10, 10, 10)
-                            spacing: 5
-                            canvas:
+                            size_hint_y: None
+                            height: 1
+
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 1
+                            canvas.before:
                                 Color:
-                                    rgba: (1, 1, 1, 1)
+                                    rgba: (0.8, 0.8, 0.8, 1)
                                 Rectangle:
-                                    source: './Sources/calculator_background.png'
                                     pos: self.pos
                                     size: self.size
 
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 20
+
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 270
+                            spacing: 100
+
                             BoxLayout:
-                                orientation: "vertical"
                                 size_hint: (None, None)
-                                size: (132, 250)
+                                size: (422, 270)
+                                padding: (10, 10, 10, 10)
+                                spacing: 5
+                                canvas:
+                                    Color:
+                                        rgba: (1, 1, 1, 1)
+                                    Rectangle:
+                                        source: './Sources/calculator_background.png'
+                                        pos: self.pos
+                                        size: self.size
 
                                 BoxLayout:
                                     orientation: "vertical"
                                     size_hint: (None, None)
-                                    size: (132, 55)
-                                    padding: (0,0,0,3)
+                                    size: (132, 250)
 
-                                    Label:
-                                        font_size: 17
-                                        bold: True
-                                        text_size: (self.width-10, self.height-5)
-                                        halign: "left"
-                                        valign: "middle"
-                                        text: "Function Tools"
-                                        color: (0,0,0,1)
-
-                                    Button:
+                                    BoxLayout:
+                                        orientation: "vertical"
                                         size_hint: (None, None)
-                                        size: (25, 25)
-                                        text_size: (self.width, self.height+30)
-                                        halign: "center"
-                                        valign: "top"
-                                        background_normal: './Sources/extra_calc_btn_normal.png'
-                                        background_down: './Sources/extra_calc_btn_down.png'
-                                        color: (0.2, 0.2, 0.2, 1)
-                                        font_size: 30
-                                        text: ','
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        size: (132, 55)
+                                        padding: (0,0,0,3)
+
+                                        Label:
+                                            font_size: 17
+                                            bold: True
+                                            text_size: (self.width-10, self.height-5)
+                                            halign: "left"
+                                            valign: "middle"
+                                            text: "Function Tools"
+                                            color: (0,0,0,1)
+
+                                        Button:
+                                            size_hint: (None, None)
+                                            size: (25, 25)
+                                            text_size: (self.width, self.height+30)
+                                            halign: "center"
+                                            valign: "top"
+                                            background_normal: './Sources/extra_calc_btn_normal.png'
+                                            background_down: './Sources/extra_calc_btn_down.png'
+                                            color: (0.2, 0.2, 0.2, 1)
+                                            font_size: 30
+                                            text: ','
+                                            on_press: root.calc_btn_pressed(self.text)
+
+                                    BoxLayout:
+                                        size_hint: (None, None)
+                                        size: (132, 195)
+                                        padding: (1, 1)
+                                        canvas.before:
+                                            Color:
+                                                rgba: (0.8, 0.8, 0.8, 1)
+                                            Rectangle:
+                                                pos: self.pos
+                                                size: self.size
+
+                                        ScrollView:
+                                            size_hint: (None, None)
+                                            size: (130, 193)
+                                            bar_pos_y: "left"
+                                            bar_width: 2
+                                            bar_margin: -5
+                                            bar_inactive_color: (0, 0, 0, 1)
+                                            bar_color: (0.96, 0.26, 0.21, 1)
+
+                                            GridLayout:
+                                                cols: 1
+                                                spacing: 1
+                                                orientation: "vertical"
+                                                size_hint_y: None
+                                                height: self.minimum_height
+                                                FunctionTypeLabel:
+                                                    text: "Math"
+
+                                                FunctionBtnBox:
+                                                    function: ["fabs", str(math.fabs.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Absolute Value[/b][/color]\n[color=2b2b2b][size=11][i]fabs(x)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
+
+                                                FunctionBtnBox:
+                                                    function: ["log", str(math.log.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Logarithm[/b][/color]\n[color=2b2b2b][size=11][i]log(x, base)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
+
+                                                FunctionBtnBox:
+                                                    function: ["pow", str(math.pow.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Exponentiation[/b][/color]\n[color=2b2b2b][size=11][i]pow(x, y)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
+
+                                                FunctionBtnBox:
+                                                    function: ["factorial", str(math.factorial.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Factorial[/b][/color]\n[color=2b2b2b][size=11][i]factorial(x)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
+
+                                                FunctionBtnBox:
+                                                    function: ["sqrt", str(math.sqrt.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Square Root[/b][/color]\n[color=2b2b2b][size=11][i]sqrt(x)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
+
+                                                FunctionBtnBox:
+                                                    function: ["ceil", str(math.ceil.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Round Up[/b][/color]\n[color=2b2b2b][size=11][i]ceil(x)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
+
+                                                FunctionBtnBox:
+                                                    function: ["floor", str(math.floor.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Round Down[/b][/color]\n[color=2b2b2b][size=11][i]floor(x)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
+
+                                                FunctionBtnBox:
+                                                    function: ["trunc", str(math.trunc.__doc__)]
+                                                    FunctionBtn:
+                                                        text: "[color=000000][b]Truncate[/b][/color]\n[color=2b2b2b][size=11][i]trunc(x)[/i][/size][/color]"
+                                                        on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
+                                                    FunctionBtnInfo:
+                                                        on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
 
                                 BoxLayout:
-                                    size_hint: (None, None)
-                                    size: (132, 195)
-                                    padding: (1, 1)
+                                    size_hint_x: None
+                                    width: 5
                                     canvas.before:
                                         Color:
-                                            rgba: (0.8, 0.8, 0.8, 1)
+                                            rgba: (0.95, 0.95, 0.95, 1)
                                         Rectangle:
                                             pos: self.pos
                                             size: self.size
 
-                                    ScrollView:
-                                        size_hint: (None, None)
-                                        size: (130, 193)
-                                        bar_pos_y: "left"
-                                        bar_width: 2
-                                        bar_margin: -5
-                                        bar_inactive_color: (0, 0, 0, 1)
-                                        bar_color: (0.96, 0.26, 0.21, 1)
-
-                                        GridLayout:
-                                            cols: 1
-                                            spacing: 1
-                                            orientation: "vertical"
-                                            size_hint_y: None
-                                            height: self.minimum_height
-                                            FunctionTypeLabel:
-                                                text: "Math"
-
-                                            FunctionBtnBox:
-                                                function: ["fabs", str(math.fabs.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Absolute Value[/b][/color]\n[color=2b2b2b][size=11][i]fabs(x)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                                            FunctionBtnBox:
-                                                function: ["log", str(math.log.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Logarithm[/b][/color]\n[color=2b2b2b][size=11][i]log(x, base)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                                            FunctionBtnBox:
-                                                function: ["pow", str(math.pow.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Exponentiation[/b][/color]\n[color=2b2b2b][size=11][i]pow(x, y)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                                            FunctionBtnBox:
-                                                function: ["factorial", str(math.factorial.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Factorial[/b][/color]\n[color=2b2b2b][size=11][i]factorial(x)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                                            FunctionBtnBox:
-                                                function: ["sqrt", str(math.sqrt.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Square Root[/b][/color]\n[color=2b2b2b][size=11][i]sqrt(x)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                                            FunctionBtnBox:
-                                                function: ["ceil", str(math.ceil.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Round Up[/b][/color]\n[color=2b2b2b][size=11][i]ceil(x)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                                            FunctionBtnBox:
-                                                function: ["floor", str(math.floor.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Round Down[/b][/color]\n[color=2b2b2b][size=11][i]floor(x)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                                            FunctionBtnBox:
-                                                function: ["trunc", str(math.trunc.__doc__)]
-                                                FunctionBtn:
-                                                    text: "[color=000000][b]Truncate[/b][/color]\n[color=2b2b2b][size=11][i]trunc(x)[/i][/size][/color]"
-                                                    on_press: root.calc_btn_pressed("<function>"+self.parent.function[0])
-                                                FunctionBtnInfo:
-                                                    on_press: root.popuper(self.parent.function[1], "Function: " + self.parent.function[0])
-
-                            BoxLayout:
-                                size_hint_x: None
-                                width: 5
-                                canvas.before:
-                                    Color:
-                                        rgba: (0.95, 0.95, 0.95, 1)
-                                    Rectangle:
-                                        pos: self.pos
-                                        size: self.size
-
-
-                            BoxLayout:
-                                orientation: "vertical"
-                                size_hint: (None, None)
-                                size: (255, 250)
-                                canvas.before:
-                                    Color:
-                                        rgba: (0, 0, 1, 0) # todo
-                                    Rectangle:
-                                        pos: self.pos
-                                        size: self.size
 
                                 BoxLayout:
-                                    id: ind_calc
+                                    orientation: "vertical"
                                     size_hint: (None, None)
-                                    size: (255, 55)
-                                    padding: 0, 0, 0, 5
-                                    spacing: 5
+                                    size: (255, 250)
 
-                                    Popup:
-                                        id: indicator_var_builder
+                                    BoxLayout:
+                                        id: ind_calc
                                         size_hint: (None, None)
-                                        size: (470, 250)
-                                        title: "Build and Add Indicator Variable"
-                                        on_parent: if self.parent == ind_calc: ind_calc.remove_widget(self)
+                                        size: (255, 55)
+                                        padding: 0, 0, 0, 5
+                                        spacing: 5
 
-                                        BoxLayout:
-                                            orientation: "vertical"
-
-                                            Label:
-                                                color: (0, 0, 0, 1)
-                                                text: "By default, each Indicator Variable will be dynamically calculated based on current formula iteration (Region - Year).\nHowever, fixed Region and Year values could be used too."
-                                                italic: True
-                                                font_size: 13
-                                                text_size: (self.width-30, self.height)
-                                                halign: "left"
-                                                valign: "middle"
-                                                canvas.before:
-                                                    Color:
-                                                        rgba: (1, 1, 1, 1)
-                                                    Rectangle:
-                                                        pos: self.pos
-                                                        size: self.size
+                                        Popup:
+                                            id: indicator_var_builder
+                                            size_hint: (None, None)
+                                            size: (470, 250)
+                                            title: "Build and Add Indicator Variable"
+                                            on_parent: if self.parent == ind_calc: ind_calc.remove_widget(self)
 
                                             BoxLayout:
-                                                size_hint_y: None
-                                                height: 40
-                                                canvas.before:
-                                                    Color:
-                                                        rgba: (1, 1, 1, 1)
-                                                    Rectangle:
-                                                        pos: self.pos
-                                                        size: self.size
+                                                orientation: "vertical"
 
-                                                BoxLayout:
-                                                    id: iry_table
-                                                    padding: 5, 5, 0, 5
-                                                    spacing: 5
+                                                Label:
+                                                    color: (0, 0, 0, 1)
+                                                    text: "By default, each Indicator Variable will be dynamically calculated based on current formula iteration (Region - Year).\nHowever, fixed Region and Year values could be used too."
+                                                    italic: True
+                                                    font_size: 13
+                                                    text_size: (self.width-30, self.height)
+                                                    halign: "left"
+                                                    valign: "middle"
                                                     canvas.before:
                                                         Color:
-                                                            rgba: (1, 0, 1, 0) # todo
+                                                            rgba: (1, 1, 1, 1)
                                                         Rectangle:
                                                             pos: self.pos
                                                             size: self.size
 
-                                                Label:
-                                                    id: iry_preview
-                                                    size_hint: (None, None)
-                                                    size: (160, 60)
-                                                    color: (0, 0, 0, 1)
-                                                    text: "[color=000000][b]"+self.indicator+"[/b][/color][sub][color=ff0080]"+self.region+"[/color][color=0d88d2]"+self.year+"[/color][/sub]"
-                                                    indicator: "IA"
-                                                    region: "[Region]"
-                                                    year: "[Year]"
-                                                    font_size: 26
-                                                    markup: True
-
-                                            AnchorLayout:
-                                                size_hint_y: None
-                                                height: 35
-                                                anchor_x: 'right'
-                                                anchor_y: 'center'
-
                                                 BoxLayout:
-                                                    size_hint: (None, None)
-                                                    size: (indicator_var_builder.width - 310, 30)
-                                                    orientation: "horizontal"
-                                                    padding: (0, 5, 0, 0)
-                                                    spacing: 10
+                                                    size_hint_y: None
+                                                    height: 40
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: (1, 1, 1, 1)
+                                                        Rectangle:
+                                                            pos: self.pos
+                                                            size: self.size
 
-                                                    Button:
-                                                        text: "Add Var."
-                                                        italic: True
-                                                        font_size: 13
-                                                        color: (0.1,0.1,0.1,1)
-                                                        background_normal: './Sources/math_function_normal.png'
-                                                        background_down: './Sources/region_groups_normal.png'
-                                                        on_release:
-                                                            root.calc_btn_pressed(iry_preview.text)
-                                                            indicator_var_builder.dismiss()
+                                                    BoxLayout:
+                                                        id: iry_table
+                                                        padding: 5, 5, 0, 5
+                                                        spacing: 5
 
-                                                    Button:
-                                                        text: "Cancel"
-                                                        italic: True
-                                                        font_size: 13
-                                                        color: (0.1,0.1,0.1,1)
-                                                        background_normal: './Sources/math_function_normal.png'
-                                                        background_down: './Sources/region_groups_normal.png'
-                                                        on_release: indicator_var_builder.dismiss()
+                                                    Label:
+                                                        id: iry_preview
+                                                        size_hint: (None, None)
+                                                        size: (160, 60)
+                                                        color: (0, 0, 0, 1)
+                                                        text: "[color=000000][b]"+self.indicator+"[/b][/color][sub][color=ff0080]"+self.region+"[/color][color=0d88d2]"+self.year+"[/color][/sub]"
+                                                        indicator: "IA"
+                                                        region: "[Region]"
+                                                        year: "[Year]"
+                                                        font_size: 26
+                                                        markup: True
 
-                                    Button:
-                                        id: ind_calc_btn
+                                                AnchorLayout:
+                                                    size_hint_y: None
+                                                    height: 35
+                                                    anchor_x: 'right'
+                                                    anchor_y: 'center'
+
+                                                    BoxLayout:
+                                                        size_hint: (None, None)
+                                                        size: (indicator_var_builder.width - 310, 30)
+                                                        orientation: "horizontal"
+                                                        padding: (0, 5, 0, 0)
+                                                        spacing: 10
+
+                                                        Button:
+                                                            text: "Add Var."
+                                                            italic: True
+                                                            font_size: 13
+                                                            color: (0.1,0.1,0.1,1)
+                                                            background_normal: './Sources/math_function_normal.png'
+                                                            background_down: './Sources/region_groups_normal.png'
+                                                            on_release:
+                                                                root.calc_btn_pressed(iry_preview.text)
+                                                                indicator_var_builder.dismiss()
+
+                                                        Button:
+                                                            text: "Cancel"
+                                                            italic: True
+                                                            font_size: 13
+                                                            color: (0.1,0.1,0.1,1)
+                                                            background_normal: './Sources/math_function_normal.png'
+                                                            background_down: './Sources/region_groups_normal.png'
+                                                            on_release: indicator_var_builder.dismiss()
+
+                                        Button:
+                                            id: ind_calc_btn
+                                            size_hint: (None, None)
+                                            size: (125, 50)
+                                            background_normal: './Sources/indicator_calc_btn_normal.png'
+                                            normal: './Sources/indicator_calc_btn_normal.png'
+                                            background_down: './Sources/indicator_calc_btn_down.png'
+                                            on_press:
+                                                indicator_var_builder.__self__.open()
+                                                iry_table.clear_widgets()
+                                                root.init_indicator_var_iry()
+
+                                    GridLayout:
+                                        id: calculator
                                         size_hint: (None, None)
-                                        size: (125, 50)
-                                        background_normal: './Sources/indicator_calc_btn_normal.png'
-                                        normal: './Sources/indicator_calc_btn_normal.png'
-                                        background_down: './Sources/indicator_calc_btn_down.png'
-                                        on_press:
-                                            indicator_var_builder.__self__.open()
-                                            iry_table.clear_widgets()
-                                            root.init_indicator_var_iry()
+                                        size: (255, 195)
+                                        rows: 5
+                                        cols: 4
+                                        spacing: 5
 
-                                GridLayout:
-                                    id: calculator
-                                    size_hint: (None, None)
-                                    size: (255, 195)
-                                    rows: 5
-                                    cols: 4
-                                    spacing: 5
-                                    canvas.before:
-                                        Color:
-                                            rgba: (1, 0, 0, 0) # todo
-                                        Rectangle:
-                                            pos: self.pos
-                                            size: self.size
+                                        Calc_Func_Btn:
+                                            text: '('
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Func_Btn:
-                                        text: '('
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Func_Btn:
+                                            text: ')'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Func_Btn:
-                                        text: ')'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Button:
+                                            text: '<'
+                                            color: (0, 0, 0, 0)
+                                            background_normal: './Sources/c_calc_btn_normal.png'
+                                            normal: './Sources/c_calc_btn_normal.png'
+                                            background_down: './Sources/c_calc_btn_down.png'
+                                            on_press: root.calc_backspace_pressed()
 
-                                    Button:
-                                        text: '<'
-                                        color: (0, 0, 0, 0)
-                                        background_normal: './Sources/c_calc_btn_normal.png'
-                                        normal: './Sources/c_calc_btn_normal.png'
-                                        background_down: './Sources/c_calc_btn_down.png'
-                                        on_press: root.calc_backspace_pressed()
+                                        Button:
+                                            text: 'C'
+                                            color: (0, 0, 0, 0)
+                                            background_normal: './Sources/call_calc_btn_normal.png'
+                                            normal: './Sources/call_calc_btn_normal.png'
+                                            background_down: './Sources/call_calc_btn_down.png'
+                                            on_press: root.clear_formula()
 
-                                    Button:
-                                        text: 'C'
-                                        color: (0, 0, 0, 0)
-                                        background_normal: './Sources/call_calc_btn_normal.png'
-                                        normal: './Sources/call_calc_btn_normal.png'
-                                        background_down: './Sources/call_calc_btn_down.png'
-                                        on_press: root.clear_formula()
+                                        Calc_Arith_Btn:
+                                            text: '7'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '7'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '8'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '8'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '9'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '9'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Func_Btn:
+                                            text: '/'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Func_Btn:
-                                        text: '/'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '4'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '4'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '5'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '5'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '6'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '6'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Func_Btn:
+                                            text: '*'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Func_Btn:
-                                        text: '*'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '1'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '1'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '2'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '2'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '3'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '3'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Func_Btn:
+                                            text: '-'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Func_Btn:
-                                        text: '-'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '0'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '0'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Calc_Arith_Btn:
+                                            text: '.'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Arith_Btn:
-                                        text: '.'
-                                        on_press: root.calc_btn_pressed(self.text)
+                                        Button:
+                                            text: 'EXEC'
+                                            size_hint: (None, None)
+                                            size: (60, 35)
+                                            background_normal: './Sources/exec_calc_btn_normal.png'
+                                            normal: './Sources/exec_calc_btn_normal.png'
+                                            background_down: './Sources/exec_calc_btn_down.png'
+                                            color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
+                                            #on_press: root.exec_formula(input.text)
 
-                                    Button:
-                                        text: 'EXEC'
-                                        size_hint: (None, None)
-                                        size: (60, 35)
-                                        background_normal: './Sources/exec_calc_btn_normal.png'
-                                        normal: './Sources/exec_calc_btn_normal.png'
-                                        background_down: './Sources/exec_calc_btn_down.png'
-                                        color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
-                                        #on_press: root.exec_formula(input.text)
+                                        Calc_Func_Btn:
+                                            text: '+'
+                                            on_press: root.calc_btn_pressed(self.text)
 
-                                    Calc_Func_Btn:
-                                        text: '+'
-                                        on_press: root.calc_btn_pressed(self.text)
+                            BoxLayout:
+                                orientation: "vertical"
+                                padding: (15, 0, 15, 0)
+                                spacing: 5
+                                canvas.before:
+                                    Color:
+                                        rgba: (1, 1, 1, 1)
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
 
+                                Label:
+                                    size_hint_y: None
+                                    height: 20
+                                    font_size: 16
+                                    bold: True
+                                    text_size: (self.width-10, self.height-5)
+                                    halign: "left"
+                                    valign: "middle"
+                                    text: "Hint.."
+                                    color: (0.3, 0.3, 0.3, 1)
+
+                                FormulaHintBox:
+                                    FormulaHintItem:
+                                    FormulaHintLabel:
+                                        text: '[color=666666][b]Iterations:[/b] This formula will be calculated for each selected Region and Year in "Series Selection". (Num of Iterations = Regions x Years)[/color]'
+
+                                FormulaHintBox:
+                                    FormulaHintItem:
+                                    FormulaHintLabel:
+                                        text: "[color=666666][b]Math functions:[/b] All math functions should return a number. If a function handles more than one parameters, use comma to separate them.[/color]"
+
+                                FormulaHintBox:
+                                    FormulaHintItem:
+                                    FormulaHintLabel:
+                                        text: '[color=666666][b]Calculation:[/b] Calculated results will be stored in csv format. (Location: "my_index.csv" inside app folder)[/color]'
+
+                                FormulaHintBox:
+                                    FormulaHintItem:
+                                    FormulaHintLabel:
+                                        text: '[color=666666][b]Validation:[/b] Check log file for possible syntax errors, or missing indicator values. (Location: "my_index.log" inside app folder)[/color]'
+                                        #on_touch_up: print self.height, self.texture_size
 
 <MapDesigner>:
     name: 'MapDesignerScreen'
