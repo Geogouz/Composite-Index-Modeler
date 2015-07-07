@@ -1355,7 +1355,7 @@
             # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
             BoxLayout:
                 id: model_toolbox
-                opacity: 1 # todo
+                opacity: 0 # todo
                 spacing: 5
                 padding: (1, 0, 5, 0)
                 canvas.before:
@@ -1450,7 +1450,8 @@
                         background_disabled_down: './Sources/index_algebra_btn_down.png'
                         background_disabled_normal: './Sources/index_algebra_btn_down.png'
                         on_press:
-                            root.toolbox_switcher(self)
+                            if root.check_if_ry(): root.toolbox_switcher(self)
+                            else: root.popuper("You must first select at least\none Region and one Year\nfrom Series Selection!", "Notice!")
                             if not my_formula.children: root.formula_spacer(0)
                         on_state: if root.drawing_data: self.state = "normal"
 
@@ -1536,7 +1537,7 @@
 
             ScreenManager:
                 id: toolbox_screenmanager
-                transition: sm.FadeTransition(duration=0, clearcolor=(1,1,1,1))
+                transition: sm.SwapTransition(duration=0, clearcolor=(1,1,1,1))
 
                 Screen:
                     id: screen_load_toolbox
@@ -1550,6 +1551,12 @@
 
                 Screen:
                     name: "view_indicators_screen"
+                    canvas.before:
+                        Color:
+                            rgba: (1, 1, 1, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
                     BoxLayout:
                         padding: (10, 10)
@@ -1662,6 +1669,12 @@
 
                 Screen:
                     name: "series_selection_screen"
+                    canvas.before:
+                        Color:
+                            rgba: (1, 1, 1, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
                     BoxLayout:
                         orientation: "vertical"
@@ -1876,6 +1889,12 @@
                 Screen:
                     name: "index_algebra_screen"
                     on_pre_enter: root.init_iry_iteration()
+                    canvas.before:
+                        Color:
+                            rgba: (1, 1, 1, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
                     BoxLayout:
                         orientation: 'vertical'
@@ -2305,7 +2324,7 @@
                                             normal: './Sources/exec_calc_btn_normal.png'
                                             background_down: './Sources/exec_calc_btn_down.png'
                                             color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
-                                            #on_press: root.exec_formula(input.text)
+                                            on_press: root.exec_formula()
 
                                         Calc_Func_Btn:
                                             text: '+'

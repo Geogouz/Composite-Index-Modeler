@@ -1347,6 +1347,27 @@ class IndexCreation(MouseScreen):
             for button in self.loaded_years[:-2]:
                 button.state = "normal"
 
+    # Check if we have selected at least one Year and one Region.
+    def check_if_ry(self, *args):
+        c = 0
+        for keylist in self.loaded_regions.values():
+            for item in keylist:
+                if item.state == "down":
+                    c = 1
+                    break
+            if c == 1:
+                break
+
+        for j in self.loaded_years:
+            if j.state == "down":
+                c += 1
+                break
+
+        if c == 2:
+            return True
+        else:
+            return False
+
     # Prepare a combined and filtered dict, with user's region/year selection.
     def init_iry_iteration(self):
 
@@ -1362,7 +1383,7 @@ class IndexCreation(MouseScreen):
         self.iry_iteration["r"] = regions
         self.iry_iteration["y"] = years
 
-        self.iry_iteration = {'i': ['IA', 'IB', 'IC', 'ID'], 'y': ['Year', '1950', '1951', '1952', '1953', '1954', '1955', '1956', '1957', '1958', '1959', '1960', '1961', '1962', '1963', '1964', '1965', '1966', '1967', '1968', '1969', '1970', '1971', '1972', '1973', '1974', '1975', '1976', '1977', '1978', '1979', '1980', '1981', '1982', '1983', '1984', '1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'], 'r': ['Region', 'ABW', 'AFG', 'AFR', 'AGO', 'ALB', 'AND', 'ANR', 'ARB', 'ARE', 'ARG', 'ARM', 'ASM', 'ATG', 'AUS', 'AUT', 'AZE', 'BDI', 'BEL', 'BEN', 'BFA', 'BGD', 'BGR', 'BHR', 'BHS', 'BIH', 'BLR', 'BLZ', 'BMU', 'BOL', 'BRA', 'BRB', 'BRN', 'BTN', 'BWA', 'CAA', 'CAF', 'CAN', 'CEA', 'CEB', 'CEU', 'CHE', 'CHI', 'CHL', 'CHN', 'CIV', 'CLA', 'CME', 'CMR', 'COD', 'COG', 'COL', 'COM', 'CPV', 'CRI', 'CSA', 'CSS', 'CUB', 'CUW', 'CYM', 'CYP', 'CZE', 'DEU', 'DJI', 'DMA', 'DNK', 'DOM', 'DZA', 'EAP', 'EAS', 'ECA', 'ECS', 'ECU', 'EGY', 'EMU', 'ERI', 'ESP', 'EST', 'ETH', 'EUU', 'FCS', 'FIN', 'FJI', 'FRA', 'FRO', 'FSM', 'GAB', 'GBR', 'GEO', 'GHA', 'GIN', 'GMB', 'GNB', 'GNQ', 'GRC', 'GRD', 'GRL', 'GTM', 'GUM', 'GUY', 'HIC', 'HKG', 'HND', 'HPC', 'HRV', 'HTI', 'HUN', 'IDN', 'IMN', 'IND', 'INX', 'IRL', 'IRN', 'IRQ', 'ISL', 'ISR', 'ITA', 'JAM', 'JOR', 'JPN', 'KAZ', 'KEN', 'KGZ', 'KHM', 'KIR', 'KNA', 'KOR', 'KSV', 'KWT', 'LAC', 'LAO', 'LBN', 'LBR', 'LBY', 'LCA', 'LCN', 'LCR', 'LDC', 'LIC', 'LIE', 'LKA', 'LMC', 'LMY', 'LSO', 'LTU', 'LUX', 'LVA', 'MAC', 'MAF', 'MAR', 'MCA', 'MCO', 'MDA', 'MDE', 'MDG', 'MDV', 'MEA', 'MEX', 'MHL', 'MIC', 'MKD', 'MLI', 'MLT', 'MMR', 'MNA', 'MNE', 'MNG', 'MNP', 'MOZ', 'MRT', 'MUS', 'MWI', 'MYS', 'NAC', 'NAF', 'NAM', 'NCL', 'NER', 'NGA', 'NIC', 'NLD', 'NOC', 'NOR', 'NPL', 'NZL', 'OEC', 'OED', 'OMN', 'OSS', 'PAK', 'PAN', 'PER', 'PHL', 'PLW', 'PNG', 'POL', 'PRI', 'PRK', 'PRT', 'PRY', 'PSE', 'PSS', 'PYF', 'QAT', 'ROU', 'RUS', 'RWA', 'SAS', 'SAU', 'SCE', 'SDN', 'SEN', 'SGP', 'SLB', 'SLE', 'SLV', 'SMR', 'SOM', 'SRB', 'SSA', 'SSD', 'SSF', 'SST', 'STP', 'SUR', 'SVK', 'SVN', 'SWE', 'SWZ', 'SXM', 'SXZ', 'SYC', 'SYR', 'TCA', 'TCD', 'TGO', 'THA', 'TJK', 'TKM', 'TLS', 'TON', 'TTO', 'TUN', 'TUR', 'TUV', 'TZA', 'UGA', 'UKR', 'UMC', 'URY', 'USA', 'UZB', 'VCT', 'VEN', 'VIR', 'VNM', 'VUT', 'WLD', 'WSM', 'XZN', 'YEM', 'ZAF', 'ZMB', 'ZWE']} # todo
+        #self.iry_iteration = {'i': ['IA', 'IB', 'IC', 'ID'], 'y': ['Year', '1950', '1951', '1952', '1953', '1954', '1955', '1956', '1957', '1958', '1959', '1960', '1961', '1962', '1963', '1964', '1965', '1966', '1967', '1968', '1969', '1970', '1971', '1972', '1973', '1974', '1975', '1976', '1977', '1978', '1979', '1980', '1981', '1982', '1983', '1984', '1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'], 'r': ['Region', 'ABW', 'AFG', 'AFR', 'AGO', 'ALB', 'AND', 'ANR', 'ARB', 'ARE', 'ARG', 'ARM', 'ASM', 'ATG', 'AUS', 'AUT', 'AZE', 'BDI', 'BEL', 'BEN', 'BFA', 'BGD', 'BGR', 'BHR', 'BHS', 'BIH', 'BLR', 'BLZ', 'BMU', 'BOL', 'BRA', 'BRB', 'BRN', 'BTN', 'BWA', 'CAA', 'CAF', 'CAN', 'CEA', 'CEB', 'CEU', 'CHE', 'CHI', 'CHL', 'CHN', 'CIV', 'CLA', 'CME', 'CMR', 'COD', 'COG', 'COL', 'COM', 'CPV', 'CRI', 'CSA', 'CSS', 'CUB', 'CUW', 'CYM', 'CYP', 'CZE', 'DEU', 'DJI', 'DMA', 'DNK', 'DOM', 'DZA', 'EAP', 'EAS', 'ECA', 'ECS', 'ECU', 'EGY', 'EMU', 'ERI', 'ESP', 'EST', 'ETH', 'EUU', 'FCS', 'FIN', 'FJI', 'FRA', 'FRO', 'FSM', 'GAB', 'GBR', 'GEO', 'GHA', 'GIN', 'GMB', 'GNB', 'GNQ', 'GRC', 'GRD', 'GRL', 'GTM', 'GUM', 'GUY', 'HIC', 'HKG', 'HND', 'HPC', 'HRV', 'HTI', 'HUN', 'IDN', 'IMN', 'IND', 'INX', 'IRL', 'IRN', 'IRQ', 'ISL', 'ISR', 'ITA', 'JAM', 'JOR', 'JPN', 'KAZ', 'KEN', 'KGZ', 'KHM', 'KIR', 'KNA', 'KOR', 'KSV', 'KWT', 'LAC', 'LAO', 'LBN', 'LBR', 'LBY', 'LCA', 'LCN', 'LCR', 'LDC', 'LIC', 'LIE', 'LKA', 'LMC', 'LMY', 'LSO', 'LTU', 'LUX', 'LVA', 'MAC', 'MAF', 'MAR', 'MCA', 'MCO', 'MDA', 'MDE', 'MDG', 'MDV', 'MEA', 'MEX', 'MHL', 'MIC', 'MKD', 'MLI', 'MLT', 'MMR', 'MNA', 'MNE', 'MNG', 'MNP', 'MOZ', 'MRT', 'MUS', 'MWI', 'MYS', 'NAC', 'NAF', 'NAM', 'NCL', 'NER', 'NGA', 'NIC', 'NLD', 'NOC', 'NOR', 'NPL', 'NZL', 'OEC', 'OED', 'OMN', 'OSS', 'PAK', 'PAN', 'PER', 'PHL', 'PLW', 'PNG', 'POL', 'PRI', 'PRK', 'PRT', 'PRY', 'PSE', 'PSS', 'PYF', 'QAT', 'ROU', 'RUS', 'RWA', 'SAS', 'SAU', 'SCE', 'SDN', 'SEN', 'SGP', 'SLB', 'SLE', 'SLV', 'SMR', 'SOM', 'SRB', 'SSA', 'SSD', 'SSF', 'SST', 'STP', 'SUR', 'SVK', 'SVN', 'SWE', 'SWZ', 'SXM', 'SXZ', 'SYC', 'SYR', 'TCA', 'TCD', 'TGO', 'THA', 'TJK', 'TKM', 'TLS', 'TON', 'TTO', 'TUN', 'TUR', 'TUV', 'TZA', 'UGA', 'UKR', 'UMC', 'URY', 'USA', 'UZB', 'VCT', 'VEN', 'VIR', 'VNM', 'VUT', 'WLD', 'WSM', 'XZN', 'YEM', 'ZAF', 'ZMB', 'ZWE']} # todo
 
     def init_indicator_var_iry(self):
         # Create indicator ID drop list.
@@ -1671,7 +1692,10 @@ class IndexCreation(MouseScreen):
         # Creation of new space item.
         self.formula_spacer(0)
 
-    def exec_formula(self, formula):
+    def exec_formula(self):
+        print [item.text for item in reversed(self.my_formula.children) if item.text != ""]
+        print self.iry_iteration
+        """
         if not formula:
             return
 
@@ -1679,7 +1703,7 @@ class IndexCreation(MouseScreen):
             self.input.text = str(eval(formula))
         except Exception:
             self.input.text = 'error'
-
+        """
 
 class MapDesigner(Screen):
 
