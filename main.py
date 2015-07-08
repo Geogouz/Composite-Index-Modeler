@@ -1752,37 +1752,46 @@ class IndexCreation(MouseScreen):
         #formula = ["self.indicator_var_eval('IA','Region','Year')", '/', "self.indicator_var_eval('IA','LCN','1961')"]
 
         string_formula = "".join(formula)
-        print string_formula
 
-        print "Indicators Variables"
-        for key, val in self.rev_id_conn.iteritems():
-            print val, "=", key
-        print "CI('Region','Year'): [" + string_formula.replace("self.indicator_var_eval", "IndValue") + "]"
+        #text_file = open("my_index.log", "w")
+        #text_file.write("Purchase Amount: %s" % TotalAmount)
+        #text_file.close()
 
-        for Region in self.iry_iteration["r"][1:]:
-            region_formula = string_formula.replace('Region', Region)
-            for Year in self.iry_iteration["y"][1:]:
-                year_formula = region_formula.replace('Year', Year)
-                try:
-                    cim[self.rev_country_dict[Region]].append(eval(year_formula))
+        with open("my_index.log", "w") as log_file:
 
-                except TypeError:
-                    cim[self.rev_country_dict[Region]].append("-")
-                    print "CI" + str((self.rev_country_dict[Region], Year)) + ": [",
-                    for item in formula:
-                        if "indicator_var_eval" in item:
-                            print eval(item.replace('Region', Region).replace('Year', Year)),
-                        else:
-                            print item,
-                    print "]"
+            log_file.write("Indicators Variables\n===========================\n")
+            for key, val in self.rev_id_conn.iteritems():
+                log_file.write(val+" = "+key)
+            log_file.write("\n===========================\n\nComposite Index Formula\n===========================\n")
+            log_file.write("CI('Region','Year'): [" + string_formula.replace("self.indicator_var_eval", "IndValue") + "]")
+            log_file.write("\n===========================\n\nFailed Calculations\n===========================\n")
 
-                # Something really unexpected just happened.
-                except Exception as e:
-                    print "def indicator_var_eval(self, ind, reg, year):", type(e), e.__doc__, e.message
+            for Region in self.iry_iteration["r"][1:]:
+                region_formula = string_formula.replace('Region', Region)
+                for Year in self.iry_iteration["y"][1:]:
+                    year_formula = region_formula.replace('Year', Year)
+                    try:
+                        cim[self.rev_country_dict[Region]].append(eval(year_formula))
 
-        calcs = open("./my_index.csv", "w")
-        json.dump(cim, calcs)
-        calcs.close()
+                    except TypeError:
+                        cim[self.rev_country_dict[Region]].append("-")
+                        log_file.write("CI" + str((self.rev_country_dict[Region], Year)) + ": ")
+                        for item in formula:
+                            if "indicator_var_eval" in item:
+                                log_file.write(str(eval(item.replace('Region', Region).replace('Year', Year))))
+                            else:
+                                log_file.write(item)
+                        log_file.write("\n")
+
+                    # Something really unexpected just happened.
+                    except Exception as e:
+                        log_file.write("def indicator_var_eval(self, ind, reg, year):", type(e), e.__doc__, e.message)
+
+            log_file.write("===========================")
+
+        calc_file = open("./my_index.csv", "w")
+        json.dump(cim, calc_file)
+        calc_file.close()
 
     # Evaluate Indicator value function.
     def indicator_var_eval(self, ind, reg, year):
