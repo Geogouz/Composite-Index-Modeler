@@ -1294,7 +1294,7 @@ class IndexCreation(MouseScreen):
 
         self.loaded_years = []
 
-        min_y, max_y = 1950, 2015
+        min_y, max_y = 1960, 2015
         d = [item for k, v in self.all_indicators_data.items() if 'LastFirst_' in k for item in v]
 
         # Check if there is at least one year with data.
@@ -1394,7 +1394,7 @@ class IndexCreation(MouseScreen):
         self.iry_iteration["r"] = regions
         self.iry_iteration["y"] = years
 
-        self.iry_iteration = {'i': ['IA', 'IB', 'IC', 'ID'], 'y': ['Year', '1950', '1951', '1952', '1953', '1954', '1955', '1956', '1957', '1958', '1959', '1960', '1961', '1962', '1963', '1964', '1965', '1966', '1967', '1968', '1969', '1970', '1971', '1972', '1973', '1974', '1975', '1976', '1977', '1978', '1979', '1980', '1981', '1982', '1983', '1984', '1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'], 'r': ['Region', 'ABW', 'AFG', 'AFR', 'AGO', 'ALB', 'AND', 'ANR', 'ARB', 'ARE', 'ARG', 'ARM', 'ASM', 'ATG', 'AUS', 'AUT', 'AZE', 'BDI', 'BEL', 'BEN', 'BFA', 'BGD', 'BGR', 'BHR', 'BHS', 'BIH', 'BLR', 'BLZ', 'BMU', 'BOL', 'BRA', 'BRB', 'BRN', 'BTN', 'BWA', 'CAA', 'CAF', 'CAN', 'CEA', 'CEB', 'CEU', 'CHE', 'CHI', 'CHL', 'CHN', 'CIV', 'CLA', 'CME', 'CMR', 'COD', 'COG', 'COL', 'COM', 'CPV', 'CRI', 'CSA', 'CSS', 'CUB', 'CUW', 'CYM', 'CYP', 'CZE', 'DEU', 'DJI', 'DMA', 'DNK', 'DOM', 'DZA', 'EAP', 'EAS', 'ECA', 'ECS', 'ECU', 'EGY', 'EMU', 'ERI', 'ESP', 'EST', 'ETH', 'EUU', 'FCS', 'FIN', 'FJI', 'FRA', 'FRO', 'FSM', 'GAB', 'GBR', 'GEO', 'GHA', 'GIN', 'GMB', 'GNB', 'GNQ', 'GRC', 'GRD', 'GRL', 'GTM', 'GUM', 'GUY', 'HIC', 'HKG', 'HND', 'HPC', 'HRV', 'HTI', 'HUN', 'IDN', 'IMN', 'IND', 'INX', 'IRL', 'IRN', 'IRQ', 'ISL', 'ISR', 'ITA', 'JAM', 'JOR', 'JPN', 'KAZ', 'KEN', 'KGZ', 'KHM', 'KIR', 'KNA', 'KOR', 'KSV', 'KWT', 'LAC', 'LAO', 'LBN', 'LBR', 'LBY', 'LCA', 'LCN', 'LCR', 'LDC', 'LIC', 'LIE', 'LKA', 'LMC', 'LMY', 'LSO', 'LTU', 'LUX', 'LVA', 'MAC', 'MAF', 'MAR', 'MCA', 'MCO', 'MDA', 'MDE', 'MDG', 'MDV', 'MEA', 'MEX', 'MHL', 'MIC', 'MKD', 'MLI', 'MLT', 'MMR', 'MNA', 'MNE', 'MNG', 'MNP', 'MOZ', 'MRT', 'MUS', 'MWI', 'MYS', 'NAC', 'NAF', 'NAM', 'NCL', 'NER', 'NGA', 'NIC', 'NLD', 'NOC', 'NOR', 'NPL', 'NZL', 'OEC', 'OED', 'OMN', 'OSS', 'PAK', 'PAN', 'PER', 'PHL', 'PLW', 'PNG', 'POL', 'PRI', 'PRK', 'PRT', 'PRY', 'PSE', 'PSS', 'PYF', 'QAT', 'ROU', 'RUS', 'RWA', 'SAS', 'SAU', 'SCE', 'SDN', 'SEN', 'SGP', 'SLB', 'SLE', 'SLV', 'SMR', 'SOM', 'SRB', 'SSA', 'SSD', 'SSF', 'SST', 'STP', 'SUR', 'SVK', 'SVN', 'SWE', 'SWZ', 'SXM', 'SXZ', 'SYC', 'SYR', 'TCA', 'TCD', 'TGO', 'THA', 'TJK', 'TKM', 'TLS', 'TON', 'TTO', 'TUN', 'TUR', 'TUV', 'TZA', 'UGA', 'UKR', 'UMC', 'URY', 'USA', 'UZB', 'VCT', 'VEN', 'VIR', 'VNM', 'VUT', 'WLD', 'WSM', 'XZN', 'YEM', 'ZAF', 'ZMB', 'ZWE']} # todo
+        self.iry_iteration = {'i': ['IA', 'IB', 'IC', 'ID'], 'y': ['Year', '1960', '1961', '1962', '1963', '1964', '1965', '1966', '1967', '1968', '1969', '1970', '1971', '1972', '1973', '1974', '1975', '1976', '1977', '1978', '1979', '1980', '1981', '1982', '1983', '1984', '1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'], 'r': ['Region', 'ABW', 'AFG', 'AFR', 'AGO', 'ALB', 'AND', 'ANR', 'ARB', 'ARE', 'ARG', 'ARM', 'ASM', 'ATG', 'AUS', 'AUT', 'AZE', 'BDI', 'BEL', 'BEN', 'BFA', 'BGD', 'BGR', 'BHR', 'BHS', 'BIH', 'BLR', 'BLZ', 'BMU', 'BOL', 'BRA', 'BRB', 'BRN', 'BTN', 'BWA', 'CAA', 'CAF', 'CAN', 'CEA', 'CEB', 'CEU', 'CHE', 'CHI', 'CHL', 'CHN', 'CIV', 'CLA', 'CME', 'CMR', 'COD', 'COG', 'COL', 'COM', 'CPV', 'CRI', 'CSA', 'CSS', 'CUB', 'CUW', 'CYM', 'CYP', 'CZE', 'DEU', 'DJI', 'DMA', 'DNK', 'DOM', 'DZA', 'EAP', 'EAS', 'ECA', 'ECS', 'ECU', 'EGY', 'EMU', 'ERI', 'ESP', 'EST', 'ETH', 'EUU', 'FCS', 'FIN', 'FJI', 'FRA', 'FRO', 'FSM', 'GAB', 'GBR', 'GEO', 'GHA', 'GIN', 'GMB', 'GNB', 'GNQ', 'GRC', 'GRD', 'GRL', 'GTM', 'GUM', 'GUY', 'HIC', 'HKG', 'HND', 'HPC', 'HRV', 'HTI', 'HUN', 'IDN', 'IMN', 'IND', 'INX', 'IRL', 'IRN', 'IRQ', 'ISL', 'ISR', 'ITA', 'JAM', 'JOR', 'JPN', 'KAZ', 'KEN', 'KGZ', 'KHM', 'KIR', 'KNA', 'KOR', 'KSV', 'KWT', 'LAC', 'LAO', 'LBN', 'LBR', 'LBY', 'LCA', 'LCN', 'LCR', 'LDC', 'LIC', 'LIE', 'LKA', 'LMC', 'LMY', 'LSO', 'LTU', 'LUX', 'LVA', 'MAC', 'MAF', 'MAR', 'MCA', 'MCO', 'MDA', 'MDE', 'MDG', 'MDV', 'MEA', 'MEX', 'MHL', 'MIC', 'MKD', 'MLI', 'MLT', 'MMR', 'MNA', 'MNE', 'MNG', 'MNP', 'MOZ', 'MRT', 'MUS', 'MWI', 'MYS', 'NAC', 'NAF', 'NAM', 'NCL', 'NER', 'NGA', 'NIC', 'NLD', 'NOC', 'NOR', 'NPL', 'NZL', 'OEC', 'OED', 'OMN', 'OSS', 'PAK', 'PAN', 'PER', 'PHL', 'PLW', 'PNG', 'POL', 'PRI', 'PRK', 'PRT', 'PRY', 'PSE', 'PSS', 'PYF', 'QAT', 'ROU', 'RUS', 'RWA', 'SAS', 'SAU', 'SCE', 'SDN', 'SEN', 'SGP', 'SLB', 'SLE', 'SLV', 'SMR', 'SOM', 'SRB', 'SSA', 'SSD', 'SSF', 'SST', 'STP', 'SUR', 'SVK', 'SVN', 'SWE', 'SWZ', 'SXM', 'SXZ', 'SYC', 'SYR', 'TCA', 'TCD', 'TGO', 'THA', 'TJK', 'TKM', 'TLS', 'TON', 'TTO', 'TUN', 'TUR', 'TUV', 'TZA', 'UGA', 'UKR', 'UMC', 'URY', 'USA', 'UZB', 'VCT', 'VEN', 'VIR', 'VNM', 'VUT', 'WLD', 'WSM', 'XZN', 'YEM', 'ZAF', 'ZMB', 'ZWE']} # todo
 
     def init_indicator_var_iry(self):
         # Create indicator ID drop list.
@@ -1749,49 +1749,67 @@ class IndexCreation(MouseScreen):
 
         #formula = ['10', '/', '10', '*', '10', '-', '10', '+', 'math.fabs', '(', '-', '10', ')']
 
-        #formula = ["self.indicator_var_eval('IA','Region','Year')", '/', "self.indicator_var_eval('IA','LCN','1961')"]
-
         string_formula = "".join(formula)
 
-        #text_file = open("my_index.log", "w")
-        #text_file.write("Purchase Amount: %s" % TotalAmount)
-        #text_file.close()
+        # Store possible errors in this dictionary.
+        e = {}
 
-        with open("my_index.log", "w") as log_file:
+        try:
+            with open("my_index.log", "w") as log_file:
 
-            log_file.write("Indicators Variables\n===========================\n")
-            for key, val in self.rev_id_conn.iteritems():
-                log_file.write(val+" = "+key)
-            log_file.write("\n===========================\n\nComposite Index Formula\n===========================\n")
-            log_file.write("CI('Region','Year'): [" + string_formula.replace("self.indicator_var_eval", "IndValue") + "]")
-            log_file.write("\n===========================\n\nFailed Calculations\n===========================\n")
+                log_file.write("Indicators Variables\n===========================\n")
+                for key, val in self.rev_id_conn.iteritems():
+                    log_file.write(val+" = "+key)
+                log_file.write("\n===========================\n\nComposite Index Formula\n===========================\n")
+                log_file.write("CI('Region','Year'): [" + string_formula.replace("self.indicator_var_eval", "IndValue") + "]")
+                log_file.write("\n===========================\n\nFailed Calculations\n===========================\n")
 
-            for Region in self.iry_iteration["r"][1:]:
-                region_formula = string_formula.replace('Region', Region)
-                for Year in self.iry_iteration["y"][1:]:
-                    year_formula = region_formula.replace('Year', Year)
-                    try:
-                        cim[self.rev_country_dict[Region]].append(eval(year_formula))
+                for Region in self.iry_iteration["r"][1:]:
+                    region_formula = string_formula.replace('Region', Region)
+                    for Year in self.iry_iteration["y"][1:]:
+                        year_formula = region_formula.replace('Year', Year)
+                        try:
+                            cim[self.rev_country_dict[Region]].append(eval(year_formula))
 
-                    except TypeError:
-                        cim[self.rev_country_dict[Region]].append("-")
-                        log_file.write("CI" + str((self.rev_country_dict[Region], Year)) + ": ")
-                        for item in formula:
-                            if "indicator_var_eval" in item:
-                                log_file.write(str(eval(item.replace('Region', Region).replace('Year', Year))))
-                            else:
-                                log_file.write(item)
-                        log_file.write("\n")
+                        except TypeError:
+                            cim[self.rev_country_dict[Region]].append("-")
+                            log_file.write("CI" + str((self.rev_country_dict[Region], Year)) + ": ")
+                            for item in formula:
+                                if "indicator_var_eval" in item:
+                                    log_file.write(str(eval(item.replace('Region', Region).replace('Year', Year))))
+                                else:
+                                    log_file.write(item)
+                            log_file.write("\n")
 
-                    # Something really unexpected just happened.
-                    except Exception as e:
-                        log_file.write("def indicator_var_eval(self, ind, reg, year):", type(e), e.__doc__, e.message)
+                log_file.write("===========================")
 
-            log_file.write("===========================")
+        # Something really unexpected just happened.
+        except Exception as l_er:
+            e["my_index.log"] = l_er
 
-        calc_file = open("./my_index.csv", "w")
-        json.dump(cim, calc_file)
-        calc_file.close()
+        try:
+            with open("my_index.csv", "w") as calc_file:
+                for y in self.iry_iteration["y"][1:]:
+                    calc_file.write(";"+y)
+                for r in self.iry_iteration["r"][1:]:
+                    calc_file.write("\n"+self.rev_country_dict[r])
+                    for val in cim[self.rev_country_dict[r]]:
+                        calc_file.write(";"+str(val).replace('.', ","))
+
+        # Something really unexpected just happened.
+        except Exception as c_er:
+            e["my_index.csv"] = c_er
+
+        if e != {}:
+            self.popuper("Could not prepare correctly:\n" +
+                         str([k + " >> " + v.__doc__ for k, v in e.iteritems()]) +
+                         "\n\nMake sure file/s above are not already opened\n"
+                         "and your formula is syntactically correct.",
+                         'Unexpected Error!')
+        else:
+            self.popuper("Calculations have been saved in root directory.\n"
+                         "Check my_index.csv and my_index.log files.",
+                         "Done!")
 
     # Evaluate Indicator value function.
     def indicator_var_eval(self, ind, reg, year):
