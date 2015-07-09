@@ -1355,7 +1355,7 @@
             # Use that to add canvas color in the background. This will hide other buttons when overlapping them.
             BoxLayout:
                 id: model_toolbox
-                opacity: 1 # todo
+                opacity: 0
                 spacing: 5
                 padding: (1, 0, 5, 0)
                 canvas.before:
@@ -1450,8 +1450,8 @@
                         background_disabled_down: './Sources/index_algebra_btn_down.png'
                         background_disabled_normal: './Sources/index_algebra_btn_down.png'
                         on_press:
-                            root.toolbox_switcher(self) #if root.check_if_ry(): root.toolbox_switcher(self) #todo
-                            #else: root.popuper("You must first select at least\none Region and one Year\nfrom Series Selection!", "Notice!")
+                            if root.check_if_ry(): root.toolbox_switcher(self)
+                            else: root.popuper("You must first select at least\none Region and one Year\nfrom Series Selection!", "Notice!")
                             if not my_formula.children: root.formula_spacer(0)
                         on_state: if root.drawing_data: self.state = "normal"
 
@@ -2324,7 +2324,9 @@
                                             normal: './Sources/exec_calc_btn_normal.png'
                                             background_down: './Sources/exec_calc_btn_down.png'
                                             color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
-                                            on_press: root.threadonator(root.exec_formula)
+                                            on_press:
+                                                if root.valid_formula(): root.threadonator(root.exec_formula)
+                                                else: root.popuper("Problem with the formula found.\n\n Check the syntax.", "Warning! Cannot execute.")
 
                                         Calc_Func_Btn:
                                             text: '+'
