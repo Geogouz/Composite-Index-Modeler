@@ -5,3 +5,6 @@
 .buildozer
 .idea
 dev
+my_index.csv
+my_index.log
+DB
