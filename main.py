@@ -591,6 +591,8 @@ class IndexCreation(MouseScreen):
     loading_percentage = NumericProperty(0)
     formula_items = DictProperty({"last_item": None, "p_group": []})
 
+    cim = DictProperty({})
+
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
         super(IndexCreation, self).__init__(**kwargs)
@@ -1383,7 +1385,8 @@ class IndexCreation(MouseScreen):
     def init_iry_iteration(self):
 
         indicator = [self.id_conn[i] for i in self.sorted_indicators]
-        regions = sorted([i.text for j in self.loaded_regions.values() for i in j if i.state == "down"])
+        regions = sorted(
+            [i.text for j in self.loaded_regions.values() for i in j if i.state == "down"])
         years = sorted([i.text for i in self.loaded_years if i.state == "down"])
 
         # Set the default values.
@@ -1706,7 +1709,7 @@ class IndexCreation(MouseScreen):
 
     def exec_formula(self, *args):
 
-        cim = {self.rev_country_dict[r]: [] for r in self.iry_iteration["r"][1:]}
+        self.cim = {self.rev_country_dict[r]: [] for r in self.iry_iteration["r"][1:]}
 
         # Replacement set of dictionaries.
         rep1 = {"[color=000000][b]": "self.indicator_var_eval('",
@@ -1774,11 +1777,13 @@ class IndexCreation(MouseScreen):
                     for Year in self.iry_iteration["y"][1:]:
                         year_formula = region_formula.replace('Year', Year)
                         try:
-                            # If evaluation of year_formula results a float, add that in cim.
-                            cim[self.rev_country_dict[Region]].append(float(eval(year_formula)))
+                            # If evaluation of year_formula results a float, add that in self.cim.
+                            self.cim[self.rev_country_dict[Region]].append(
+                                float(eval(year_formula)))
 
                         except Exception as fe:
-                            cim[self.rev_country_dict[Region]].append("-")
+                            # If no float was returned, add the formula and error message in log.
+                            self.cim[self.rev_country_dict[Region]].append("-")
                             log_file.write("CI" +
                                            str((self.rev_country_dict[Region], Year)) + ": ")
                             for item in formula:
@@ -1803,7 +1808,7 @@ class IndexCreation(MouseScreen):
                     calc_file.write(";"+y)
                 for r in self.iry_iteration["r"][1:]:
                     calc_file.write("\n"+self.rev_country_dict[r])
-                    for val in cim[self.rev_country_dict[r]]:
+                    for val in self.cim[self.rev_country_dict[r]]:
                         calc_file.write(";"+str(val).replace('.', ","))
 
         # Something really unexpected just happened.
@@ -1811,20 +1816,19 @@ class IndexCreation(MouseScreen):
             e["my_index.csv"] = c_er
 
         if e != {}:
-            self.popuper("Could not prepare correctly:\n" +
+            self.popuper("Could not prepare files properly:\n" +
                          str([k + " >> " + v.__doc__ for k, v in e.iteritems()]) +
-                         "\n\nMake sure file/s above are not already opened\n"
-                         "and your formula is syntactically correct.",
+                         "\n\nMake sure file/s above are not already opened",
                          'Unexpected Error!')
         else:
-            self.popuper("Calculations have been saved in root directory.\n"
-                         "Check my_index.csv and my_index.log files.",
-                         "Done!")
+            self.popuper("Two files have been saved\nin App's root directory.\n\n"
+                         "Check 'my_index.csv' for results and\n"
+                         "'my_index.log' for calculation logs.",
+                         "Calculations done!")
 
     # Evaluate Indicator value function.
     def indicator_var_eval(self, ind, reg, year):
         try:
-            #print year, self.all_indicators_data[ind][self.rev_country_dict[reg]][year]
             # If there is any data, return it.
             return float(self.all_indicators_data[ind][self.rev_country_dict[reg]][year])
 
