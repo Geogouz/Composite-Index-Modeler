@@ -1900,15 +1900,25 @@
                         orientation: 'vertical'
                         padding: 20
 
-                        Label:
+                        BoxLayout:
                             size_hint_y: None
-                            text_size: (self.width-100, self.height)
-                            halign: "right"
-                            valign: "bottom"
-                            height: 30
-                            font_size: 18
-                            text: ">> Index Composer >>"
-                            color: (0.1, 0.1, 0.1, 1)
+                            height: 24
+
+                            Image:
+                                size_hint: (None, None)
+                                size: (131, 24)
+                                source: './Sources/ci_formula.png'
+                                allow_stretch: False
+
+                            Label:
+                                size_hint_y: None
+                                text_size: (self.width-100, self.height)
+                                halign: "right"
+                                valign: "bottom"
+                                height: 30
+                                font_size: 18
+                                text: ">> Index Composer >>"
+                                color: (0.1, 0.1, 0.1, 1)
 
                         BoxLayout:
                             size_hint_y: None
@@ -2325,8 +2335,8 @@
                                             background_down: './Sources/exec_calc_btn_down.png'
                                             color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
                                             on_press:
-                                                if root.valid_formula(): root.threadonator(root.exec_formula)
-                                                else: root.popuper("Problem with the formula found.\n\n Check the syntax.", "Warning! Cannot execute.")
+                                                if len(my_formula.children)>1: root.threadonator(root.exec_formula)
+                                                else: root.popuper("Empty formula..", "Warning!")
 
                                         Calc_Func_Btn:
                                             text: '+'
