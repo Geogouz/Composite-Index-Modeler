@@ -966,10 +966,6 @@ class IndexCreation(MouseScreen):
 
             self.model_toolbox_activator(True)
 
-            tempdb = open("./DB/temp.db", "w")
-            json.dump(self.all_indicators_data, tempdb)
-            tempdb.close()
-
         except Exception as e:
             self.popuper("Could not prepare "+indicator+"\nPlease try again.\n\n"+e.message,
                          'Warning:')
