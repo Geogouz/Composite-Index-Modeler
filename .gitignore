@@ -7,4 +7,5 @@
 dev
 my_index.csv
 my_index.log
-.db
+core.db
+temp.db
