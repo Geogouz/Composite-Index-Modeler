@@ -704,7 +704,7 @@
 
     orientation: "horizontal"
 
-    CIMScreenManager: # todo while updating prevent changing screens also prevent updating after all screens changed. also prevent algevra if not series
+    CIMScreenManager: # todo while updating prevent changing screens also prevent updating after all screens changed.
         transition: sm.SwapTransition()
         id: manager
         Home:
@@ -2381,20 +2381,93 @@
                                     text: '[color=f54236][b]Validation:[/b][/color] [color=666666]Check log file for any syntax errors, or missing indicator values. (Location: "my_index.log" in App folder)[/color]'
                                     height: 50
 
+
+<WorldMapSVG>:
+    size_hint: (None, None)
+    size: (6200, 2700)
+    do_rotation: False
+    on_touch_up: print self.bbox, self.size
+    scale: 0.2
+    scale_min: 0.2
+    scale_max: 3.0
+
+
 <MapDesigner>:
+    map_canvas: map_canvas
     name: 'MapDesignerScreen'
 
     BoxLayout:
-        size_hint: (None, None)
-        size: root.size
+        orientation: "vertical"
         canvas.before:
             Color:
-                rgba: (0.60, 0.72, 0.80, 1)
+                rgba: (1, 1, 1, 1)
             Rectangle:
                 pos: self.pos
                 size: self.size
 
-        Label:
-            italic: True
-            text: "MapDesignerScreen"
-            color: (0, 0, 0, 1)
+        BoxLayout:
+            size_hint_y: None
+            height: 120
+            canvas.before:
+                Color:
+                    rgba: (1, 1, 1, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        BoxLayout:
+            padding: (0,1,0,1)
+            canvas.before:
+                Color:
+                    rgba: (0, 0, 0, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            SvgWidget:
+                id: map_canvas
+                canvas.before:
+                    Color:
+                        rgba: (0.60, 0.72, 0.80, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                on_touch_up:
+                    print "Window.size", root.size
+                    print "self.size", self.size
+
+            RelativeLayout:
+                id: rl
+                size_hint_x: None
+                width: legend.width
+
+                Splitter:
+                    id: legend
+                    sizable_from: 'left'
+                    min_size: 15
+                    max_size: 300
+
+                    BoxLayout:
+                        canvas.before:
+                            Color:
+                                rgba: (1, 1, 1, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            canvas.before:
+                Color:
+                    rgba: (1, 1, 1, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                size_hint_x: None
+                width: 100
+                text: "Map"
+                on_release: root.th_map()

@@ -26,7 +26,10 @@ from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.scatter import Scatter
+from kivy.graphics.svg import Svg
 from kivy.animation import Animation
+from kivy.uix.stencilview import StencilView
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import BooleanProperty, StringProperty, DictProperty, ObjectProperty,\
     ListProperty, NumericProperty
@@ -1837,9 +1840,24 @@ class IndexCreation(MouseScreen):
             print "def indicator_var_eval(self, ind, reg, year):", type(e), e.__doc__, e.message
 
 
+class SvgWidget(BoxLayout, StencilView):
+    pass
+
+
+class WorldMapSVG(Scatter):
+
+    def __init__(self, **kwargs):
+        super(WorldMapSVG, self).__init__(**kwargs)
+        with self.canvas:
+            world_map = Svg("./Sources/WorldMap.svg")
+
+
 class MapDesigner(Screen):
 
-    pass
+    def th_map(self):
+        self.map_canvas.clear_widgets()
+        svg = WorldMapSVG()
+        self.map_canvas.add_widget(svg)
 
 
 class CIMMenu(BoxLayout):
@@ -2024,7 +2042,6 @@ class CIMgui(App):
     app_closed = False
 
     def on_stop(self):
-        # TODO Must tell the user to save his preferred indices because they will be lost
         CIMgui.app_closed = True
 
     # This function returns the window.
