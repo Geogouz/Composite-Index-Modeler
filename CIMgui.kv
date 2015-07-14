@@ -2436,6 +2436,7 @@
                 on_touch_up:
                     print "Window.size", root.size
                     print "self.size", self.size
+                    print "yo", self.center
 
             RelativeLayout:
                 id: rl
@@ -2443,18 +2444,20 @@
                 width: legend.width
 
                 Splitter:
+                    size_hint_x: None
+                    width: 20
                     id: legend
                     sizable_from: 'left'
-                    min_size: 15
+                    min_size: 20
                     max_size: 300
+                    canvas.before:
+                        Color:
+                            rgba: (1, 1, 1, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
                     BoxLayout:
-                        canvas.before:
-                            Color:
-                                rgba: (1, 1, 1, 1)
-                            Rectangle:
-                                pos: self.pos
-                                size: self.size
 
         BoxLayout:
             size_hint_y: None

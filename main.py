@@ -23,6 +23,7 @@ Config.set("graphics", "width", 1340)
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.factory import Factory
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.anchorlayout import AnchorLayout
@@ -1840,7 +1841,7 @@ class IndexCreation(MouseScreen):
             print "def indicator_var_eval(self, ind, reg, year):", type(e), e.__doc__, e.message
 
 
-class SvgWidget(BoxLayout, StencilView):
+class SvgWidget(FloatLayout, StencilView):
     pass
 
 
@@ -1854,10 +1855,51 @@ class WorldMapSVG(Scatter):
 
 class MapDesigner(Screen):
 
+    # "#FFFFFF" -> [255,255,255].
+    @staticmethod
+    def hex_to_rgb(hex_c):
+        # Pass 16 to the integer function for change of base.
+        return [int(hex_c[i:i+2], 16) for i in range(1,6,2)]
+
+    # [255,255,255] -> "#FFFFFF".
+    @staticmethod
+    def rgb_to_hex(rgb_c):
+        # Components need to be integers for hex to make sense.
+        rgb_c = [int(x) for x in rgb_c]
+        return "#"+"".join(["0{0:x}".format(v) if v < 16 else "{0:x}".format(v) for v in rgb_c])
+
+    # Takes in a list of RGB sub-lists and returns dictionary of colors in RGB and hex form.
+    def color_dict(self, gradient):
+        return {"hex": [self.rgb_to_hex(rgb_c) for rgb_c in gradient],
+                "r": [rgb_c[0] for rgb_c in gradient],
+                "g": [rgb_c[1] for rgb_c in gradient],
+                "b": [rgb_c[2] for rgb_c in gradient]}
+
+    # Returns a gradient list of (n) colors between two hex colors.
+    def linear_gradient(self, start_hex, finish_hex, n):
+        # Starting and ending colors in RGB form
+        s = self.hex_to_rgb(start_hex)
+        f = self.hex_to_rgb(finish_hex)
+
+        # Initialize a list of the output colors with the starting color.
+        rgb_list = [s]
+
+        # Calculate a color at each evenly spaced value of t from 1 to n.
+        for t in range(1, n):
+            # Interpolate RGB vector for color at the current value of t
+            curr_vector = [int(s[j] + (float(t)/(n-1))*(f[j]-s[j])) for j in range(3)]
+
+            # Add it to our list of output colors
+            rgb_list.append(curr_vector)
+
+        return self.color_dict(rgb_list)
+
     def th_map(self):
         self.map_canvas.clear_widgets()
         svg = WorldMapSVG()
         self.map_canvas.add_widget(svg)
+        svg.center_x = self.width/2
+        svg.center_y = self.height/2
 
 
 class CIMMenu(BoxLayout):
