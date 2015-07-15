@@ -2,6 +2,53 @@
 #: import math math
 
 
+<TH_Regions@Label>:
+    size_hint_y: None
+    height: 25
+    canvas.before:
+        Color:
+            rgba: (0.32, 0.17, 0.22, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    text_size: (self.width-20, self.height)
+    shorten: True
+    halign: "right"
+    valign: "middle"
+    color: (1, 1, 1, 1)
+    font_size: 13
+    size_hint_x: None
+    width: 198
+    bold: True
+
+
+<TH_Values@Label>:
+    size_hint_y: None
+    height: 25
+    canvas.before:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    color: (0, 0, 0, 1)
+    font_size: 13
+    size_hint_x: None
+    width: 84
+
+
+<TH_YearSelector@ToggleButton>:
+    size_hint: (None, None)
+    size: (50, 20)
+    font_size: 12
+    bold: True
+    disabled_color: (1,1,1,1)
+    background_disabled_down: './Sources/th_btn_years_down.png'
+    disabled: True if self.state == "down" else False
+    background_normal: './Sources/th_btn_years_normal.png'
+    on_press: print self.parent.children.index(self)
+
+
 <FormulaHintItem@BoxLayout>:
     size_hint_x: None
     width: 3
@@ -716,7 +763,11 @@
         IndexCreation:
             id: index_creation
             ic_index_selection: index_selection
+            ic_thematic_btn: thematic_btn
+            ic_map_designer: map_designer
         MapDesigner:
+            id: map_designer
+            md_index_creation: index_creation
 
     BoxLayout:
         id: main_boxlayout
@@ -816,9 +867,14 @@
             on_release: manager.current = 'IndexCreationScreen'
 
         Button:
-            text: "Mapper"
+            id: thematic_btn
+            text: "Thematic\nIndex"
+            text_size: (self.width, self.height)
+            halign: 'center'
+            valign: 'middle'
             size_hint_y: None
             height: 50
+            disabled: False # todo
             on_release: manager.current = 'MapDesignerScreen'
 
 
@@ -1313,6 +1369,7 @@
                     background_disabled_down: './Sources/get_indicators_btn_down.png'
                     on_state: if self.state == "down": root.dl_manager()
                     on_disabled: if not self.disabled: root.ic_index_selection.dl_status_icon_setter()
+                    on_press: print root.prepare_thematic() #todo
 
                 Label:
                     canvas.before:
@@ -2335,7 +2392,7 @@
                                             background_down: './Sources/exec_calc_btn_down.png'
                                             color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
                                             on_press:
-                                                if len(my_formula.children)>1: root.threadonator(root.exec_formula)
+                                                if len(my_formula.children)>1: root.exec_formula()
                                                 else: root.popuper("Empty formula..", "Warning!")
 
                                         Calc_Func_Btn:
@@ -2386,7 +2443,7 @@
     size_hint: (None, None)
     size: (6200, 2700)
     do_rotation: False
-    on_touch_up: print self.bbox, self.size
+    #on_touch_up: print self.bbox, self.size
     scale: 0.2
     scale_min: 0.2
     scale_max: 3.0
@@ -2394,20 +2451,16 @@
 
 <MapDesigner>:
     map_canvas: map_canvas
+    th_years_stack: th_years_stack
+    th_data_table_regions: th_data_table_regions
+    th_data_table_values: th_data_table_values
+
     name: 'MapDesignerScreen'
 
     BoxLayout:
-        orientation: "vertical"
-        canvas.before:
-            Color:
-                rgba: (1, 1, 1, 1)
-            Rectangle:
-                pos: self.pos
-                size: self.size
 
         BoxLayout:
-            size_hint_y: None
-            height: 120
+            orientation: "vertical"
             canvas.before:
                 Color:
                     rgba: (1, 1, 1, 1)
@@ -2415,62 +2468,170 @@
                     pos: self.pos
                     size: self.size
 
-        BoxLayout:
-            padding: (0,1,0,1)
-            canvas.before:
-                Color:
-                    rgba: (0, 0, 0, 1)
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-
-            SvgWidget:
-                id: map_canvas
+            BoxLayout:
+                size_hint_y: None
+                height: 120
                 canvas.before:
                     Color:
-                        rgba: (0.60, 0.72, 0.80, 1)
+                        rgba: (1, 1, 1, 1)
                     Rectangle:
                         pos: self.pos
                         size: self.size
 
-                on_touch_up:
-                    print "Window.size", root.size
-                    print "self.size", self.size
-                    print "yo", self.center
-
-            RelativeLayout:
-                id: rl
-                size_hint_x: None
-                width: legend.width
-
-                Splitter:
+                Button:
                     size_hint_x: None
-                    width: 20
-                    id: legend
-                    sizable_from: 'left'
-                    min_size: 20
-                    max_size: 300
+                    width: 100
+                    text: "Map"
+                    on_release: root.th_map()
+
+                Button:
+                    size_hint_x: None
+                    width: 200
+                    text: "Build Data Table"
+                    on_release: root.build_data_table()
+
+            BoxLayout:
+                padding: (0,1,0,1)
+                canvas.before:
+                    Color:
+                        rgba: (0, 0, 0, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                SvgWidget:
+                    id: map_canvas
                     canvas.before:
                         Color:
-                            rgba: (1, 1, 1, 1)
+                            rgba: (0.60, 0.72, 0.80, 1)
                         Rectangle:
                             pos: self.pos
                             size: self.size
 
-                    BoxLayout:
+                RelativeLayout:
+                    id: rl
+                    size_hint_x: None
+                    width: legend.width
 
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            canvas.before:
-                Color:
-                    rgba: (1, 1, 1, 1)
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+                    Splitter:
+                        size_hint_x: None
+                        width: 13
+                        id: legend
+                        sizable_from: 'left'
+                        min_size: 13
+                        max_size: 311
+                        canvas.before:
+                            Color:
+                                rgba: (1, 1, 1, 1)
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
 
-            Button:
-                size_hint_x: None
-                width: 100
-                text: "Map"
-                on_release: root.th_map()
+                        BoxLayout:
+                            size_hint_x: None
+                            width: 298
+
+                            Accordion:
+                                orientation: 'vertical'
+                                min_space: 48
+
+                                AccordionItem:
+                                    min_space: 48
+                                    background_normal: './Sources/button_hovered.png'
+                                    background_selected: './Sources/button_down.png'
+                                    title: 'Legend'
+
+                                    Label:
+                                        text: 'This is a label fit to the content views'
+
+                                AccordionItem:
+                                    min_space: 48
+                                    background_normal: './Sources/button_hovered.png'
+                                    background_selected: './Sources/button_down.png'
+                                    title: 'Data Table'
+
+                                    ScrollView:
+                                        bar_width: 3
+                                        bar_margin: 2
+                                        bar_inactive_color: (1, 1, 1, 1)
+                                        bar_color: (0.32, 0.17, 0.22, 1)
+                                        do_scroll_x: False
+
+                                        BoxLayout:
+                                            padding: (6,6,6,6)
+                                            size_hint_y: None
+                                            # 12 = 2 self paddings
+                                            height: th_data_table_regions.minimum_height + 12
+                                            canvas.before:
+                                                Color:
+                                                    rgba: (1, 1, 1, 1)
+                                                Rectangle:
+                                                    pos: self.pos
+                                                    size: self.size
+
+                                            GridLayout:
+                                                id: th_data_table_regions
+                                                size_hint_x: None
+                                                padding: 1
+                                                spacing: 1
+                                                width: 200
+                                                cols: 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: (0, 0, 0, 1)
+                                                    Rectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+
+                                            GridLayout:
+                                                id: th_data_table_values
+                                                size_hint_x: None
+                                                padding: 0,1,1,1
+                                                spacing: 1
+                                                width: 85
+                                                cols: 1
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: (0, 0, 0, 1)
+                                                    Rectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+
+            BoxLayout:
+                size_hint_y: None
+                height: 35
+                canvas.before:
+                    Color:
+                        rgba: (0.22, 0.22, 0.22, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                Label:
+                    size_hint_x: None
+                    height: 50
+                    font_size: 13
+                    text: "Year Selected:"
+                    color: (1,1,1,1)
+                    italic: True
+
+                BoxLayout:
+                    id: th_year_scroll
+                    padding: 3
+
+                    ScrollView:
+                        bar_width: 1
+                        bar_margin: 3
+                        bar_inactive_color: (0.22, 0.22, 0.22, 1)
+                        bar_color: (0.95, 0.95, 0.95, 1)
+                        do_scroll_y: False
+
+                        GridLayout:
+                            id: th_years_stack
+                            rows: 1
+                            size_hint: (None, None)
+                            size: (self.minimum_width, self.minimum_height)
+                            padding: 5,4,5,0
+                            spacing: 2
+
+        YLine:
