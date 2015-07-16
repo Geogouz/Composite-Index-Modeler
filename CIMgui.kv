@@ -4,7 +4,7 @@
 
 <TH_Regions@Label>:
     size_hint_y: None
-    height: 25
+    height: 22
     canvas.before:
         Color:
             rgba: (0.32, 0.17, 0.22, 1)
@@ -16,15 +16,14 @@
     halign: "right"
     valign: "middle"
     color: (1, 1, 1, 1)
-    font_size: 13
+    font_size: 14
     size_hint_x: None
     width: 198
-    bold: True
 
 
-<TH_Values@Label>:
+<ThematicValues>:
     size_hint_y: None
-    height: 25
+    height: 22
     canvas.before:
         Color:
             rgba: (1, 1, 1, 1)
@@ -32,9 +31,10 @@
             pos: self.pos
             size: self.size
     color: (0, 0, 0, 1)
-    font_size: 13
+    font_size: 14
     size_hint_x: None
     width: 84
+    markup: True
 
 
 <TH_YearSelector@ToggleButton>:
@@ -46,7 +46,6 @@
     background_disabled_down: './Sources/th_btn_years_down.png'
     disabled: True if self.state == "down" else False
     background_normal: './Sources/th_btn_years_normal.png'
-    on_press: print self.parent.children.index(self)
 
 
 <FormulaHintItem@BoxLayout>:
@@ -390,7 +389,6 @@
     size_hint: (None, None)
     size: (30, 8)
     border: (0, 0, 0, 0)
-
 
 <XLine@BoxLayout>:
     size_hint_y: None
@@ -1369,7 +1367,7 @@
                     background_disabled_down: './Sources/get_indicators_btn_down.png'
                     on_state: if self.state == "down": root.dl_manager()
                     on_disabled: if not self.disabled: root.ic_index_selection.dl_status_icon_setter()
-                    on_press: print root.prepare_thematic() #todo
+                    on_press: root.prepare_thematic() #todo
 
                 Label:
                     canvas.before:
@@ -2185,7 +2183,6 @@
                                             pos: self.pos
                                             size: self.size
 
-
                                 BoxLayout:
                                     orientation: "vertical"
                                     size_hint: (None, None)
@@ -2443,7 +2440,6 @@
     size_hint: (None, None)
     size: (6200, 2700)
     do_rotation: False
-    #on_touch_up: print self.bbox, self.size
     scale: 0.2
     scale_min: 0.2
     scale_max: 3.0
@@ -2488,7 +2484,6 @@
                     size_hint_x: None
                     width: 200
                     text: "Build Data Table"
-                    on_release: root.build_data_table()
 
             BoxLayout:
                 padding: (0,1,0,1)
@@ -2551,31 +2546,21 @@
                                     title: 'Data Table'
 
                                     ScrollView:
-                                        bar_width: 3
+                                        bar_width: 2
                                         bar_margin: 2
                                         bar_inactive_color: (1, 1, 1, 1)
                                         bar_color: (0.32, 0.17, 0.22, 1)
                                         do_scroll_x: False
 
-                                        BoxLayout:
+                                        GridLayout:
                                             padding: (6,6,6,6)
-                                            size_hint_y: None
-                                            # 12 = 2 self paddings
-                                            height: th_data_table_regions.minimum_height + 12
-                                            canvas.before:
-                                                Color:
-                                                    rgba: (1, 1, 1, 1)
-                                                Rectangle:
-                                                    pos: self.pos
-                                                    size: self.size
+                                            cols: 1
+                                            size_hint_y:None
+                                            height: self.minimum_height
 
-                                            GridLayout:
-                                                id: th_data_table_regions
-                                                size_hint_x: None
-                                                padding: 1
-                                                spacing: 1
-                                                width: 200
-                                                cols: 1
+                                            BoxLayout:
+                                                size_hint_y: None
+                                                height: 20
                                                 canvas.before:
                                                     Color:
                                                         rgba: (0, 0, 0, 1)
@@ -2583,19 +2568,95 @@
                                                         pos: self.pos
                                                         size: self.size
 
-                                            GridLayout:
-                                                id: th_data_table_values
-                                                size_hint_x: None
-                                                padding: 0,1,1,1
+                                                Label:
+                                                    size_hint: (None, None)
+                                                    width: 198
+                                                    text: "Region"
+                                                    text_size: (self.width, self.height)
+                                                    halign: "center"
+                                                    valign: "middle"
+                                                    height: 20
+                                                    color: (1, 1, 1, 1)
+                                                    font_size: 13
+                                                    bold: True
+
+                                                BoxLayout:
+                                                    size_hint: (None, None)
+                                                    size: (84, 20)
+
+                                                    Label:
+                                                        size_hint: (None, None)
+                                                        width: 54
+                                                        text: "Years"
+                                                        text_size: (self.width, self.height)
+                                                        halign: "right"
+                                                        valign: "middle"
+                                                        height: 20
+                                                        color: (1, 1, 1, 1)
+                                                        font_size: 13
+                                                        bold: True
+
+                                                    BoxLayout:
+                                                        orientation: "vertical"
+                                                        size_hint: (None, None)
+                                                        size: (30, 20)
+                                                        spacing: 4
+
+                                                        Button:
+                                                            size_hint: (None, None)
+                                                            size: (30, 8)
+                                                            border: (0, 0, 0, 0)
+                                                            background_normal:'./Sources/ascending_down.png'
+                                                            background_down:'./Sources/ascending_normal.png'
+                                                            on_press: root.sort_data("ascending")
+
+                                                        Button:
+                                                            size_hint: (None, None)
+                                                            size: (30, 8)
+                                                            border: (0, 0, 0, 0)
+                                                            background_normal: './Sources/descending_down.png'
+                                                            background_down: './Sources/descending_normal.png'
+                                                            on_press: root.sort_data("descending")
+
+                                            BoxLayout:
+                                                size_hint_y: None
+                                                # 12 = 2 self paddings
+                                                height: th_data_table_regions.minimum_height
                                                 spacing: 1
-                                                width: 85
-                                                cols: 1
                                                 canvas.before:
                                                     Color:
                                                         rgba: (0, 0, 0, 1)
                                                     Rectangle:
                                                         pos: self.pos
                                                         size: self.size
+
+                                                GridLayout:
+                                                    id: th_data_table_regions
+                                                    size_hint_x: None
+                                                    padding: (1,0,0,1)
+                                                    spacing: 1
+                                                    width: 200
+                                                    cols: 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: (0, 0, 0, 1)
+                                                        Rectangle:
+                                                            pos: self.pos
+                                                            size: self.size
+
+                                                GridLayout:
+                                                    id: th_data_table_values
+                                                    size_hint_x: None
+                                                    padding: 0,0,1,1
+                                                    spacing: 1
+                                                    width: 84
+                                                    cols: 1
+                                                    canvas.before:
+                                                        Color:
+                                                            rgba: (0, 0, 0, 1)
+                                                        Rectangle:
+                                                            pos: self.pos
+                                                            size: self.size
 
             BoxLayout:
                 size_hint_y: None
