@@ -586,7 +586,7 @@ class IndexCreation(MouseScreen):
     ic_thematic_btn = ObjectProperty()
 
     # Link to Thematic Map Designer.
-    ic_map_designer = ObjectProperty()
+    ic_th_designer = ObjectProperty()
 
     # List to show which indicator review is currently loaded.
     sorted_indicators = ListProperty()
@@ -1859,13 +1859,15 @@ class IndexCreation(MouseScreen):
         # Activate Thematic Button from MainWindow.
         self.ic_thematic_btn.disabled = False
 
-        # Clear all previously created year_buttons.
-        self.ic_map_designer.th_years_stack.clear_widgets()
+        # Clear all previously created year_buttons and Data Tables.
+        self.ic_th_designer.th_years_stack.clear_widgets()
+        self.ic_th_designer.th_data_table_regions.clear_widgets()
+        self.ic_th_designer.th_data_table_values.clear_widgets()
 
         for y in self.iry_iteration["y"][1:]:
             year_btn = Factory.TH_YearSelector(text=str(y), group='year')
-            self.ic_map_designer.th_years_stack.add_widget(year_btn)
-            year_btn.bind(on_release=self.ic_map_designer.th_data_table_init)
+            self.ic_th_designer.th_years_stack.add_widget(year_btn)
+            year_btn.bind(on_release=self.ic_th_designer.th_data_table_init)
 
 
 class ThematicValues(Label):
@@ -1985,7 +1987,7 @@ class MapDesigner(MouseScreen):
             else:
                 # Handle cases where item is not a number.
                 val = data_value
-                data_value = ""
+                data_value = "-"
 
             year_value = Factory.ThematicValues(text=str(val), calc_number=data_value, region=r)
             self.th_data_table_values.add_widget(year_value)
