@@ -2449,6 +2449,8 @@
     th_years_stack: th_years_stack
     th_data_table_regions: th_data_table_regions
     th_data_table_values: th_data_table_values
+    start_color: start_color.__self__
+    end_color: end_color.__self__
 
     name: 'MapDesignerScreen'
 
@@ -2722,7 +2724,7 @@
                                                     color: (1, 1, 1, 1)
                                                     font_size: 11
                                                     background_normal: './Sources/black.png'
-                                                    on_release: root.linear_gradient()
+                                                    on_release: root.setup_linear_gradient(start_color.hex_color[:-2], end_color.hex_color[:-2], int(intervals.text))
 
                                         ScrollView:
                                             #opacity: 1 if th_data_table_values.children else 0 #todo

@@ -1913,8 +1913,8 @@ class MapDesigner(MouseScreen):
                 "g": [rgb_c[1] for rgb_c in gradient],
                 "b": [rgb_c[2] for rgb_c in gradient]}
 
-    # Returns a gradient list of (n) colors between two hex colors.
-    def linear_gradient(self, start_hex, finish_hex, n):
+    # Creates thematic legend based on given number of classes.
+    def setup_linear_gradient(self, start_hex, finish_hex, n):
         # Starting and ending colors in RGB form
         s = self.hex_to_rgb(start_hex)
         f = self.hex_to_rgb(finish_hex)
@@ -1930,7 +1930,13 @@ class MapDesigner(MouseScreen):
             # Add it to our list of output colors
             rgb_list.append(curr_vector)
 
-        return self.color_dict(rgb_list)
+        # Prepare a temp data_set {Region: Value}, to be used for the legend's creation.
+        data_set = {p.region: p.calc_number for p in self.th_data_table_values.children}
+        min_v = min(data_set.values())
+        max_v = max(data_set.values())
+        print min_v, max_v
+        print data_set
+        print self.color_dict(rgb_list)
 
     def th_map(self):
         self.map_canvas.clear_widgets()
