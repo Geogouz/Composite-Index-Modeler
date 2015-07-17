@@ -785,8 +785,7 @@
             height: 250
             width: 400
             title: "Update Indicator Database"
-            on_parent:
-                if self.parent == main_boxlayout: self.parent.remove_widget(self)
+            on_parent: if self.parent == main_boxlayout: self.parent.remove_widget(self)
 
             BoxLayout:
                 orientation: "vertical"
@@ -2536,8 +2535,208 @@
                                     background_selected: './Sources/button_down.png'
                                     title: 'Legend'
 
-                                    Label:
-                                        text: 'This is a label fit to the content views'
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        padding: (20,6,20,6)
+
+                                        BoxLayout:
+                                            orientation: "vertical"
+                                            size_hint_y: None
+                                            height: 90
+
+                                            Label:
+                                                size_hint_y: None
+                                                height: 20
+                                                text: "Thematic Design"
+                                                bold: True
+                                                color: (0, 0, 0, 1)
+                                                font_size: 13
+                                                text_size: (self.width, self.height)
+                                                halign: "center"
+                                                valign: "bottom"
+
+                                            BoxLayout:
+                                                id: clr_classify
+                                                size_hint_y: None
+                                                height: 50
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: (0.9, 0.9, 0.9, 1)
+                                                    Rectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+
+                                                Popup:
+                                                    id: cp_start_color
+                                                    title: 'Color Select'
+                                                    size_hint: None, None
+                                                    size: 400,500
+                                                    on_parent:
+                                                        if self.parent == clr_classify: self.parent.remove_widget(self)
+
+                                                    ColorPicker:
+                                                        id: start_color
+
+                                                Popup:
+                                                    id: cp_end_color
+                                                    title: 'Color Select'
+                                                    size_hint: None, None
+                                                    size: 400,500
+                                                    on_parent:
+                                                        if self.parent == clr_classify: self.parent.remove_widget(self)
+
+                                                    ColorPicker:
+                                                        id: end_color
+
+                                                BoxLayout:
+                                                    orientation: "vertical"
+
+                                                    BoxLayout:
+                                                        padding: 10,0,10,0
+                                                        spacing: 5
+
+                                                        BoxLayout:
+                                                            size_hint: (None, None)
+                                                            size: (52,27)
+                                                            padding: 1
+                                                            canvas.before:
+                                                                Color:
+                                                                    rgba: (0, 0, 0, 1)
+                                                                Rectangle:
+                                                                    pos: self.pos
+                                                                    size: self.size
+
+                                                            Button:
+                                                                size_hint: None, None
+                                                                size: (50,25)
+                                                                text: "FROM"
+                                                                font_size: 11
+                                                                italic: True
+                                                                color: (0,0,0,1)
+                                                                background_normal: './Sources/transparent_frame.png'
+                                                                background_down: './Sources/transparent_frame.png'
+                                                                canvas.before:
+                                                                    Color:
+                                                                        rgba: start_color.color
+                                                                    Rectangle:
+                                                                        pos: self.pos
+                                                                        size: self.size
+                                                                on_press: cp_start_color.open()
+
+
+                                                        BoxLayout:
+                                                            size_hint: (None, None)
+                                                            size: (52,27)
+                                                            padding: 1
+                                                            canvas.before:
+                                                                Color:
+                                                                    rgba: (0, 0, 0, 1)
+                                                                Rectangle:
+                                                                    pos: self.pos
+                                                                    size: self.size
+
+                                                            Button:
+                                                                size_hint: None, None
+                                                                size: (50,25)
+                                                                text: "TO"
+                                                                font_size: 11
+                                                                italic: True
+                                                                color: (0,0,0,1)
+                                                                border: 0,0,0,0
+                                                                background_normal: './Sources/transparent_frame.png'
+                                                                background_down: './Sources/transparent_frame.png'
+                                                                canvas.before:
+                                                                    Color:
+                                                                        rgba: end_color.color
+                                                                    Rectangle:
+                                                                        pos: self.pos
+                                                                        size: self.size
+                                                                on_press: cp_end_color.open()
+
+                                                    Label:
+                                                        size_hint_y: None
+                                                        height: 15
+                                                        text: "Pick Range Colors"
+                                                        color: (0,0,0,1)
+                                                        italic: True
+                                                        font_size: 11
+
+                                                BoxLayout:
+
+                                                    Label:
+                                                        text_size: (self.width-20, self.height)
+                                                        halign: "right"
+                                                        valign: "middle"
+                                                        text: "Equal\nIntervals"
+                                                        color: (0,0,0,1)
+                                                        italic: True
+                                                        font_size: 11
+
+                                                    BoxLayout:
+                                                        size_hint_x: None
+                                                        width: 10
+                                                        orientation: "vertical"
+                                                        padding: 0,15,0,15
+                                                        spacing: 5
+                                                        Button:
+                                                            text: "+"
+                                                            font_size: 18
+                                                            color: (0,0,0,1)
+                                                            background_normal: './Sources/transparent_frame.png'
+                                                            background_down: './Sources/transparent_frame.png'
+                                                            on_press: intervals.text = str((int(intervals.text) + 1))
+
+                                                        Button:
+                                                            text: "-"
+                                                            font_size: 18
+                                                            color: (0,0,0,1)
+                                                            background_normal: './Sources/transparent_frame.png'
+                                                            background_down: './Sources/transparent_frame.png'
+                                                            on_press: intervals.text = str(max(2, (int(intervals.text) - 1)))
+
+                                                    AnchorLayout:
+                                                        anchor_x: 'center'
+                                                        anchor_y: 'center'
+                                                        size_hint_x: None
+                                                        width: 30
+
+                                                        Label:
+                                                            id: intervals
+                                                            size_hint: (None, None)
+                                                            size: (30, 30)
+                                                            text: "2"
+                                                            font_size: 20
+                                                            bold: True
+                                                            color: (0,0,0,1)
+
+                                            AnchorLayout:
+                                                size_hint_y: None
+                                                height: 20
+                                                anchor_x: 'right'
+                                                anchor_y: 'bottom'
+
+                                                Button:
+                                                    size_hint: (None, None)
+                                                    size: (50, 19)
+                                                    text: "Apply"
+                                                    color: (1, 1, 1, 1)
+                                                    font_size: 11
+                                                    background_normal: './Sources/black.png'
+                                                    on_release: root.linear_gradient()
+
+                                        ScrollView:
+                                            #opacity: 1 if th_data_table_values.children else 0 #todo
+                                            bar_width: 2
+                                            bar_margin: 2
+                                            bar_inactive_color: (1, 1, 1, 1)
+                                            bar_color: (0.32, 0.17, 0.22, 1)
+                                            do_scroll_x: False
+
+                                            GridLayout:
+                                                padding: (6,6,6,6)
+                                                cols: 2
+                                                size_hint_y:None
+                                                height: self.minimum_height
 
                                 AccordionItem:
                                     min_space: 48
@@ -2546,6 +2745,7 @@
                                     title: 'Data Table'
 
                                     ScrollView:
+                                        opacity: 1 if th_data_table_values.children else 0
                                         bar_width: 2
                                         bar_margin: 2
                                         bar_inactive_color: (1, 1, 1, 1)
