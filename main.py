@@ -1916,7 +1916,7 @@ class MapDesigner(MouseScreen):
         return "#"+"".join(["0{0:x}".format(v) if v < 16 else "{0:x}".format(v) for v in rgb_c])
 
     # Creates thematic legend based on given number of classes.
-    def setup_linear_gradient(self, start_hex, finish_hex, n):
+    def calc_linear_gradient(self, start_hex, finish_hex, n):
         # Starting and ending colors in RGB form
         s = self.hex_to_rgb(start_hex)
         f = self.hex_to_rgb(finish_hex)
