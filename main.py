@@ -1893,6 +1893,15 @@ class MapDesigner(MouseScreen):
     # Link to IndexCreation.
     md_index_creation = ObjectProperty()
 
+    @mainthread
+    def popuper(self, message, title):
+        Popup(title=title, content=Label(
+            text=message,
+            font_size=15,
+            halign="center",
+            italic=True
+        ), size_hint=(None, None), size=(350, 180)).open()
+
     # "#FFFFFF" -> [255,255,255].
     @staticmethod
     def hex_to_rgb(hex_c):
@@ -1905,13 +1914,6 @@ class MapDesigner(MouseScreen):
         # Components need to be integers for hex to make sense.
         rgb_c = [int(x) for x in rgb_c]
         return "#"+"".join(["0{0:x}".format(v) if v < 16 else "{0:x}".format(v) for v in rgb_c])
-
-    # Takes in a list of RGB sub-lists and returns dictionary of colors in RGB and hex form.
-    def color_dict(self, gradient):
-        return {"hex": [self.rgb_to_hex(rgb_c) for rgb_c in gradient],
-                "r": [rgb_c[0] for rgb_c in gradient],
-                "g": [rgb_c[1] for rgb_c in gradient],
-                "b": [rgb_c[2] for rgb_c in gradient]}
 
     # Creates thematic legend based on given number of classes.
     def setup_linear_gradient(self, start_hex, finish_hex, n):
@@ -1931,12 +1933,65 @@ class MapDesigner(MouseScreen):
             rgb_list.append(curr_vector)
 
         # Prepare a temp data_set {Region: Value}, to be used for the legend's creation.
-        data_set = {p.region: p.calc_number for p in self.th_data_table_values.children}
-        min_v = min(data_set.values())
-        max_v = max(data_set.values())
-        print min_v, max_v
-        print data_set
-        print self.color_dict(rgb_list)
+        data_set = {p.region: p.calc_number for p in self.th_data_table_values.children
+                    if p.calc_number != "-"}
+
+        # Takes in the RGB sub-lists and returns dictionary of colors in RGB and hex form.
+        color_dict = {"hex": [self.rgb_to_hex(rgb_c) for rgb_c in rgb_list],
+                      "r": [rgb_c[0] for rgb_c in rgb_list],
+                      "g": [rgb_c[1] for rgb_c in rgb_list],
+                      "b": [rgb_c[2] for rgb_c in rgb_list]}
+
+        # If there is at least 1 region with a value in data table, proceed with the calculations.
+        if len(data_set) > 0:
+            min_v = min(data_set.values())
+            max_v = max(data_set.values())
+            range_v = max_v - min_v
+            interval_v = range_v/float(n)
+
+            # If we have only one interval, use current min and max values.
+            if n == 1:
+                classification = [(min_v, max_v)]
+
+            # If we have more than one intervals..
+            else:
+                # Set first tuple of the classification.
+                classification = [(min_v, interval_v)]
+                # Set the other ones (except the last one)
+                for i in range(1, n-1):
+                    classification.append((interval_v*i, interval_v*(i+1)))
+                # Set the last one too.
+                classification.append((interval_v*(n-1), max_v))
+
+            # Create classified legend.
+            self.build_legend(classification, color_dict['r'], color_dict['g'], color_dict['b'])
+
+            # Reversing the list will help with color assignment.
+            classification = list(reversed(classification))
+
+            # Replace data value with the equivalent color.
+            for k, v in data_set.iteritems():
+                for g in range(len(classification)):
+                    if classification[g][0] <= v <= classification[g][1]:
+                        break
+                data_set[k] = color_dict['hex'][g]
+
+            # Prepare the SVG before loading it, according to calculated color classes.
+            self.prepare_svg(data_set)
+
+        # If data table has no values pop a notice.
+        else:
+            self.popuper("There should be at least one region\n"
+                         "with a numeric value in the Data Table.",
+                         "Warning!")
+
+    # This function creates the legend with all color classes.
+    def build_legend(self, classes, r, g, b):
+        print classes
+
+    # This function prepares the SVG thematic colors.
+    def prepare_svg(self, d_set):
+        print d_set
 
     def th_map(self):
         self.map_canvas.clear_widgets()

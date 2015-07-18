@@ -2451,6 +2451,7 @@
     th_data_table_values: th_data_table_values
     start_color: start_color.__self__
     end_color: end_color.__self__
+    legend: legend
 
     name: 'MapDesignerScreen'
 
@@ -2507,12 +2508,12 @@
                 RelativeLayout:
                     id: rl
                     size_hint_x: None
-                    width: legend.width
+                    width: thematic_toolbox.width
 
                     Splitter:
                         size_hint_x: None
                         width: 13
-                        id: legend
+                        id: thematic_toolbox
                         sizable_from: 'left'
                         min_size: 13
                         max_size: 311
@@ -2538,8 +2539,31 @@
                                     title: 'Legend'
 
                                     BoxLayout:
+                                        opacity: 1 if th_data_table_values.children else 0
                                         orientation: "vertical"
                                         padding: (20,6,20,6)
+
+                                        ScrollView:
+                                            bar_width: 2
+                                            bar_margin: 2
+                                            bar_inactive_color: (1, 1, 1, 1)
+                                            bar_color: (0.32, 0.17, 0.22, 1)
+                                            do_scroll_x: False
+
+                                            GridLayout:
+                                                id: legend
+                                                padding: (6,6,6,6)
+                                                cols: 2
+                                                size_hint_y:None
+                                                height: self.minimum_height
+                                                canvas.before:
+                                                    Color:
+                                                        rgba: (1, 0, 1, 1)
+                                                    Rectangle:
+                                                        pos: self.pos
+                                                        size: self.size
+
+                                        XLine:
 
                                         BoxLayout:
                                             orientation: "vertical"
@@ -2694,7 +2718,7 @@
                                                             color: (0,0,0,1)
                                                             background_normal: './Sources/transparent_frame.png'
                                                             background_down: './Sources/transparent_frame.png'
-                                                            on_press: intervals.text = str(max(2, (int(intervals.text) - 1)))
+                                                            on_press: intervals.text = str(max(1, (int(intervals.text) - 1)))
 
                                                     AnchorLayout:
                                                         anchor_x: 'center'
@@ -2706,7 +2730,7 @@
                                                             id: intervals
                                                             size_hint: (None, None)
                                                             size: (30, 30)
-                                                            text: "2"
+                                                            text: "1"
                                                             font_size: 20
                                                             bold: True
                                                             color: (0,0,0,1)
@@ -2725,20 +2749,6 @@
                                                     font_size: 11
                                                     background_normal: './Sources/black.png'
                                                     on_release: root.setup_linear_gradient(start_color.hex_color[:-2], end_color.hex_color[:-2], int(intervals.text))
-
-                                        ScrollView:
-                                            #opacity: 1 if th_data_table_values.children else 0 #todo
-                                            bar_width: 2
-                                            bar_margin: 2
-                                            bar_inactive_color: (1, 1, 1, 1)
-                                            bar_color: (0.32, 0.17, 0.22, 1)
-                                            do_scroll_x: False
-
-                                            GridLayout:
-                                                padding: (6,6,6,6)
-                                                cols: 2
-                                                size_hint_y:None
-                                                height: self.minimum_height
 
                                 AccordionItem:
                                     min_space: 48
