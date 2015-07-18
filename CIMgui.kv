@@ -2,6 +2,54 @@
 #: import math math
 
 
+<LegendClassContainer>:
+    size_hint_y: None
+    height: 30
+
+    BoxLayout:
+        size_hint: None, None
+        size: 60, 30
+        padding: 1
+        canvas.before:
+            Color:
+                rgba: (0, 0, 0, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgba: root.cc_color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+    Label:
+        text: root.text_min
+        color: (0,0,0,1)
+        font_size: 14
+        text_size: (self.width, self.height)
+        halign: "right"
+        valign: "middle"
+        markup: True
+
+    Label:
+        size_hint_x: None
+        width: 20
+        text: "-"
+        color: (0,0,0,1)
+        font_size: 14
+
+    Label:
+        text: root.text_max
+        color: (0,0,0,1)
+        font_size: 14
+        text_size: (self.width, self.height)
+        halign: "left"
+        valign: "middle"
+        markup: True
+
 <TH_Regions@Label>:
     size_hint_y: None
     height: 22
@@ -865,13 +913,13 @@
 
         Button:
             id: thematic_btn
-            text: "Thematic\nIndex"
+            text: "Thematic\nMapper"
             text_size: (self.width, self.height)
             halign: 'center'
             valign: 'middle'
             size_hint_y: None
             height: 50
-            disabled: False # todo
+            disabled: True
             on_release: manager.current = 'MapDesignerScreen'
 
 
@@ -1366,7 +1414,6 @@
                     background_disabled_down: './Sources/get_indicators_btn_down.png'
                     on_state: if self.state == "down": root.dl_manager()
                     on_disabled: if not self.disabled: root.ic_index_selection.dl_status_icon_setter()
-                    on_press: root.prepare_thematic() #todo
 
                 Label:
                     canvas.before:
@@ -2488,6 +2535,7 @@
                     text: "Build Data Table"
 
             BoxLayout:
+                id: th_main_frame
                 padding: (0,1,0,1)
                 canvas.before:
                     Color:
@@ -2507,13 +2555,14 @@
 
                 RelativeLayout:
                     id: rl
-                    size_hint_x: None
-                    width: thematic_toolbox.width
+                    size_hint: None, None
+                    width: 0 if th_main_frame.height < 150 else thematic_toolbox.width
+                    height: 150 if th_main_frame.height < 150 else th_main_frame.height-2
 
                     Splitter:
+                        id: thematic_toolbox
                         size_hint_x: None
                         width: 13
-                        id: thematic_toolbox
                         sizable_from: 'left'
                         min_size: 13
                         max_size: 311
@@ -2553,15 +2602,10 @@
                                             GridLayout:
                                                 id: legend
                                                 padding: (6,6,6,6)
-                                                cols: 2
+                                                spacing: 10
+                                                cols: 1
                                                 size_hint_y:None
                                                 height: self.minimum_height
-                                                canvas.before:
-                                                    Color:
-                                                        rgba: (1, 0, 1, 1)
-                                                    Rectangle:
-                                                        pos: self.pos
-                                                        size: self.size
 
                                         XLine:
 
@@ -2648,7 +2692,6 @@
                                                                         pos: self.pos
                                                                         size: self.size
                                                                 on_press: cp_start_color.open()
-
 
                                                         BoxLayout:
                                                             size_hint: (None, None)
