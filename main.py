@@ -904,6 +904,7 @@ class IndexCreation(MouseScreen):
 
                 short_id = self.id_conn[indicator]
                 indicator_address = start_url+countries+indicators+mi[indicator]+"/"+end_url
+                # print indicator_address # To print the web url
 
                 # Define World Bank connection (JSON data).
                 ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
@@ -1960,8 +1961,15 @@ class MapDesigner(MouseScreen):
             interval_v = range_v/float(n)
 
             # If we have only one interval, use current min and max values.
-            if n == 1:
+            if n == 1 or len(data_set.values()) == 1:
                 classification = [(min_v, max_v)]
+
+                # If we selected more than one intervals for a single value, pop a notice msg.
+                if len(data_set.values()) == 1 and n != 1:
+                    self.popuper("Only one class was generated,\n"
+                                 "because only one value was found\n"
+                                 "in Data Table!",
+                                 "Warning!")
 
             # If we have more than one intervals..
             else:
