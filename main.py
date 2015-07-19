@@ -904,7 +904,7 @@ class IndexCreation(MouseScreen):
 
                 short_id = self.id_conn[indicator]
                 indicator_address = start_url+countries+indicators+mi[indicator]+"/"+end_url
-                # print indicator_address # To print the web url
+                #print indicator_address # To print the web url
 
                 # Define World Bank connection (JSON data).
                 ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
@@ -1887,7 +1887,7 @@ class WorldMapSVG(Scatter):
     def __init__(self, **kwargs):
         super(WorldMapSVG, self).__init__(**kwargs)
         with self.canvas:
-            world_map = Svg("./Sources/WorldMap.svg")
+            Svg("./DB/TH_WMap.svg")
 
 
 class MapDesigner(MouseScreen):
@@ -1973,19 +1973,19 @@ class MapDesigner(MouseScreen):
 
             # If we have more than one intervals..
             else:
-                # Set first tuple of the classification.
-                classification = [(min_v, interval_v)]
-                # Set the other ones (except the last one)
-                for i in range(1, n-1):
-                    classification.append((interval_v*i, interval_v*(i+1)))
-                # Set the last one too.
-                classification.append((interval_v*(n-1), max_v))
+                # This list will hold the range groups.
+                classification = []
+                r1 = min_v
+                r2 = r1 + interval_v
+
+                for i in range(1, n):
+                    classification.append((r1, r2))
+                    r1 = r2
+                    r2 = r1 + interval_v
+                classification.append((r1, max_v))
 
             # Create classified legend.
             self.build_legend(classification, color_dict['r'], color_dict['g'], color_dict['b'])
-
-            # Reversing the list will help with color assignment.
-            classification = list(reversed(classification))
 
             # Replace data value with the equivalent color.
             for k, v in data_set.iteritems():
@@ -1994,7 +1994,7 @@ class MapDesigner(MouseScreen):
                         break
                 data_set[k] = color_dict['hex'][g]
 
-            # Prepare the SVG before loading it, according to calculated color classes.
+            # Prepare and load the SVG, according to calculated color classes.
             self.prepare_svg(data_set)
 
         # If data table has no values pop a notice.
@@ -2015,16 +2015,41 @@ class MapDesigner(MouseScreen):
 
             self.legend.add_widget(cc)
 
-    # This function prepares the SVG thematic colors.
+    # This function prepares and loads the SVG thematic colors.
     def prepare_svg(self, d_set):
-        print d_set
 
-    def th_map(self):
-        self.map_canvas.clear_widgets()
-        svg = WorldMapSVG()
-        self.map_canvas.add_widget(svg)
-        svg.center_x = self.width/2
-        svg.center_y = self.height/2
+        # Try to generate the temp SVG with the thematic colors applied.
+        try:
+            orig_svg = open("./Sources/WorldMap.svg", "r")
+            temp_svg = open("./DB/TH_WMap.svg", "w")
+
+            for line in orig_svg:
+                try:
+                    start = line.index('<path class="') + 13
+                    end = line.index('" stroke="#', start)
+
+                    region = line[start:end]
+                    if region in d_set:
+                        temp_svg.write(line.replace('fill="#383838"', 'fill="'+d_set[region]+'"'))
+                    else:
+                        temp_svg.write(line)
+
+                except ValueError:
+                    temp_svg.write(line)
+
+            temp_svg.close()
+            orig_svg.close()
+
+            # Load the temp SVG.
+            self.map_canvas.clear_widgets()
+            svg = WorldMapSVG()
+            self.map_canvas.add_widget(svg)
+            svg.center_x = self.width/2
+            svg.center_y = self.height/2
+
+        # Something really unexpected just happened.
+        except Exception as e:
+            print "def prepare_svg(d_set):", type(e), e.__doc__, e.message
 
     # Prepare list that will be used to build the Data Table.
     def th_data_table_init(self, year_btn):
