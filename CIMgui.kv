@@ -50,6 +50,7 @@
         valign: "middle"
         markup: True
 
+
 <TH_Regions@Label>:
     size_hint_y: None
     height: 22
@@ -2492,7 +2493,7 @@
     FloatLayout:
 
         Image:
-            opacity: 1
+            opacity: 1 if root.show_labels else 0
             size_hint: (None, None)
             pos_hint: (None, None)
             pos: (-334, -816)
@@ -2501,7 +2502,7 @@
             allow_stretch: True
 
         FloatLayout:
-            opacity: 1
+            opacity: 1 if root.show_borders else 0
 
             Image:
                 opacity: 1 if root.scale > 0.4 else 0
@@ -2529,6 +2530,9 @@
     start_color: start_color.__self__
     end_color: end_color.__self__
     legend: legend
+
+    borders_switch: borders_switch
+    labels_switch: labels_switch
 
     name: 'MapDesignerScreen'
 
@@ -2998,9 +3002,11 @@
 
                         Button:
                             text: "IMG"
+                            disabled: not map_canvas.children
 
                         Button:
                             text: "SVG"
+                            disabled: not map_canvas.children
 
                     BoxLayout:
                         orientation: "vertical"
@@ -3021,10 +3027,12 @@
                                 font_size: 12
 
                             Switch:
-                                disabled: False
-                                active: True
+                                id: borders_switch
                                 size_hint_y: None
                                 height: 30
+                                disabled: not map_canvas.children
+                                active: True
+                                on_active: map_canvas.children[0].show_borders = self.active
 
                         BoxLayout:
                             orientation: "vertical"
@@ -3038,10 +3046,12 @@
                                 font_size: 12
 
                             Switch:
+                                id: labels_switch
                                 size_hint_y: None
                                 height: 30
-                                disabled: False
+                                disabled: not map_canvas.children
                                 active: True
+                                on_active: map_canvas.children[0].show_labels = self.active
 
                     BoxLayout:
                         orientation: "vertical"

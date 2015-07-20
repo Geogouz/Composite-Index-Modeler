@@ -1884,6 +1884,10 @@ class SvgWidget(FloatLayout, StencilView):
 
 class WorldMapSVG(Scatter):
 
+    # Prepare kivy properties that will handle labels and borders opacity.
+    show_labels = BooleanProperty(True)
+    show_borders = BooleanProperty(True)
+
     def __init__(self, **kwargs):
         super(WorldMapSVG, self).__init__(**kwargs)
         with self.canvas.before:
@@ -2044,6 +2048,7 @@ class MapDesigner(MouseScreen):
             self.map_canvas.clear_widgets()
             svg = WorldMapSVG()
             self.map_canvas.add_widget(svg)
+
             svg.center_x = self.width/2
             svg.center_y = self.height/2
 
