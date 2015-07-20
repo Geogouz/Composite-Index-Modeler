@@ -2532,30 +2532,18 @@
 
     name: 'MapDesignerScreen'
 
-    BoxLayout:
+    FloatLayout:
+        orientation: "vertical"
 
         BoxLayout:
             orientation: "vertical"
-            canvas.before:
-                Color:
-                    rgba: (1, 1, 1, 1)
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            size_hint_y: None
+            height: root.height - 120
 
-            BoxLayout:
-                size_hint_y: None
-                height: 120
-                canvas.before:
-                    Color:
-                        rgba: (1, 1, 1, 1)
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+            XLine:
 
             BoxLayout:
                 id: th_main_frame
-                padding: (0,1,0,1)
                 canvas.before:
                     Color:
                         rgba: (0, 0, 0, 1)
@@ -2576,7 +2564,7 @@
                     id: rl
                     size_hint: None, None
                     width: 0 if th_main_frame.height < 150 else thematic_toolbox.width
-                    height: 150 if th_main_frame.height < 150 else th_main_frame.height-2
+                    height: 150 if th_main_frame.height < 150 else th_main_frame.height
 
                     Splitter:
                         id: thematic_toolbox
@@ -2932,6 +2920,8 @@
                                                             pos: self.pos
                                                             size: self.size
 
+            XLine:
+
             BoxLayout:
                 size_hint_y: None
                 height: 35
@@ -2969,4 +2959,111 @@
                             padding: 5,4,5,0
                             spacing: 2
 
-        YLine:
+        BoxLayout:
+            size_hint_y: None
+            height: 120
+            pos: 0, root.height - 120
+            canvas.before:
+                Color:
+                    rgba: (1, 1, 1, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            BoxLayout:
+
+            AnchorLayout:
+                anchor_x: 'right'
+                anchor_y: 'center'
+                size_hint_x: None
+                width: 300
+                padding: 10,10,10,10
+
+                BoxLayout:
+                    size_hint_x: None
+                    width: 280 if thematic_toolbox.width < 20 else 200
+                    canvas.before:
+                        Color:
+                            rgba: (0.18, 0.18, 0.18, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    BoxLayout:
+                        size_hint_x: None
+                        width: 100
+                        padding: 10
+                        spacing: 10
+                        orientation: "vertical"
+
+                        Button:
+                            text: "IMG"
+
+                        Button:
+                            text: "SVG"
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        size_hint_x: None
+                        width: 100
+                        padding: (0,5,0,5)
+                        spacing: 6
+
+                        BoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: 45
+
+                            Label:
+                                size_hint_y: None
+                                height: 12
+                                text: "Borders"
+                                font_size: 12
+
+                            Switch:
+                                disabled: False
+                                active: True
+                                size_hint_y: None
+                                height: 30
+
+                        BoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: 45
+
+                            Label:
+                                size_hint_y: None
+                                height: 12
+                                text: "Labels"
+                                font_size: 12
+
+                            Switch:
+                                size_hint_y: None
+                                height: 30
+                                disabled: False
+                                active: True
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        size_hint_x: None
+                        width: 80 if thematic_toolbox.width < 20 else 0
+                        opacity: 1 if thematic_toolbox.width < 20 else 0
+
+                        Label:
+                            size_hint: None, None
+                            size: 80, 45
+                            text: "Data Viewer &\nMap Creator"
+                            font_size: 11
+                            bold: True
+                            italic: True
+                            text_size: (self.width, self.height)
+                            halign: "center"
+                            valign: "middle"
+
+                        Image:
+                            size_hint: None, None
+                            size: 80, 55
+                            source: './Sources/slider_arrow.png'
+                            allow_stretch: False
+
+    YLine:
