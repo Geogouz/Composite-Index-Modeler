@@ -2487,8 +2487,39 @@
     do_rotation: False
     scale: 0.2
     scale_min: 0.2
-    scale_max: 3.0
+    scale_max: 1
 
+    FloatLayout:
+
+        Image:
+            opacity: 1
+            size_hint: (None, None)
+            pos_hint: (None, None)
+            pos: (-334, -816)
+            size: self.texture_size
+            source: './Sources/RegionLabels.png'
+            allow_stretch: True
+
+        FloatLayout:
+            opacity: 1
+
+            Image:
+                opacity: 1 if root.scale > 0.4 else 0
+                size_hint: (None, None)
+                pos_hint: (None, None)
+                pos: (-334, -816)
+                size: self.texture_size
+                source: './Sources/RegionBorders_S.png'
+                allow_stretch: True
+
+            Image:
+                opacity: 1 if root.scale < 0.4 else 0
+                size_hint: (None, None)
+                pos_hint: (None, None)
+                pos: (-334, -816)
+                size: self.texture_size
+                source: './Sources/RegionBorders_L.png'
+                allow_stretch: True
 
 <MapDesigner>:
     map_canvas: map_canvas
@@ -2536,7 +2567,7 @@
                     id: map_canvas
                     canvas.before:
                         Color:
-                            rgba: (0.60, 0.72, 0.80, 1)
+                            rgba: (0.76, 0.83, 0.88, 1)
                         Rectangle:
                             pos: self.pos
                             size: self.size

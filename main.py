@@ -1886,7 +1886,7 @@ class WorldMapSVG(Scatter):
 
     def __init__(self, **kwargs):
         super(WorldMapSVG, self).__init__(**kwargs)
-        with self.canvas:
+        with self.canvas.before:
             Svg("./DB/TH_WMap.svg")
 
 
@@ -2026,7 +2026,7 @@ class MapDesigner(MouseScreen):
             for line in orig_svg:
                 try:
                     start = line.index('<path class="') + 13
-                    end = line.index('" stroke="#', start)
+                    end = line.index('" fill="#', start)
 
                     region = line[start:end]
                     if region in d_set:
