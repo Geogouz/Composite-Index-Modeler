@@ -828,6 +828,7 @@
                 pos: self.pos
                 size: self.size
 
+
         Popup:
             id: coredb_update_popup
             size_hint: (None, None)
@@ -866,29 +867,6 @@
                             root.popup_active = False
 
         Button:
-            id: update_db
-            size_hint: (None, None)
-            height: 35
-            width: 90
-            pos_hint: {'center_x': 0.5}
-            bold: True
-            font_size: 14
-            text: "Update DB"
-            on_release:
-                root.popup_active = True
-                root.threadonator(root.check)
-                coredb_update_popup.__self__.open()
-
-        Label:
-            size_hint_y: None
-            height: 70
-            italic: True
-            text: "CIM Version\n1.0.0"
-            text_size: (self.width, self.height)
-            halign: 'center'
-            valign: 'middle'
-
-        Button:
             text: "Home"
             size_hint_y: None
             height: 50
@@ -923,6 +901,48 @@
             disabled: True
             on_release: manager.current = 'MapDesignerScreen'
 
+        BoxLayout:
+            id: spacer
+
+        Button:
+            id: update_db
+            size_hint: (None, None)
+            height: 35
+            width: 90
+            pos_hint: {'center_x': 0.5}
+            bold: True
+            font_size: 14
+            text: "Update DB"
+            on_release:
+                root.popup_active = True
+                root.threadonator(root.check)
+                coredb_update_popup.__self__.open()
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: 100
+            padding: 11,0,11,0
+            canvas.before:
+                Color:
+                    rgba: (1, 1, 1, 1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Image:
+                size_hint: (None, None)
+                size: self.texture_size
+                source: './Sources/CIM_logo.png'
+                allow_stretch: False
+
+            Label:
+                size_hint_y: None
+                height: 18
+                font_size: 12
+                bold: True
+                text: "Ver. 1.0.0"
+                color: (0.2, 0.2, 0.2, 1)
 <Home>:
     name: 'Home'
     BoxLayout:
@@ -2473,12 +2493,12 @@
 
                                 FormulaHintItem:
                                 FormulaHintLabel:
-                                    text: '[color=f54236][b]Calculation:[/b][/color] [color=666666]Calculated results will be stored in csv format. (Location: "my_index.csv" in App folder)[/color]'
+                                    text: '[color=f54236][b]Saving:[/b][/color] [color=666666]You must first select the location where results (my_index.csv) and log (my_index.log) will be stored.[/color]'
                                     height: 50
 
                                 FormulaHintItem:
                                 FormulaHintLabel:
-                                    text: '[color=f54236][b]Validation:[/b][/color] [color=666666]Check log file for any syntax errors, or missing indicator values. (Location: "my_index.log" in App folder)[/color]'
+                                    text: '[color=f54236][b]Validation:[/b][/color] [color=666666]Check log file for any syntax errors, or missing indicator values.[/color]'
                                     height: 50
 
 
@@ -2538,6 +2558,8 @@
 
     FloatLayout:
         orientation: "vertical"
+        size_hint_x: None
+        width: root.width - 1
 
         BoxLayout:
             orientation: "vertical"
@@ -2997,23 +3019,44 @@
                         size_hint_x: None
                         width: 100
                         padding: 10
-                        spacing: 10
                         orientation: "vertical"
 
-                        Button:
-                            text: "IMG"
-                            disabled: not map_canvas.children
+                        Label:
+                            size_hint_y: None
+                            height: 18
+                            text: "Export Map:"
+                            font_size: 12
 
-                        Button:
-                            text: "SVG"
-                            disabled: not map_canvas.children
+                        BoxLayout:
+                            size_hint: None, None
+                            size: 80, 35
+                            padding: 5,0,5,0
+                            spacing: 6
+
+                            Button:
+                                size_hint: None, None
+                                size: 32, 32
+                                background_normal: './Sources/save_to_png_normal.png'
+                                background_down: './Sources/save_to_png_down.png'
+                                background_disabled_down: './Sources/save_to_png_disabled.png'
+                                background_disabled_normal: './Sources/save_to_png_disabled.png'
+                                disabled: not map_canvas.children
+
+                            Button:
+                                size_hint: None, None
+                                size: 32, 32
+                                background_normal: './Sources/save_to_svg_normal.png'
+                                background_down: './Sources/save_to_svg_down.png'
+                                background_disabled_down: './Sources/save_to_svg_disabled.png'
+                                background_disabled_normal: './Sources/save_to_svg_disabled.png'
+                                disabled: not map_canvas.children
 
                     BoxLayout:
                         orientation: "vertical"
                         size_hint_x: None
                         width: 100
                         padding: (0,5,0,5)
-                        spacing: 6
+                        spacing: 2
 
                         BoxLayout:
                             orientation: "vertical"
@@ -3022,7 +3065,7 @@
 
                             Label:
                                 size_hint_y: None
-                                height: 12
+                                height: 14
                                 text: "Borders"
                                 font_size: 12
 
@@ -3041,7 +3084,7 @@
 
                             Label:
                                 size_hint_y: None
-                                height: 12
+                                height: 14
                                 text: "Labels"
                                 font_size: 12
 
@@ -3076,4 +3119,4 @@
                             source: './Sources/slider_arrow.png'
                             allow_stretch: False
 
-    YLine:
+    #YLine:

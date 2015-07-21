@@ -2288,6 +2288,9 @@ class CIMgui(App):
     # app_closed will get triggered when App stops.
     app_closed = False
 
+    def open_settings(self, *largs):
+        pass
+
     def on_stop(self):
         CIMgui.app_closed = True
 
