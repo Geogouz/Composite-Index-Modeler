@@ -2,6 +2,34 @@
 #: import math math
 
 
+<SaveDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+
+        FileChooserIconView:
+            id: filechooser
+
+        TextInput:
+            size_hint_y: None
+            height: 30
+            multiline: False
+            text: "TH_Map.svg"
+            readonly: True
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, root.file)
+
+
 <LegendClassContainer>:
     size_hint_y: None
     height: 30
@@ -2523,7 +2551,8 @@
                                             text: '.'
                                             on_press: root.calc_btn_pressed(self.text)
 
-                                        Button:
+                                        Saver:
+                                            caller: root.exec_formula
                                             text: 'EXEC'
                                             size_hint: (None, None)
                                             size: (60, 35)
@@ -2532,7 +2561,7 @@
                                             background_down: './Sources/exec_calc_btn_down.png'
                                             color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
                                             on_press:
-                                                if len(my_formula.children)>1: root.exec_formula()
+                                                if len(my_formula.children)>1: self.show_save("exec")
                                                 else: root.popuper("Empty formula..", "Warning!")
 
                                         Calc_Func_Btn:
@@ -3109,7 +3138,8 @@
                             padding: 5,0,5,0
                             spacing: 6
 
-                            Button:
+                            Saver:
+                                cnv: th_main_frame
                                 size_hint: None, None
                                 size: 32, 32
                                 background_normal: './Sources/save_to_png_normal.png'
@@ -3117,8 +3147,9 @@
                                 background_disabled_down: './Sources/save_to_png_disabled.png'
                                 background_disabled_normal: './Sources/save_to_png_disabled.png'
                                 disabled: not map_canvas.children
+                                on_release: self.show_save("TH_Map.png")
 
-                            Button:
+                            Saver:
                                 size_hint: None, None
                                 size: 32, 32
                                 background_normal: './Sources/save_to_svg_normal.png'
@@ -3126,6 +3157,7 @@
                                 background_disabled_down: './Sources/save_to_svg_disabled.png'
                                 background_disabled_normal: './Sources/save_to_svg_disabled.png'
                                 disabled: not map_canvas.children
+                                on_release: self.show_save("TH_Map.svg")
 
                     BoxLayout:
                         orientation: "vertical"

@@ -111,7 +111,6 @@ class SearchBar(BoxLayout):
 
 
 class SearchArea(TextInput):
-
     pass
 
 
@@ -162,7 +161,6 @@ class MouseScreen(Screen):
 
 
 class Home(Screen):
-
     pass
 
 
@@ -904,7 +902,7 @@ class IndexCreation(MouseScreen):
 
                 short_id = self.id_conn[indicator]
                 indicator_address = start_url+countries+indicators+mi[indicator]+"/"+end_url
-                #print indicator_address # To print the web url
+                # print indicator_address # To print the web url
 
                 # Define World Bank connection (JSON data).
                 ind_data_connection = urllib2.urlopen(indicator_address, timeout=120)
@@ -1712,7 +1710,7 @@ class IndexCreation(MouseScreen):
         # Creation of new space item.
         self.formula_spacer(0)
 
-    def exec_formula(self):
+    def exec_formula(self, filename):
         # Prepare composite index model dict.
         self.cim = {self.rev_country_dict[r]: [] for r in self.iry_iteration["r"][1:]}
 
@@ -1766,7 +1764,7 @@ class IndexCreation(MouseScreen):
 
         try:
             # Start building the log file.
-            with open("my_index.log", "w") as log_file:
+            with open(filename[0], "w") as log_file:
 
                 log_file.write("Indicators Variables\n===========================\n")
                 for key, val in self.rev_id_conn.iteritems():
@@ -1808,7 +1806,7 @@ class IndexCreation(MouseScreen):
 
         try:
             # Start building the calculation file.
-            with open("my_index.csv", "w") as calc_file:
+            with open(filename[1], "w") as calc_file:
                 for y in self.iry_iteration["y"][1:]:
                     calc_file.write(";"+y)
                 for r in self.iry_iteration["r"][1:]:
@@ -1829,7 +1827,7 @@ class IndexCreation(MouseScreen):
 
         # If not, no errors found.
         else:
-            self.popuper("Two files have been saved\nin App's root directory.\n\n"
+            self.popuper("Two files have been saved\nin selected directory.\n\n"
                          "Check 'my_index.csv' for results and\n"
                          "'my_index.log' for calculation logs.",
                          "Calculations done!")
@@ -2108,8 +2106,44 @@ class MapDesigner(MouseScreen):
             self.th_data_table_values.add_widget(year_value)
 
 
-class CIMMenu(BoxLayout):
+class SaveDialog(FloatLayout):
+    save = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+    file = StringProperty("")
 
+
+class Saver(Button):
+
+    caller = ObjectProperty(None)
+
+    def dismiss_popup(self):
+        self._popup.dismiss()
+
+    def show_save(self, fn):
+        self._popup = Popup(title="Save file",
+                            content=SaveDialog(save=self.save, cancel=self.dismiss_popup, file=fn),
+                            size_hint=(None, None),
+                            size=(600, 400),
+                            auto_dismiss=False)
+        self._popup.open()
+
+    def save(self, path, fn):
+
+        # If we are exporting to png.
+        if fn == "TH_Map.png":
+            # Take a screen shot and save the img.
+            self.cnv.parent.export_to_png(os.path.join(path, fn))
+
+        elif fn == "TH_Map.svg":
+            with open(os.path.join(path, fn), 'w') as new_file:
+                new_file.write("Hello World")
+
+        elif fn == "exec":
+            self.caller([os.path.join(path, "my_index.log"), os.path.join(path, "my_index.csv")])
+        self.dismiss_popup()
+
+
+class CIMMenu(BoxLayout):
     pass
 
 
