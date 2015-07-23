@@ -1854,7 +1854,8 @@ class IndexCreation(MouseScreen):
     # This function prepares the Thematic Designer Screen.
     def prepare_thematic(self):
         # Activate Thematic Button from MainWindow.
-        self.ic_thematic_btn.disabled = False
+        self.ic_thematic_btn.size = (100, 100)
+        self.ic_thematic_btn_box.opacity = 1
 
         # Clear all previously created year_buttons and Data Tables.
         self.ic_th_designer.th_years_stack.clear_widgets()

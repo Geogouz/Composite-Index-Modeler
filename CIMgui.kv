@@ -811,6 +811,7 @@
             id: index_creation
             ic_index_selection: index_selection
             ic_thematic_btn: thematic_btn
+            ic_thematic_btn_box: thematic_btn_box
             ic_th_designer: th_designer
         MapDesigner:
             id: th_designer
@@ -866,57 +867,133 @@
                             coredb_update_popup.dismiss()
                             root.popup_active = False
 
-        Button:
-            text: "Home"
-            size_hint_y: None
-            height: 50
-            on_release: manager.current = 'Home'
-
-        Button:
-            text: "Indicator\nSelection"
+        Label:
+            size_hint: None, None
+            size: 100, 30
+            text: "MENU"
+            font_size: 15
             text_size: (self.width, self.height)
             halign: 'center'
-            valign: 'middle'
-            size_hint_y: None
-            height: 50
-            on_release: index_selection.build_indices()
+            valign: "bottom"
+            bold: True
 
-        Button:
-            text: "Index\nCreation"
-            text_size: (self.width, self.height)
-            halign: 'center'
-            valign: 'middle'
-            size_hint_y: None
-            height: 50
-            on_release: manager.current = 'IndexCreationScreen'
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "top"
 
-        Button:
-            id: thematic_btn
-            text: "Thematic\nMapper"
-            text_size: (self.width, self.height)
-            halign: 'center'
-            valign: 'middle'
-            size_hint_y: None
-            height: 50
-            disabled: True
-            on_release: manager.current = 'MapDesignerScreen'
+            BoxLayout:
+                size_hint_y: None
+                height: 435
+                padding: 0, 5, 0, 5
+                spacing: 40
+                orientation: "vertical"
 
-        BoxLayout:
-            id: spacer
+                BoxLayout:
+                    size_hint_y: None
+                    height:110
+                    orientation: "vertical"
+
+                    ToggleButton:
+                        group: "menu"
+                        size_hint: None, None
+                        size: 100, 100
+                        on_release: index_selection.build_indices()
+                        disabled: True if self.state == "down" else False
+                        background_normal: './Sources/IndicatorSelection_inactive.png'
+                        background_disabled_down: './Sources/IndicatorSelection_active.png'
+
+                    Label:
+                        size_hint: None, None
+                        size: 100, 10
+                        text: "Indicator Selection"
+                        font_size: 11
+                        text_size: (self.width, self.height)
+                        halign: 'center'
+                        valign: 'middle'
+
+                BoxLayout:
+                    size_hint_y: None
+                    height:110
+                    orientation: "vertical"
+
+                    ToggleButton:
+                        group: "menu"
+                        size_hint: None, None
+                        size: 100, 100
+                        on_release: manager.current = 'IndexCreationScreen'
+                        disabled: True if self.state == "down" else False
+                        background_normal: './Sources/IndexCreation_inactive.png'
+                        background_disabled_down: './Sources/IndexCreation_active.png'
+
+                    Label:
+                        size_hint: None, None
+                        size: 100, 10
+                        text: "Index Creation"
+                        font_size: 11
+                        text_size: (self.width, self.height)
+                        halign: 'center'
+                        valign: 'middle'
+
+                BoxLayout:
+                    id: thematic_btn_box
+                    opacity: 0
+                    size_hint_y: None
+                    height:125
+                    orientation: "vertical"
+
+                    ToggleButton:
+                        id: thematic_btn
+                        group: "menu"
+                        size_hint: None, None
+                        size: 0, 0
+                        disabled: True if self.state == "down" else False
+                        on_release: if thematic_btn.opacity == 1: manager.current = 'MapDesignerScreen'
+                        background_normal: './Sources/ThematicMapper_inactive.png'
+                        background_disabled_down: './Sources/ThematicMapper_active.png'
+
+                    Label:
+                        size_hint: None, None
+                        size: 100, 10
+                        text: "Thematic Mapper"
+                        font_size: 11
+                        text_size: (self.width, self.height)
+                        halign: 'center'
+                        valign: 'middle'
 
         Button:
             id: update_db
             size_hint: (None, None)
-            height: 35
-            width: 90
+            height: 30
+            width: 80
             pos_hint: {'center_x': 0.5}
-            bold: True
             font_size: 14
             text: "Update DB"
+            bold: True
+            italic: True
+            text_size: (self.width, self.height)
+            halign: 'center'
+            valign: 'middle'
             on_release:
                 root.popup_active = True
                 root.threadonator(root.check)
                 coredb_update_popup.__self__.open()
+
+        ToggleButton:
+            group: "menu"
+            text: "?"
+            font_size: 30
+            italic: True
+            bold: True
+            size_hint: None, None
+            size: 100, 50
+            on_release: manager.current = 'Home'
+            disabled: True if self.state == "down" else False
+            border: (0,0,0,0)
+            background_normal: './Sources/transparent_frame.png'
+            background_disabled_down: './Sources/transparent_frame.png'
+            text_size: (self.width-20, self.height)
+            halign: 'right'
+            valign: 'bottom'
 
         BoxLayout:
             orientation: "vertical"
@@ -2967,7 +3044,6 @@
                     italic: True
 
                 BoxLayout:
-                    id: th_year_scroll
                     padding: 3
 
                     ScrollView:
@@ -3118,5 +3194,3 @@
                             size: 80, 55
                             source: './Sources/slider_arrow.png'
                             allow_stretch: False
-
-    #YLine:
