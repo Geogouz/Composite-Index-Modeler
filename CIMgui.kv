@@ -15,7 +15,7 @@
             size_hint_y: None
             height: 30
             multiline: False
-            text: "TH_Map.svg"
+            text: root.file
             readonly: True
 
         BoxLayout:
@@ -2561,7 +2561,7 @@
                                             background_down: './Sources/exec_calc_btn_down.png'
                                             color: (1, 1, 1, 1) if self.state == 'normal' else (0, 0, 0, 1)
                                             on_press:
-                                                if len(my_formula.children)>1: self.show_save("exec")
+                                                if len(my_formula.children)>1: self.show_save("Files: my_index.csv, my_index.log")
                                                 else: root.popuper("Empty formula..", "Warning!")
 
                                         Calc_Func_Btn:
@@ -3147,7 +3147,7 @@
                                 background_disabled_down: './Sources/save_to_png_disabled.png'
                                 background_disabled_normal: './Sources/save_to_png_disabled.png'
                                 disabled: not map_canvas.children
-                                on_release: self.show_save("TH_Map.png")
+                                on_release: self.show_save("File: TH_Map.png")
 
                             Saver:
                                 size_hint: None, None
@@ -3157,7 +3157,7 @@
                                 background_disabled_down: './Sources/save_to_svg_disabled.png'
                                 background_disabled_normal: './Sources/save_to_svg_disabled.png'
                                 disabled: not map_canvas.children
-                                on_release: self.show_save("TH_Map.svg")
+                                on_release: self.show_save("File: TH_Map.svg")
 
                     BoxLayout:
                         orientation: "vertical"

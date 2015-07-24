@@ -2120,7 +2120,8 @@ class Saver(Button):
         self._popup.dismiss()
 
     def show_save(self, fn):
-        self._popup = Popup(title="Save file",
+        self._popup = Popup(title="Choose Save Destination.\n(CIM overwrites any previously "
+                                  "created project files, so they must not be in use!)",
                             content=SaveDialog(save=self.save, cancel=self.dismiss_popup, file=fn),
                             size_hint=(None, None),
                             size=(600, 400),
@@ -2129,17 +2130,33 @@ class Saver(Button):
 
     def save(self, path, fn):
 
-        # If we are exporting to png.
-        if fn == "TH_Map.png":
-            # Take a screen shot and save the img.
-            self.cnv.parent.export_to_png(os.path.join(path, fn))
+        try:
+            # If we are exporting to png.
+            if fn == "File: TH_Map.png":
+                # Take a screen shot and save the img.
+                self.cnv.parent.export_to_png(os.path.join(path, "TH_Map.png"))
 
-        elif fn == "TH_Map.svg":
-            with open(os.path.join(path, fn), 'w') as new_file:
-                new_file.write("Hello World")
+            elif fn == "File: TH_Map.svg":
+                # Generate the user SVG with the thematic colors applied.
+                orig_svg = open("./DB/TH_WMap.svg", "r")
+                user_svg = open(os.path.join(path, "TH_Map.svg"), 'w')
 
-        elif fn == "exec":
-            self.caller([os.path.join(path, "my_index.log"), os.path.join(path, "my_index.csv")])
+                lines = orig_svg.readlines()
+                lines[0] = lines[0].replace('"0 0 1220 500"',
+                                            '"-60 -1400 6000 1400" width="1900" height="900"')
+
+                user_svg.writelines(lines)
+
+                user_svg.close()
+                orig_svg.close()
+
+            elif fn == "Files: my_index.csv, my_index.log":
+                self.caller([os.path.join(path, "my_index.log"), os.path.join(path, "my_index.csv")])
+
+        # Something really unexpected just happened.
+        except Exception as e:
+            print "def save(self, path, fn):", type(e), e.__doc__, e.message
+
         self.dismiss_popup()
 
 
