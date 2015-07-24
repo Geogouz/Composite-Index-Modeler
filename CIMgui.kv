@@ -826,7 +826,7 @@
 
     orientation: "horizontal"
 
-    CIMScreenManager: # todo while updating prevent changing screens also prevent updating after all screens changed.
+    CIMScreenManager:
         transition: sm.SwapTransition()
         id: manager
         Home:
@@ -911,28 +911,30 @@
 
             BoxLayout:
                 size_hint_y: None
-                height: 435
+                height: 370
                 padding: 0, 5, 0, 5
                 spacing: 40
                 orientation: "vertical"
 
                 BoxLayout:
                     size_hint_y: None
-                    height:110
+                    height:90
                     orientation: "vertical"
 
                     ToggleButton:
                         group: "menu"
                         size_hint: None, None
-                        size: 100, 100
-                        on_release: index_selection.build_indices()
+                        size: 100, 70
+                        on_release:
+                            if not root.processing: index_selection.build_indices()
+                            else: self.state = "normal"
                         disabled: True if self.state == "down" else False
                         background_normal: './Sources/IndicatorSelection_inactive.png'
                         background_disabled_down: './Sources/IndicatorSelection_active.png'
 
                     Label:
                         size_hint: None, None
-                        size: 100, 10
+                        size: 100, 20
                         text: "Indicator Selection"
                         font_size: 11
                         text_size: (self.width, self.height)
@@ -941,21 +943,23 @@
 
                 BoxLayout:
                     size_hint_y: None
-                    height:110
+                    height:90
                     orientation: "vertical"
 
                     ToggleButton:
                         group: "menu"
                         size_hint: None, None
-                        size: 100, 100
-                        on_release: manager.current = 'IndexCreationScreen'
+                        size: 100, 70
+                        on_release:
+                            if not root.processing: manager.current = 'IndexCreationScreen'
+                            else: self.state = "normal"
                         disabled: True if self.state == "down" else False
                         background_normal: './Sources/IndexCreation_inactive.png'
                         background_disabled_down: './Sources/IndexCreation_active.png'
 
                     Label:
                         size_hint: None, None
-                        size: 100, 10
+                        size: 100, 20
                         text: "Index Creation"
                         font_size: 11
                         text_size: (self.width, self.height)
@@ -966,7 +970,7 @@
                     id: thematic_btn_box
                     opacity: 0
                     size_hint_y: None
-                    height:125
+                    height:100
                     orientation: "vertical"
 
                     ToggleButton:
@@ -981,7 +985,7 @@
 
                     Label:
                         size_hint: None, None
-                        size: 100, 10
+                        size: 100, 20
                         text: "Thematic Mapper"
                         font_size: 11
                         text_size: (self.width, self.height)
@@ -1016,6 +1020,7 @@
             size: 100, 50
             on_release: manager.current = 'Home'
             disabled: True if self.state == "down" else False
+            disabled_color: (1,1,1,1)
             border: (0,0,0,0)
             background_normal: './Sources/transparent_frame.png'
             background_disabled_down: './Sources/transparent_frame.png'
