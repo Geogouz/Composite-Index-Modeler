@@ -42,6 +42,7 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.popup import Popup
 from kivy.clock import Clock, mainthread
 from kivy.uix.dropdown import DropDown
+from kivy.uix.rst import RstDocument
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -54,6 +55,15 @@ indicators = "indicators/"
 
 # Set url for World Development Indicators (WDI)
 wdi_url = "http://api.worldbank.org/source/2/indicators/?per_page=30000&format=json"
+
+
+class RstTip(RstDocument):
+
+    def __init__(self, **kwargs):
+        # make sure we aren't overriding any important functionality
+        super(RstTip, self).__init__(**kwargs)
+        with open("./DB/tips.txt", "r") as stream:
+            self.text = stream.read()
 
 
 class TopicToggleButton(ToggleButton):
@@ -158,10 +168,6 @@ class CIMScreenManager(ScreenManager):
 class MouseScreen(Screen):
 
     mouse_pos = ListProperty()
-
-
-class Home(Screen):
-    pass
 
 
 class IndexSelection(MouseScreen):

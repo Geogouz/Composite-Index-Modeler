@@ -828,20 +828,35 @@
 
     CIMScreenManager:
         transition: sm.SwapTransition()
+
         id: manager
-        Home:
+        Screen:
+            name: 'Home'
+
+            RstTip:
+                size_hint: (None, None)
+                size: (root.width-100, root.height)
+                canvas.before:
+                    Color:
+                        rgba: (0.90, 0.90, 0.90, 1)
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
         IndexSelection:
             id: index_selection
             is_update_db: update_db
             is_manager: manager
             is_index_creation: index_creation
             ind_select_icon: ind_select_icon
+
         IndexCreation:
             id: index_creation
             ic_index_selection: index_selection
             ic_thematic_btn: thematic_btn
             ic_thematic_btn_box: thematic_btn_box
             ic_th_designer: th_designer
+
         MapDesigner:
             id: th_designer
             md_index_creation: index_creation
@@ -1055,22 +1070,6 @@
                 bold: True
                 text: "Ver. 1.0.0"
                 color: (0.2, 0.2, 0.2, 1)
-<Home>:
-    name: 'Home'
-    BoxLayout:
-        size_hint: (None, None)
-        size: root.size
-        canvas.before:
-            Color:
-                rgba: (0.90, 0.90, 0.90, 1)
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-        Label:
-            italic: True
-            text: "Help - How To - Tips"
-            color: (0, 0, 0, 1)
 
 
 <IndexSelection>:
