@@ -835,6 +835,7 @@
             is_update_db: update_db
             is_manager: manager
             is_index_creation: index_creation
+            ind_select_icon: ind_select_icon
         IndexCreation:
             id: index_creation
             ic_index_selection: index_selection
@@ -922,6 +923,7 @@
                     orientation: "vertical"
 
                     ToggleButton:
+                        id: ind_select_icon
                         group: "menu"
                         size_hint: None, None
                         size: 100, 70
@@ -3107,6 +3109,32 @@
                     size: self.size
 
             BoxLayout:
+                orientation: "vertical"
+
+                BoxLayout:
+                    Image:
+                        size_hint: None, None
+                        size: 415, 100
+                        source: './Sources/zoom_move.png'
+                        allow_stretch: False
+
+                BoxLayout:
+                    size_hint: None, None
+                    size: 415, 20
+
+                    Label:
+                        size_hint: None, None
+                        size: 118, 20
+                        text: "Move"
+                        color: (0,0,0,1)
+                        font_size: 12
+
+                    Label:
+                        size_hint: None, None
+                        size: 297, 20
+                        text: "Zoom"
+                        color: (0,0,0,1)
+                        font_size: 12
 
             AnchorLayout:
                 anchor_x: 'right'

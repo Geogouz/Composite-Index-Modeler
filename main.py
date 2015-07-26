@@ -516,6 +516,8 @@ class IndexSelection(MouseScreen):
             except IOError:
                 self.topics_dic = {}
                 self.is_manager.current = 'Home'
+                self.ind_select_icon.state = "normal"
+
                 Popup(title='Warning:', content=Label(
                     text='No Indicator available.\nUpdate the database first.',
                     font_size=15,
