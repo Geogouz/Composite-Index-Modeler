@@ -5,8 +5,7 @@ Composite Index Modeler (CIM) provides a basic set of tools for the creation and
 CIM at the moment uses WorldBank's World Development Indicators (WDI) database; however, additional databases could be included in the future too.
 
 
-*Quick Guide:*
-Menu *(Right Sidebar)*:
+Menu:
 =======================
 **[Icons]** - CIM consists of 3 main components (Indicator Selection, Index Creation and Thematic Mapper).
                     You can navigate among them using each corresponding Icon.
@@ -15,9 +14,8 @@ Menu *(Right Sidebar)*:
                              (Updating can only be done right after Application is started and before Indicator Selection has been loaded).
 
 **[?]** - Return back here.
+*(Right Sidebar)*
 
-
-*(Choosing your Indicators)*
 Indicator Selection:
 =====================================================
 **[Topics List]** - Select a parent topic to view all its child Indicators.
@@ -31,9 +29,9 @@ Indicator Selection:
 **[My Indicators]** - All Indicators in that list will later (at Index Creation) become available both as data and as variables.
 
 **[Search]** - Search for a specific keyword within Indicator's title.
+*(Choosing your Indicators)*
 
 
-*(Constructing your Index)*
 Index Creation:
 ==============================================
 **[Get Indicator Data]** - Download Indicator values for all available years and regions (and for each Indicator in "My Indicators" list).
@@ -69,9 +67,9 @@ Index Creation:
         To export indicator itself into a csv, we could just use that:
 
 (As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.)
+*(Constructing your Index)*
 
 
-*(Visualizing Results)*
 Thematic Mapper:
 =============================================
 **[Year List]** - First thing you should do to view results, is to select a year.
@@ -89,7 +87,7 @@ Thematic Mapper:
 **[Borders, Labels]** - Turn On/Off those features.
 
 **[Export Map]** - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
-
+*(Visualizing Results)*
 
 Support
 =======
