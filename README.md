@@ -59,7 +59,7 @@ Index Creation:
                                        Black suggests that at least one Indicator (among "My Indicators") contains data for that year
                                        Grey means that no Indicator contains data for that year.
 
-    <img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
+<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
 
 **[Index Algebra]** - This section consists of 2 main modules. The Formula Screen and the Index Calculator.
 
@@ -72,7 +72,7 @@ Index Creation:
 
 *A simple example:*
         We want to calculate our Custom Index (CI) for all selected Regions and Years (in Series Selection).
-        Let's say that this **CI** is **Life Expectancy Index (LEI)**. Our formula should then be: **(IA[Region][Year]**-20)/(85-20)
+        Let's say that this **CI** is **Life Expectancy Index (LEI)**. Our formula should then be: (**IA[Region][Year]**-20)/(85-20)
 
 *Most simplistic example:*
         To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
