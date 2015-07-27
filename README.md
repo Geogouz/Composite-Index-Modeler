@@ -77,7 +77,7 @@ Index Creation:
 *Most simplistic example:*
         To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_B.png"/>
 .
 
 Thematic Mapper:
@@ -100,7 +100,7 @@ Thematic Mapper:
 
 **[Export Map]** - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper_A.png"/>
 .
 
 Support
