@@ -100,7 +100,7 @@ Thematic Mapper:
 
 **[Export Map]** - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
 
-<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
 .
 
 Support
@@ -109,3 +109,7 @@ Support
 If you need any assistance, you can contact Dev at:
 
 D. Xenakis | Email : gouzounakis@hotmail.com
+
+CIM has been developed using an Open source Python library, [kivy](http://kivy.org/) which can run on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
+
+<img align="left" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/>
