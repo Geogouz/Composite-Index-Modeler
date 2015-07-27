@@ -110,5 +110,7 @@ If you need any assistance, you can contact Dev at:
 
 D. Xenakis | Email : gouzounakis@hotmail.com
 
-<a href="http://kivy.org/" target="_blank"><img align="center" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/></a>
+
 CIM has been developed using an Open source Python library, [kivy](http://kivy.org/) which can run on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
+
+<a href="http://kivy.org/" target="_blank"><img align="center" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/></a>
