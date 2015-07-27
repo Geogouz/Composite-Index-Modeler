@@ -2344,6 +2344,9 @@ class MainWindow(BoxLayout):
 
 class CIMgui(App):
 
+    icon = './Sources/App_Logo.png'
+    title = 'Composite Index Modeler'
+
     # app_closed will get triggered when App stops.
     app_closed = False
 
