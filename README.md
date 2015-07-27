@@ -39,7 +39,7 @@ Indicator Selection:
 
 
 
-<img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Indicator_Selection.png"/>
+<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Indicator_Selection.png"/>
 
 
 
@@ -84,8 +84,8 @@ Index Creation:
 
 
 
-<img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
-<img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
+<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
+<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
 
 
 
@@ -113,7 +113,7 @@ Thematic Mapper:
 
 
 
-<img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
+<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
 
 
 
