@@ -14,7 +14,7 @@ Menu:
                     You can navigate among them using each corresponding Icon.
 
 **[Update DB]** - Download latest Indicator dictionary from WorldBank.
-                             (Updating can only be done right after Application is started and before Indicator Selection has been loaded).
+                             Updating can only be done right after Application is started and before Indicator Selection has been loaded.
 
 **[?]** - Return back here.
 
@@ -66,15 +66,14 @@ Index Creation:
                                       CIM provides also a live parenthesis checking system to notify whether any still remain open.
 
 **[Index Calculator]**- This module is the formula builder. User has 3 tools at his disposal (Function Tools, Indicator Variable and Calculator Panel).
+                        As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.
 
 *A simple example:*
         We want to calculate our Custom Index (CI) for all selected Regions and Years (in Series Selection).
-        Let's say that this **CI** is **Life Expectancy Index (LEI)**. Our formula should then be:
+        Let's say that this **CI** is **Life Expectancy Index (LEI)**. Our formula should then be: **IA[Region][Year]**-20)/(85-20)
 
 *Most simplistic example:*
-        To export indicator itself into a csv, we could just use that:
-
-(As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.)
+        To export indicator itself into a csv, we could just use that: IA[Region][Year]
 
 
 
@@ -103,7 +102,7 @@ Thematic Mapper:
 Support
 =======
 
-If you need assistance, you can ask for help on our mailing list:
+If you need assistance, you can ask for help at:
 
 Dev: D. Xenakis
 Email : gouzounakis@hotmail.com

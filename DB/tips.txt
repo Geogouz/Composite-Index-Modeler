@@ -14,7 +14,7 @@ ________________________________________________________________________________
                     You can navigate among them using each corresponding Icon.
 
     [b][Update DB][/b] - Download latest Indicator dictionary from WorldBank.
-                             (Updating can only be done right after Application is started and before Indicator Selection has been loaded).
+                             Updating can only be done right after Application is started and before Indicator Selection has been loaded.
 
     [b][?][/b] - Return back here.
 
@@ -60,15 +60,14 @@ ________________________________________________________________________________
                                       CIM provides also a live parenthesis checking system to notify whether any still remain open.
 
     [b][Index Calculator][/b] - This module is the formula builder. User has 3 tools at his disposal (Function Tools, Indicator Variable and Calculator Panel).
+                                        As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.
 
             [i]A simple example:[/i]
                       We want to calculate our Custom Index (CI) for all selected Regions and Years (in Series Selection).
-                      Let's say that this [b]CI[/b] is [b]Life Expectancy Index (LEI)[/b]. Our formula should then be:
+                      Let's say that this [b]CI[/b] is [b]Life Expectancy Index (LEI)[/b]. Our formula should then be:    [size=27]([color=000000][b]IA[/b][/color][sub][color=ff0080][Region][/color][color=0d88d2][Year][/color][/sub] - 20) / (85 - 20)[/size]
 
             [i]Most simplistic example:[/i]
-                      To export indicator itself into a csv, we could just use that:
-
-            (As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.)
+                      To export indicator itself into a csv, we could just use that:    [size=27][color=000000][b]IA[/b][/color][sub][color=ff0080][Region][/color][color=0d88d2][Year][/color][/sub][/size]
 
 
 [color=#522b38][size=25][b]Thematic Mapper[/b][/size][/color] [i](Visualizing Results)[/i]:
