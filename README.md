@@ -1,15 +1,14 @@
 CIM
+=======================
 ______________________________________________________________________________________________________________________________________________________________________________________________________
-Composite Index Modeler (CIM) provides a basic set of tools for the creation and visualization of an Index.
-
-You can calculate and view an already formed Index by combining available Indicators, or even create your own Model based on your custom mathematical formula.
+Composite Index Modeler (CIM) provides a basic set of tools for the creation and visualization of an Index. You can calculate and view an already formed Index by combining available Indicators, or even create your own Model based on your custom mathematical formula.
 
 CIM at the moment uses WorldBank's World Development Indicators (WDI) database; however, additional databases could be included in the future too.
 ______________________________________________________________________________________________________________________________________________________________________________________________________
 
 
 *Quick Guide:*
-Menu (Right Sidebar):
+Menu *(Right Sidebar)*:
 =======================
 **[Icons]** - CIM consists of 3 main components (Indicator Selection, Index Creation and Thematic Mapper).
                     You can navigate among them using each corresponding Icon.
@@ -20,7 +19,7 @@ Menu (Right Sidebar):
 **[?]** - Return back here.
 
 
-Indicator Selection (Choosing your Indicators):
+Indicator Selection *(Choosing your Indicators)*:
 =====================================================
 **[Topics List]** - Select a parent topic to view all its child Indicators.
 
@@ -35,7 +34,7 @@ Indicator Selection (Choosing your Indicators):
 **[Search]** - Search for a specific keyword within Indicator's title.
 
 
-Index Creation (Constructing your Index):
+Index Creation *(Constructing your Index)*:
 ==============================================
 **[Get Indicator Data]** - Download Indicator values for all available years and regions (and for each Indicator in "My Indicators" list).
                                              This procedure also generates a quick statistic preview and an ID pointing back to the Indicator.
@@ -72,7 +71,7 @@ Index Creation (Constructing your Index):
 (As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.)
 
 
-Thematic Mapper (Visualizing Results):
+Thematic Mapper *(Visualizing Results)*:
 =============================================
 **[Year List]** - First thing you should do to view results, is to select a year.
                           This will load all calculated data of that year into a sortable Data Table (inside the right slider which initiates closed).
