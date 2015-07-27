@@ -35,7 +35,7 @@ Indicator Selection:
 
 **[Search]** - Search for a specific keyword within Indicator's title.
 
-<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Indicator_Selection.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Indicator_Selection.png"/>
 .
 
 Index Creation:
@@ -59,7 +59,7 @@ Index Creation:
                                        Black suggests that at least one Indicator (among "My Indicators") contains data for that year
                                        Grey means that no Indicator contains data for that year.
 
-<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
 
 **[Index Algebra]** - This section consists of 2 main modules. The Formula Screen and the Index Calculator.
 
@@ -77,7 +77,7 @@ Index Creation:
 *Most simplistic example:*
         To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
 
-<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
 .
 
 Thematic Mapper:
@@ -110,6 +110,5 @@ If you need any assistance, you can contact Dev at:
 
 D. Xenakis | Email : gouzounakis@hotmail.com
 
-CIM has been developed using an Open source Python library, [kivy](http://kivy.org/) which can run on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
-
 <img align="left" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/>
+CIM has been developed using an Open source Python library, [kivy](http://kivy.org/) which can run on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
