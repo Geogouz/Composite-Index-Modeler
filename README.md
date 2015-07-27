@@ -1,130 +1,90 @@
-CIM
-=====
-
-Composite Index Modeler (CIM) provides a basic set of tools for the creation and visualization of an Index.
-
-You can calculate and view an already formed Index by combining available Indicators, or even create your own Model based on your custom mathematical formula.
-
-CIM at the moment uses WorldBank's World Development Indicators (WDI) database; however, additional databases could be included in the future too.
-
-[b]Quick Guide[/b]
+                                                                                                                                            [size=45][b]CIM[/b][/size]
+______________________________________________________________________________________________________________________________________________________________________________________________________
+[size=16]
+    Composite Index Modeler (CIM) provides a basic set of tools for the creation and visualization of an Index.
+    You can calculate and view an already formed Index by combining available Indicators, or even create your own Model based on your custom mathematical formula.
+    CIM at the moment uses WorldBank's World Development Indicators (WDI) database; however, additional databases could be included in the future too.[/size]
+______________________________________________________________________________________________________________________________________________________________________________________________________
 
 
-Menu (Right Sidebar):
-------------
-[b][Icons][/b] - CIM consists of 3 main components (Indicator Selection, Index Creation and Thematic Mapper). You can navigate among them using each corresponding Icon.
+[i]Quick Guide:[/i]
+[size=25][b]Menu[/b][/size] [i](Right Sidebar)[/i]:
+=======================
+    [b][Icons][/b] - CIM consists of 3 main components (Indicator Selection, Index Creation and Thematic Mapper).
+                    You can navigate among them using each corresponding Icon.
 
-[b][Update DB][/b] - Download latest Indicator dictionary from WorldBank. (Updating can only be done right after Application is started and before Indicator Selection has been loaded).
+    [b][Update DB][/b] - Download latest Indicator dictionary from WorldBank.
+                             (Updating can only be done right after Application is started and before Indicator Selection has been loaded).
 
-[b][?][/b] - Return back here.
-
-Indicator Selection (Choosing your Indicators):
-------------
-[b][Topics List][/b] - Select a parent topic to view all its child Indicators.
-
-[b][Indicator List][/b] - Scroll and select an Indicator to read its description in the Indicator Panel at the bottom.
-
-[b][Open][/b] - Increase panel's height for a better description view and less scrolling.
-
-[b][ADD IND.][/b] - Add currently selected Indicator to "My Indicators" list.
-
-[b][My Indicators][/b] - All Indicators in that list will later (at Index Creation) become available both as data and as variables.
-
-[b][Search][/b] - Search for a specific keyword within Indicator's title.
-
-Index Creation (Constructing your Index):
-------------
-[b][Get Indicator Data][/b] - Download Indicator values for all available years and regions (and for each Indicator in "My Indicators" list). This procedure also generates a quick statistic preview and an ID pointing back to the Indicator. When everything is completed 3 new sections will become accessible (View Indicator Data, Series Selection and Index Algebra).
-
-[b][View Indicator Data][/b] - Build a sortable Region/Year Table containing all Data Values from the selected Indicator. Loading time depends on the number of available Regions*Years and also your CPU Clock Rate. (Future updates may offer better loading times and an anchored Region Bar, equivalent to current Year Bar.)
-
-[b][ID][/b] - Select one Indicator to build its Data Table.
-
-[b][Year Arrows][/b] - Sort entire table based on targeted year's values and sorting direction.
-
-[b][Series Selection][/b] - Choose those Regions and Years (at least 1 Region and 1 Year) for which later calculations (at Index Algebra) will be made. You can select/deselect them all at once. Unselected Years can be either blank or grey. Black suggests that at least one Indicator (among "My Indicators") contains data for that year, while grey means that no Indicator contains data for that year.
-
-[b][Index Algebra][/b] - This section consists of 2 main modules. The Formula Screen and the Index Calculator.
-
-[b][Formula Screen][/b] - Like a regular calculator screen, this module will print all statements coming from Index Calculator below. User can interact with this screen (left click) placing the cursor above or next to an item. CIM provides also a live parenthesis checking system to notify whether any still remain open.
-
-[b][Index Calculator][/b] - This module is the formula builder. User has 3 tools at his disposal (Function Tools, Indicator Variable and Calculator Panel).
-A simple example: We want to calculate our Custom Index (CI) for all selected Regions and Years (in Series Selection). Let's say that this CI is Life Expectancy Index (LEI).
-Our formula should then be:
-Most simplistic example: To export indicator itself into a csv, we could just use that:
-*As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.
-
-Thematic Mapper (Visualizing Results):
-------------
-[b][Year List][/b]
-First thing you should do to view results, is to select a year. This will load all calculated data of that year into a sortable Data Table (inside the right slider which initiates closed).
-
-[b][Slider][/b]
-Besides Data Table, slider contains Legend module too.
-
-[b][Data Table][/b]
-When creating a new thematic map, only current values of this table are going to be used.
-
-[b][Legend][/b]
-This works not only as a Thematic Mapper but as a Legend too. Pick 2 range colors, choose the number of equal Intervals, press Apply and CIM will automatically generate both the Legend and the Thematic Map, based on your choices. (Future updates may introduce more division methods and better drawing times.)
-
-[b][Borders, Labels][/b]
-Turn On/Off those features.
-
-[b][Export Map][/b]
-Press PNG to export map as a Raster file, or SVG to export map as a vector one.
-
-QuickReference for Rst
-======================
-
-This is a markup example: [b]Hello[/b] [i]world[/i]
-And if i really want to write my code: &amp;bl; Hello world &amp;br;
+    [b][?][/b] - Return back here.
 
 
-Inline Markup
--------------
+[color=#194c7f][size=25][b]Indicator Selection[/b][/size][/color] [i](Choosing your Indicators)[/i]:
+=====================================================
+    [b][Topics List][/b] - Select a parent topic to view all its child Indicators.
 
-- *emphasis*
-- **strong emphasis**
-- `interpreted text`
-- ``inline literal``
-- reference_
-- `phrase reference`_
-- anonymous__
-- _`inline internal target`
+    [b][Indicator List][/b] - Scroll and select an Indicator to read its description in the Indicator Panel at the bottom.
 
-.. _top:
+    [b][Open][/b] - Increase panel's height for a better description view and less scrolling.
 
-Internal crossreferences, like example_, or bottom_.
+    [b][ADD IND.][/b] - Add currently selected Indicator to "My Indicators" list.
 
-Image
------
+    [b][My Indicators][/b] - All Indicators in that list will later (at Index Creation) become available both as data and as variables.
 
-Woot!
-
-What about a little image ?
-
-.. image:: kivy/data/logo/kivy-icon-256.png
-
-Definition list
----------------
-
-what
-  Definition lists associate a term with a definition.
-
-how
-  The term is a one-line phrase, and the definition is one or more paragraphs or
-  body elements, indented relative to the term. Blank lines are not allowed
-  between term and definition.
+    [b][Search][/b] - Search for a specific keyword within Indicator's title.
 
 
-Ordered list
-------------
+[color=#f54236][size=25][b]Index Creation[/b][/size][/color] [i](Constructing your Index)[/i]:
+==============================================
+    [b][Get Indicator Data][/b] - Download Indicator values for all available years and regions (and for each Indicator in "My Indicators" list).
+                                             This procedure also generates a quick statistic preview and an ID pointing back to the Indicator.
+                                             When everything is completed 3 new sections will become accessible (View Indicator Data, Series Selection and Index Algebra).
 
-#. My four item::
+    [b][View Indicator Data][/b] - Build a sortable Region/Year Table containing all Data Values from the selected Indicator.
+                                               Loading time depends on the number of available Regions*Years and also your CPU Clock Rate.
+                                               (Future updates may offer better loading times and an anchored Region Bar, equivalent to current Year Bar.)
 
-    No way.
+    [b][ID][/b] - Select one Indicator to build its Data Table.
 
-.. _bottom:
+    [b][Year Arrows][/b] - Sort entire table based on targeted year's values and sorting direction.
 
-Go to top_
+    [b][Series Selection][/b] - Choose those Regions and Years (at least 1 Region and 1 Year) for which later calculations (at Index Algebra) will be made.
+                                       You can select/deselect them all at once. Unselected Years can be either blank or grey.
+                                       Black suggests that at least one Indicator (among "My Indicators") contains data for that year
+                                       Grey means that no Indicator contains data for that year.
+
+    [b][Index Algebra][/b] - This section consists of 2 main modules. The Formula Screen and the Index Calculator.
+
+    [b][Formula Screen][/b] - Like a regular calculator screen, this module will print all statements coming from Index Calculator below.
+                                      User can interact with this screen (left click) placing the cursor above or next to an item.
+                                      CIM provides also a live parenthesis checking system to notify whether any still remain open.
+
+    [b][Index Calculator][/b] - This module is the formula builder. User has 3 tools at his disposal (Function Tools, Indicator Variable and Calculator Panel).
+
+            [i]A simple example:[/i]
+                      We want to calculate our Custom Index (CI) for all selected Regions and Years (in Series Selection).
+                      Let's say that this [b]CI[/b] is [b]Life Expectancy Index (LEI)[/b]. Our formula should then be:
+
+            [i]Most simplistic example:[/i]
+                      To export indicator itself into a csv, we could just use that:
+
+            (As soon as we execute the formula for the first time, a new component (Thematic Mapper) will become accessible in main Menu.)
+
+
+[color=#522b38][size=25][b]Thematic Mapper[/b][/size][/color] [i](Visualizing Results)[/i]:
+=============================================
+    [b][Year List][/b] - First thing you should do to view results, is to select a year.
+                          This will load all calculated data of that year into a sortable Data Table (inside the right slider which initiates closed).
+
+    [b][Slider][/b] - Besides Data Table, slider contains Legend module too.
+
+    [b][Data Table][/b] - When creating a new thematic map, only current values of this table are going to be used.
+
+    [b][Legend][/b] - This works not only as a Thematic Mapper but as a Legend too.
+                       Pick 2 range colors, choose the number of equal Intervals, press Apply and that's it.
+                       CIM will automatically generate both the Legend and the Thematic Map, based on your choices.
+                       (Future updates may introduce more division methods and better drawing times.)
+
+    [b][Borders, Labels][/b] - Turn On/Off those features.
+
+    [b][Export Map][/b] - Press PNG to export map as a Raster file, or SVG to export map as a vector one.

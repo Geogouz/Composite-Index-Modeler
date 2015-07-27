@@ -833,27 +833,36 @@
         Screen:
             name: 'Home'
 
-            ScrollView:
-                do_scroll_x: False
-                bar_width: 5
-                bar_inactive_color: (1, 1, 1, 1)
-                bar_color: (0.34, 0.76, 1, 1)
-                bar_margin: 1
-                bar_pos_y: "right"
+            BoxLayout:
+                padding: 10,0,0,0
                 canvas.before:
                     Color:
-                        rgba: (0.90, 0.90, 0.90, 1)
+                        rgba: (0.2, 0.2, 0.2, 1)
                     Rectangle:
                         pos: self.pos
                         size: self.size
 
-                LabelTip:
-                    size_hint: (None, None)
-                    size: (self.texture_size[0]+20, self.texture_size[1])
-                    #text_size: (self.width-30, self.height)
-                    font_size: 15
-                    markup: True
-                    color: (0,0,0,1)
+                ScrollView:
+                    do_scroll_x: False
+                    bar_width: 5
+                    bar_inactive_color: (1, 1, 1, 1)
+                    bar_color: (0.34, 0.76, 1, 1)
+                    bar_margin: 1
+                    bar_pos_y: "right"
+                    canvas.before:
+                        Color:
+                            rgba: (1, 1, 1, 1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    LabelTip:
+                        size_hint: (None, None)
+                        size: (self.texture_size[0]+40, self.texture_size[1]+40)
+                        #text_size: (self.width-30, self.height)
+                        font_size: 15
+                        markup: True
+                        color: (0,0,0,1)
 
         IndexSelection:
             id: index_selection
