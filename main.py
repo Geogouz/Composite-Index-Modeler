@@ -1734,7 +1734,6 @@ class IndexCreation(MouseScreen):
         for item in reversed(self.my_formula.children):
             if item.text != "":
                 iv = item.text
-                print iv
 
                 # Cleanup markup code Indicator Variables.
                 if iv[:17] == "[color=000000][b]":

@@ -36,9 +36,6 @@ Indicator Selection:
 
 **[Search]** - Search for a specific keyword within Indicator's title.
 
-
-
-
 <img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Indicator_Selection.png"/>
 
 
@@ -65,6 +62,11 @@ Index Creation:
                                        Black suggests that at least one Indicator (among "My Indicators") contains data for that year
                                        Grey means that no Indicator contains data for that year.
 
+<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
+
+
+
+
 **[Index Algebra]** - This section consists of 2 main modules. The Formula Screen and the Index Calculator.
 
 **[Formula Screen]** - Like a regular calculator screen, this module will print all statements coming from Index Calculator below.
@@ -81,10 +83,6 @@ Index Creation:
 *Most simplistic example:*
         To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
 
-
-
-
-<img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
 <img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
 
 
@@ -109,9 +107,6 @@ Thematic Mapper:
 **[Borders, Labels]** - Turn On/Off those features.
 
 **[Export Map]** - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
-
-
-
 
 <img align="right" width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
 
