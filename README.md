@@ -77,7 +77,7 @@ Index Creation:
 *Most simplistic example:*
         To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2z.png"/>
 .
 
 Thematic Mapper:
@@ -100,7 +100,7 @@ Thematic Mapper:
 
 **[Export Map]** - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
+<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapperz.png"/>
 .
 
 Support
@@ -112,5 +112,4 @@ D. Xenakis | Email : gouzounakis@hotmail.com
 
 
 CIM has been developed using an Open source Python library, [kivy](http://kivy.org/) which can run on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
-
 <a href="http://kivy.org/" target="_blank"><img align="right" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/></a>
