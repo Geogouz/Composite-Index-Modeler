@@ -102,7 +102,8 @@ Thematic Mapper:
 Support
 =======
 
-If you need assistance, you can ask for help at:
+If you need any assistance, you can contact Dev at:
 
-Dev: D. Xenakis
+D. Xenakis
+
 Email : gouzounakis@hotmail.com

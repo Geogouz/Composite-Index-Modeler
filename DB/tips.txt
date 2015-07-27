@@ -87,3 +87,11 @@ ________________________________________________________________________________
     [b][Borders, Labels][/b] - Turn On/Off those features.
 
     [b][Export Map][/b] - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
+
+
+
+                                                                                            _______________________________________________________________
+                                                                                            [i]
+                                                                                            If you need any assistance, you can contact Dev at:
+                                                                                            [b]D. Xenakis[/b] | [b]Email:[/b] gouzounakis@hotmail.com[/i]
+                                                                                            _______________________________________________________________
