@@ -8,6 +8,7 @@ CIM at the moment uses WorldBank's World Development Indicators (WDI) database; 
 Menu:
 =======================
 *(Right Sidebar)*
+
 **[Icons]** - CIM consists of 3 main components (Indicator Selection, Index Creation and Thematic Mapper).
                     You can navigate among them using each corresponding Icon.
 
@@ -21,6 +22,7 @@ Menu:
 Indicator Selection:
 =====================================================
 *(Choosing your Indicators)*
+
 **[Topics List]** - Select a parent topic to view all its child Indicators.
 
 **[Indicator List]** - Scroll and select an Indicator to read its description in the Indicator Panel at the bottom.
@@ -38,6 +40,7 @@ Indicator Selection:
 Index Creation:
 ==============================================
 *(Constructing your Index)*
+
 **[Get Indicator Data]** - Download Indicator values for all available years and regions (and for each Indicator in "My Indicators" list).
                                              This procedure also generates a quick statistic preview and an ID pointing back to the Indicator.
                                              When everything is completed 3 new sections will become accessible (View Indicator Data, Series Selection and Index Algebra).
@@ -77,6 +80,7 @@ Index Creation:
 Thematic Mapper:
 =============================================
 *(Visualizing Results)*
+
 **[Year List]** - First thing you should do to view results, is to select a year.
                           This will load all calculated data of that year into a sortable Data Table (inside the right slider which initiates closed).
 
