@@ -70,10 +70,10 @@ Index Creation:
 
 *A simple example:*
         We want to calculate our Custom Index (CI) for all selected Regions and Years (in Series Selection).
-        Let's say that this **CI** is **Life Expectancy Index (LEI)**. Our formula should then be: **IA[Region][Year]**-20)/(85-20)
+        Let's say that this **CI** is **Life Expectancy Index (LEI)**. Our formula should then be: **(IA[Region][Year]**-20)/(85-20)
 
 *Most simplistic example:*
-        To export indicator itself into a csv, we could just use that: IA[Region][Year]
+        To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
 
 
 
