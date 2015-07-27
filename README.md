@@ -36,7 +36,13 @@ Indicator Selection:
 
 **[Search]** - Search for a specific keyword within Indicator's title.
 
+
+
+
 <img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Indicator_Selection.png"/>
+
+
+
 
 Index Creation:
 ==============================================
@@ -75,8 +81,14 @@ Index Creation:
 *Most simplistic example:*
         To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
 
+
+
+
 <img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
 <img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_2.png"/>
+
+
+
 
 Thematic Mapper:
 =============================================
@@ -98,7 +110,13 @@ Thematic Mapper:
 
 **[Export Map]** - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
 
+
+
+
 <img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper.png"/>
+
+
+
 
 Support
 =======
