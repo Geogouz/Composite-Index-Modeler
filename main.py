@@ -42,7 +42,6 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.popup import Popup
 from kivy.clock import Clock, mainthread
 from kivy.uix.dropdown import DropDown
-from kivy.uix.rst import RstDocument
 
 # Set WorldBank API static parameters.
 start_url = "http://api.worldbank.org/"
@@ -57,11 +56,11 @@ indicators = "indicators/"
 wdi_url = "http://api.worldbank.org/source/2/indicators/?per_page=30000&format=json"
 
 
-class RstTip(RstDocument):
+class LabelTip(Label):
 
     def __init__(self, **kwargs):
         # make sure we aren't overriding any important functionality
-        super(RstTip, self).__init__(**kwargs)
+        super(LabelTip, self).__init__(**kwargs)
         with open("./DB/tips.txt", "r") as stream:
             self.text = stream.read()
 
