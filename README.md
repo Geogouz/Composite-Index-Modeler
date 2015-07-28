@@ -5,7 +5,7 @@ Composite Index Modeler (CIM) provides a basic set of tools for the creation and
 
 CIM at the moment uses [WorldBank's World Development Indicators (WDI)](http://data.worldbank.org/data-catalog/world-development-indicators) database; however, additional databases could be included in the future too.
 
-___
+</br>___
 <a href="http://kivy.org/" target="_blank"><img align="left" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/></a>
 &nbsp;&nbsp;&nbsp;&nbsp;CIM has been developed using an Open source Python library - [kivy](http://kivy.org/), which can run
 </br>&nbsp;&nbsp;&nbsp;&nbsp;on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
