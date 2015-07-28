@@ -648,7 +648,7 @@ class IndexCreation(MouseScreen):
     def popuper(self, message, title):
         Popup(title=title, content=Label(
             text=message,
-            text_size=(340, 180),
+            text_size=(340, 250),
             valign="middle",
             font_size=15,
             halign="center",
