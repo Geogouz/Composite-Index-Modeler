@@ -1830,7 +1830,9 @@ class IndexCreation(MouseScreen):
         if e != {}:
             self.popuper("Could not prepare files properly:\n" +
                          str([k + " >> " + v.__doc__ for k, v in e.iteritems()]) +
-                         "\n\nMake sure file/s above are not already opened",
+                         "\n\nMake sure file/s above are not already opened"
+                         "\nand you have permission to write"
+                         "\nto the selected folder!",
                          'Unexpected Error!')
 
         # If not, no errors found.

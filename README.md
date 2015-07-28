@@ -5,6 +5,7 @@ Composite Index Modeler (CIM) provides a basic set of tools for the creation and
 
 CIM at the moment uses [WorldBank's World Development Indicators (WDI)](http://data.worldbank.org/data-catalog/world-development-indicators) database; however, additional databases could be included in the future too.
 
+Portable version for Windows: [Download Here](http://gouz.webfactional.com/Gouz_Sources/CIM.7z)
 
 Menu:
 =======================
