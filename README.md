@@ -15,8 +15,9 @@ If you are on Windows and would like to avoid "playing"  with source code,
 </br>you could just use this portable version: [Download Here](http://gouz.webfactional.com/Gouz_Sources/CIM_Win_Portable.exe)
 ___
 
-Check CIM's online quick preview here: [Youtube Link:](http://www.youtube.com)
-</br>Or you could check guide below too:
+</br>
+Check CIM's quick preview here: [Youtube Link:](http://www.youtube.com)
+</br>Or you could also follow guide below:
 
 Menu:
 =======================
