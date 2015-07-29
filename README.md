@@ -3,8 +3,8 @@ CIM
 <img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/CIM_GIT_LOGO.png"/>
 Composite Index Modeler (CIM) provides a basic set of tools for the creation and visualization of an Index. You can calculate and view an already formed Index by combining available Indicators, or even create your own Model based on your custom mathematical formula.
 
-CIM at the moment uses [WorldBank's World Development Indicators (WDI)](http://data.worldbank.org/data-catalog/world-development-indicators) database; however, additional databases could be included in the future too.</br>
-
+CIM at the moment uses [WorldBank's World Development Indicators (WDI)](http://data.worldbank.org/data-catalog/world-development-indicators) database; however, additional databases could be included in the future too.
+</br></br></br>
 ___
 <a href="http://kivy.org/" target="_blank"><img align="left" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/></a>
 &nbsp;&nbsp;&nbsp;&nbsp;CIM has been developed using an Open source Python library - [kivy](http://kivy.org/), which can run
