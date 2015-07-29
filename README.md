@@ -7,7 +7,7 @@ At the moment it uses [WorldBank's World Development Indicators (WDI)](http://da
 </br></br>
 ___
 <a href="http://kivy.org/" target="_blank"><img align="left" width="64" src="http://kivy.org/logos/kivy-logo-black-64.png"/></a>
-&nbsp;&nbsp;&nbsp;&nbsp;CIM has been developed using an Open source Python library - [kivy](http://kivy.org/), so, it can run
+&nbsp;&nbsp;&nbsp;&nbsp;CIM has been developed using an Open source Python library - [kivy](http://kivy.org/) and can run
 </br>&nbsp;&nbsp;&nbsp;&nbsp;on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
 </br>&nbsp;&nbsp;&nbsp;&nbsp;Running it from source code, requires Python 2.7 and kivy 1.9.
 
