@@ -12,7 +12,7 @@ ___
 </br>&nbsp;&nbsp;&nbsp;&nbsp;Running it from source code, requires Python 2.7 and kivy 1.9.
 
 If you are on Windows and would like to avoid "playing"  with source code,
-</br>you could just use this portable version: [Download Here](http://gouz.webfactional.com/Gouz_Sources/CIM_Win_Portable.exe)
+</br>you could just use this self-extracting portable version: [Download Here](http://gouz.webfactional.com/Gouz_Sources/CIM_Win_Portable.exe)
 ___
 
 </br>
