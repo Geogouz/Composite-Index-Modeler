@@ -11,7 +11,7 @@ ___
 </br>&nbsp;&nbsp;&nbsp;&nbsp;on almost all operating systems (Linux, Windows, OS X, Android and iOS..).
 </br>&nbsp;&nbsp;&nbsp;&nbsp;Running it from source code, requires Python 2.7 and kivy 1.9.
 
-If you are on Windows and do not wish to have to "play" with source code,
+If you are on Windows and would like to avoid "playing"  with source code,
 </br>you could just use this portable version: [Download Here](http://gouz.webfactional.com/Gouz_Sources/CIM_Win_Portable.exe)
 ___
 
