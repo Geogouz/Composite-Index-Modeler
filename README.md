@@ -16,7 +16,7 @@ If you are on Windows and would like to avoid "playing"  with source code,
 ___
 
 </br>
-Check CIM's quick preview here: [Youtube Link](http://www.youtube.com)
+Check CIM's quick preview here: [Youtube Link](http://youtu.be/DOX4SlNqN8Y)
 </br>Or you could also follow guide below:
 
 Menu:
