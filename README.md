@@ -61,7 +61,7 @@ Index Creation:
 
 **[View Indicator Data]** - Build a sortable Region/Year Table containing all Data Values from the selected Indicator.
                                                Loading time depends on the number of available Regions*Years and also your CPU Clock Rate.
-                                               (Future updates may offer better loading times and an anchored Region Bar, equivalent to current Year Bar.)
+                                               (Future updates may offer better loading/response times and an anchored Region Bar, equivalent to current Year Bar.)
 
 **[ID]** - Select one Indicator to build its Data Table.
 
