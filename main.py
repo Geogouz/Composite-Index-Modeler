@@ -1774,10 +1774,10 @@ class IndexCreation(MouseScreen):
             # Start building the log file.
             with open(filename[0], "w") as log_file:
 
-                log_file.write("Indicators Variables\n===========================\n")
+                log_file.write("Indicator Variables\n===========================\n")
                 for key, val in self.rev_id_conn.iteritems():
-                    log_file.write(val+" = "+key)
-                log_file.write("\n===========================\n\nComposite Index Formula"
+                    log_file.write(val+" = "+key+"\n")
+                log_file.write("===========================\n\nComposite Index Formula"
                                "\n===========================\nCI('Region','Year'): [")
                 log_file.write(string_formula.replace("self.indicator_var_eval", "IndValue") + "]")
                 log_file.write("\n===========================\n\nFailed Calculations"
