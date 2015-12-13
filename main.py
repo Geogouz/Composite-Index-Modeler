@@ -2362,6 +2362,7 @@ class CIMgui(App):
     # This function returns the window.
     def build(self):
         self.use_kivy_settings = False
+        self.load_kv('CIMgui.kv')
         return MainWindow()
 
 # Must be called from main.
