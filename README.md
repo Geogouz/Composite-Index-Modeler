@@ -1,6 +1,6 @@
 CIM
 =======================
-<img align="right" height="218" src="http://gouz.webfactional.com/Gouz_Sources/CIM_GIT_LOGO.png"/>
+<img align="right" height="218" src="https://indoorpaths.com/3rd_sources/CIM_GIT_LOGO.png"/>
 Composite Index Modeler (CIM) provides a basic set of tools for the creation and visualization of an Index. You can calculate and view an already formed Index by combining available Indicators, or even create your own Model based on your custom mathematical formula.
 
 At the moment App is using [WorldBank's World Development Indicators (WDI)](http://data.worldbank.org/data-catalog/world-development-indicators) database; however, additional databases could be included in the future too.
@@ -12,7 +12,7 @@ ___
 </br>&nbsp;&nbsp;&nbsp;&nbsp;Running it from source code, requires Python 2.7 and kivy 1.9.
 
 If you are on Windows and would like to avoid "playing"  with source code,
-</br>you could just use this self-extracting portable version: [Download Ver. 1.0.1](http://gouz.webfactional.com/Gouz_Sources/CIM_Portable.exe)
+</br>you could just use this self-extracting portable version: [Download Ver. 1.0.1](https://indoorpaths.com/3rd_sources/CIM_Portable.exe)
 ___
 
 </br>
@@ -48,7 +48,7 @@ Indicator Selection:
 
 **[Search]** - Search for a specific keyword within Indicator's title.
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Indicator_Selection.png"/>
+<img width="730" src="https://indoorpaths.com/3rd_sources/Indicator_Selection.png"/>
 .
 
 Index Creation:
@@ -72,7 +72,7 @@ Index Creation:
                                        Black suggests that at least one Indicator (among "My Indicators") contains data for that year
                                        Grey means that no Indicator contains data for that year.
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation.png"/>
+<img width="730" src="https://indoorpaths.com/3rd_sources/Index_Creation.png"/>
 
 **[Index Algebra]** - This section consists of 2 main modules. The Formula Screen and the Index Calculator.
 
@@ -90,7 +90,7 @@ Index Creation:
 *Most simplistic example:*
         To export indicator itself into a csv, we could just use that: **IA[Region][Year]**
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Index_Creation_B.png"/>
+<img width="730" src="https://indoorpaths.com/3rd_sources/Index_Creation_B.png"/>
 .
 
 Thematic Mapper:
@@ -113,7 +113,7 @@ Thematic Mapper:
 
 **[Export Map]** - Press PNG to export map as a Raster file, or SVG to export map as a vector one.
 
-<img width="730" src="http://gouz.webfactional.com/Gouz_Sources/Thematic_Mapper_A.png"/>
+<img width="730" src="https://indoorpaths.com/3rd_sources/Thematic_Mapper_A.png"/>
 .
 
 Support
