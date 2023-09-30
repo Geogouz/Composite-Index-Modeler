@@ -121,4 +121,4 @@ Support
 
 If you need any assistance, you can contact Dev at:
 
-D. Xenakis | Email : gouzounakis@hotmail.com
+D. Xenakis | Email : d.xenakis@ieee.org
