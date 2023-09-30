@@ -119,6 +119,6 @@ Thematic Mapper:
 Support
 =======
 
-If you need any assistance, you can contact Dev at:
+If you need any assistance, you can contact me at:
 
 D. Xenakis | Email : d.xenakis@ieee.org
